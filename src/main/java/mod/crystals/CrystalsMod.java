@@ -19,7 +19,7 @@ public class CrystalsMod {
     public static CrystalsMod instance;
 
     @SidedProxy(serverSide = "mod.crystals.CommonProxy", clientSide = "mod.crystals.client.ClientProxy")
-    public CommonProxy proxy;
+    public static CommonProxy proxy;
 
     public Logger logger;
 
