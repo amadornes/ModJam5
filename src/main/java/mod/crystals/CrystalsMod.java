@@ -1,5 +1,6 @@
 package mod.crystals;
 
+import mod.crystals.init.CrystalsCapabilities;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -25,6 +26,7 @@ public class CrystalsMod {
     public void preInit(FMLPreInitializationEvent event) {
         logger = event.getModLog();
         proxy.preInit(event);
+        CrystalsCapabilities.register();
     }
 
     @Mod.EventHandler
