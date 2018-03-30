@@ -16,19 +16,7 @@ public class BlockBase extends Block {
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean isFullBlock(IBlockState state) {
-        return isFull(state);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
     public boolean isFullCube(IBlockState state) {
-        return isFull(state);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public boolean isNormalCube(IBlockState state) {
         return isFull(state);
     }
 
