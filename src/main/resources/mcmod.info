@@ -1,16 +1,19 @@
-[
 {
-  "modid": "crystals",
-  "name": "Crystals",
-  "description": "A mod inspired by Thaumcraft 2 seals!",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["amadornes", "therealfarfetchd"],
-  "credits": "All the people participating in the 5th installment of ModJam 5!",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
+  "modListVersion": 2,
+  "modList": [
+    {
+      "modid": "crystals",
+      "name": "Crystals",
+      "description": "A mod inspired by Thaumcraft 2 seals!",
+      "version": "${version}",
+      "mcversion": "${mcversion}",
+      "url": "",
+      "updateUrl": "",
+      "authorList": ["amadornes", "therealfarfetchd"],
+      "credits": "All the people participating in the 5th installment of ModJam 5!",
+      "logoFile": "",
+      "useDependencyInformation": true,
+      "screenshots": [],
+      "dependencies": []
+   }
 }
-]
