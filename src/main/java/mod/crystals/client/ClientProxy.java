@@ -7,10 +7,12 @@ import mod.crystals.init.CrystalsBlocks;
 import mod.crystals.init.CrystalsItems;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.item.Item;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -23,6 +25,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.function.Function;
 
 public class ClientProxy extends CommonProxy {
+    private Minecraft mc = Minecraft.getMinecraft();
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -33,13 +36,18 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init(FMLInitializationEvent e) {
         super.init(e);
-        Minecraft mc = Minecraft.getMinecraft();
         BlockColors blockColors = mc.getBlockColors();
         blockColors.registerBlockColorHandler((state, world, pos, index) -> {
             Integer color = ((IExtendedBlockState) state).getValue(BlockCrystal.COLOR);
             if (color == null) return 0x000000;
             return color;
         }, CrystalsBlocks.crystal);
+    }
+
+    @Override
+    public void spawnParticle(Particle p) {
+        super.spawnParticle(p);
+        mc.effectRenderer.addEffect(p);
     }
 
     @SubscribeEvent
