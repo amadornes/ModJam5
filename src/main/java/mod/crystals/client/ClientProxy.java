@@ -4,11 +4,16 @@ import mod.crystals.CommonProxy;
 import mod.crystals.CrystalsMod;
 import mod.crystals.block.BlockCrystal;
 import mod.crystals.init.CrystalsBlocks;
+import mod.crystals.init.CrystalsItems;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -38,6 +43,12 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent
+    public void onModelRegister(ModelRegistryEvent event) {
+        addModel(CrystalsBlocks.crystal, 0, "inventory");
+        addModel(CrystalsItems.tuning_fork, 0, "inventory");
+    }
+
+    @SubscribeEvent
     public void onModelBake(ModelBakeEvent event) {
         wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "normal"), TintWrapper::new);
     }
@@ -46,6 +57,14 @@ public class ClientProxy extends CommonProxy {
         IBakedModel model = event.getModelRegistry().getObject(name);
         if (model == null) return;
         event.getModelRegistry().putObject(name, wrapper.apply(model));
+    }
+
+    private void addModel(Block block, int meta, String name) {
+        addModel(Item.getItemFromBlock(block), meta, name);
+    }
+
+    private void addModel(Item item, int meta, String name) {
+        ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(item.getRegistryName(), name));
     }
 
 }
