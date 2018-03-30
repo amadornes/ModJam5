@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "crystals",
+  "name": "Crystals",
+  "description": "A mod inspired by Thaumcraft 2 seals!",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["amadornes", "therealfarfetchd"],
+  "credits": "All the people participating in the 5th installment of ModJam 5!",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
