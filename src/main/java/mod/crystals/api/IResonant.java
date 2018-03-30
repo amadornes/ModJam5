@@ -21,6 +21,8 @@ public interface IResonant {
 
         TObjectFloatMap<NatureType> getNatureAmounts();
 
+        int getColor();
+
     }
 
 }

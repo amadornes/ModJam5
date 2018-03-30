@@ -20,6 +20,16 @@ public class NatureType extends IForgeRegistryEntry.Impl<NatureType> {
     @GameRegistry.ObjectHolder("crystals:void")
     public static final NatureType VOID = null;
 
+    private final int color;
+
+    public NatureType(int color) {
+        this.color = color;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
     @Override
     public String toString() {
         return Objects.toString(getRegistryName());

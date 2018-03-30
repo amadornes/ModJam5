@@ -14,6 +14,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 
 public class CapabilityResonant {
 
@@ -80,6 +81,20 @@ public class CapabilityResonant {
         @Override
         public TObjectFloatMap<NatureType> getNatureAmounts() {
             return natures;
+        }
+
+        @Override
+        public int getColor() {
+            float def = 127 * (1 - resonance);
+            float red = def, green = def, blue = def;
+            for (NatureType type : natures.keySet()) {
+                float amt = natures.get(type) * resonance;
+                Color color = new Color(type.getColor());
+                red += color.getRed() * amt;
+                green += color.getGreen() * amt;
+                blue += color.getBlue() * amt;
+            }
+            return (((int) Math.floor(red)) << 16) | (((int) Math.floor(green)) << 8) | ((int) Math.floor(blue));
         }
 
         @Override
