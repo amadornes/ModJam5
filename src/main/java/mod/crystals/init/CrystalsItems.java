@@ -1,6 +1,7 @@
 package mod.crystals.init;
 
 import mod.crystals.CrystalsMod;
+import mod.crystals.item.ItemDust;
 import mod.crystals.item.ItemTuningFork;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -13,12 +14,14 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class CrystalsItems {
 
     public static final Item tuning_fork = new ItemTuningFork();
+    public static final Item dust = new ItemDust();
 
     @SubscribeEvent
     public static void onItemRegistration(RegistryEvent.Register<Item> event) {
         IForgeRegistry<Item> registry = event.getRegistry();
 
         registerItem(registry, tuning_fork, "tuning_fork");
+        registerItem(registry, dust, "dust");
     }
 
     private static void registerItem(IForgeRegistry<Item> registry, Item item, String name) {

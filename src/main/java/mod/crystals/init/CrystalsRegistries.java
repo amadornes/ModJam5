@@ -2,6 +2,7 @@ package mod.crystals.init;
 
 import mod.crystals.CrystalsMod;
 import mod.crystals.api.NatureType;
+import mod.crystals.api.SealType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -13,6 +14,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 public class CrystalsRegistries {
 
     public static IForgeRegistry<NatureType> natureRegistry;
+    public static IForgeRegistry<SealType> sealTypeRegistry;
 
     @SubscribeEvent
     public static void onRegistryCreation(RegistryEvent.NewRegistry event) {
@@ -20,6 +22,11 @@ public class CrystalsRegistries {
                 .setType(NatureType.class)
                 .setMaxID(256)
                 .setName(new ResourceLocation(CrystalsMod.MODID, "nature"))
+                .create();
+        sealTypeRegistry = new RegistryBuilder<SealType>()
+                .setType(SealType.class)
+                .setMaxID(256)// TODO: Maybe expand
+                .setName(new ResourceLocation(CrystalsMod.MODID, "seal_type"))
                 .create();
     }
 

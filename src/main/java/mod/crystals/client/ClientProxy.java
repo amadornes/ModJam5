@@ -56,8 +56,15 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onModelRegister(ModelRegistryEvent event) {
         addModel(CrystalsBlocks.crystal, 0, "inventory");
+        addModel(CrystalsBlocks.slate, 0, "inventory");
         addItemModel(CrystalsItems.tuning_fork, 0, "tuning_fork");
         addItemModel(CrystalsItems.tuning_fork, 1, "tuning_fork_vibrating");
+        addModel(CrystalsItems.dust, 0, "air");
+        addModel(CrystalsItems.dust, 1, "water");
+        addModel(CrystalsItems.dust, 2, "earth");
+        addModel(CrystalsItems.dust, 3, "fire");
+        addModel(CrystalsItems.dust, 4, "distorted");
+        addModel(CrystalsItems.dust, 5, "void");
     }
 
     @SubscribeEvent

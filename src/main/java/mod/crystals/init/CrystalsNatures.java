@@ -11,8 +11,9 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class CrystalsNatures {
 
     @SubscribeEvent
-    public static void onBlockRegistration(RegistryEvent.Register<NatureType> event) {
+    public static void onNatureRegistration(RegistryEvent.Register<NatureType> event) {
         IForgeRegistry<NatureType> registry = event.getRegistry();
+
         registry.register(new NatureType(0xf6ee71).setRegistryName("air"));
         registry.register(new NatureType(0x8caefb).setRegistryName("water"));
         registry.register(new NatureType(0x4bd94b).setRegistryName("earth"));
