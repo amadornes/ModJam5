@@ -8,17 +8,14 @@ public class SealRain extends SealType {
     private Ingredient[][] INGREDIENTS;
 
     @Override
-    public Ingredient[][] getIngredients() {
-        if (INGREDIENTS == null) {
-            Ingredient cloud = new Ingredient(NatureType.WATER, NatureType.AIR, NatureType.DISTORTED);
-            Ingredient rain = new Ingredient(NatureType.WATER, NatureType.AIR);
-            INGREDIENTS = new Ingredient[][]{
-                    {cloud, cloud, cloud},
-                    {rain, rain, rain},
-                    {rain, rain, rain}
-            };
-        }
-        return INGREDIENTS;
+    public Ingredient[][] createRecipe() {
+        Ingredient cloud = new Ingredient(NatureType.WATER, NatureType.AIR, NatureType.DISTORTED);
+        Ingredient rain = new Ingredient(NatureType.WATER, NatureType.AIR);
+        return new Ingredient[][]{
+                {cloud, cloud, cloud},
+                {rain, rain, rain},
+                {rain, rain, rain}
+        };
     }
 
 }

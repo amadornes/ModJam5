@@ -8,7 +8,7 @@ import java.util.Set;
 
 public abstract class SealType extends IForgeRegistryEntry.Impl<SealType> {
 
-    public abstract Ingredient[][] getIngredients();
+    public abstract Ingredient[][] createRecipe();
 
     public static final class Ingredient {
 

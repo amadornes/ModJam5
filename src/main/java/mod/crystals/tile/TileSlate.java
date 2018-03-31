@@ -3,6 +3,7 @@ package mod.crystals.tile;
 import mod.crystals.api.NatureType;
 import mod.crystals.api.SealType;
 import mod.crystals.init.CrystalsRegistries;
+import mod.crystals.seal.SealManager;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -78,7 +79,7 @@ public class TileSlate extends TileEntity {
 
     private SealType identifySeal(TileSlate[][] slates) {
         for (SealType sealType : CrystalsRegistries.sealTypeRegistry) {
-            SealType.Ingredient[][] ingredients = sealType.getIngredients();
+            SealType.Ingredient[][] ingredients = SealManager.INSTANCE.getIngredients(sealType);
             boolean failed = false;
             for (int x = 0; x < 3; x++) {
                 for (int y = 0; y < 3; y++) {
