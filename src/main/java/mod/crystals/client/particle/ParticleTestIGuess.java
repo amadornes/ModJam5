@@ -26,13 +26,21 @@ public class ParticleTestIGuess extends Particle {
         .addElement(DefaultVertexFormats.NORMAL_3B)
         .addElement(DefaultVertexFormats.PADDING_1B);
 
-    private ParticleTestIGuess(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, float r, float g, float b) {
-        super(worldIn, xCoordIn, yCoordIn, zCoordIn);
-        this.motionX = xSpeedIn;
-        this.motionY = ySpeedIn;
-        this.motionZ = zSpeedIn;
+    private ParticleTestIGuess(World worldIn, double x, double y, double z, double vX, double vY, double vZ, float r, float g, float b) {
+        super(worldIn, x, y, z);
+        this.motionX = vX;
+        this.motionY = vY;
+        this.motionZ = vZ;
+        setPosition(x, y, z);
+        prevPosX = posX;
+        prevPosY = posY;
+        prevPosZ = posZ;
         setRBGColorF(r, g, b);
         setSize(0.3f, 0.3f);
+    }
+
+    private double interp(double v1, double v2, double dist) {
+        return v1 + (v2 - v1) * dist;
     }
 
     @Override
@@ -47,9 +55,9 @@ public class ParticleTestIGuess extends Particle {
         int scaledAge = (int) (((float) this.particleAge + partialTicks) * 15.0F / (float) this.particleMaxAge);
 
         if (scaledAge <= 15) {
-            float posX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
-            float posY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
-            float posZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
+            float posX = (float) (interp(this.prevPosX, this.posX, partialTicks) - interp(entityIn.lastTickPosX, entityIn.posX, partialTicks));
+            float posY = (float) (interp(this.prevPosY, this.posY, partialTicks) - interp(entityIn.lastTickPosY, entityIn.posY, partialTicks));
+            float posZ = (float) (interp(this.prevPosZ, this.posZ, partialTicks) - interp(entityIn.lastTickPosZ, entityIn.posZ, partialTicks));
             color(1.0F, 1.0F, 1.0F, 1.0F);
             disableLighting();
             RenderHelper.disableStandardItemLighting();
@@ -93,6 +101,11 @@ public class ParticleTestIGuess extends Particle {
     @Override
     public void onUpdate() {
         super.onUpdate();
+    }
+
+    @Override
+    public void move(double x, double y, double z) {
+        setPosition(posX + x, posY + y, posZ + z);
     }
 
     @Override
