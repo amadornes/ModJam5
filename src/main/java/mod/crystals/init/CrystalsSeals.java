@@ -2,7 +2,7 @@ package mod.crystals.init;
 
 import mod.crystals.CrystalsMod;
 import mod.crystals.api.SealType;
-import mod.crystals.seal.SealRain;
+import mod.crystals.seal.*;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -16,6 +16,10 @@ public class CrystalsSeals {
         IForgeRegistry<SealType> registry = event.getRegistry();
 
         registry.register(new SealRain().setRegistryName("rain"));
+        registry.register(new SealThunder().setRegistryName("thunder"));
+        registry.register(new SealLocalRain().setRegistryName("local_rain"));
+        registry.register(new SealPull().setRegistryName("pull"));
+        registry.register(new SealPush().setRegistryName("push"));
     }
 
 }

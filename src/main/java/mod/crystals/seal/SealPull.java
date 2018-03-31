@@ -1,0 +1,21 @@
+package mod.crystals.seal;
+
+import mod.crystals.api.NatureType;
+import mod.crystals.api.SealType;
+
+public class SealPull extends SealType {
+
+    private Ingredient[][] INGREDIENTS;
+
+    @Override
+    public Ingredient[][] createRecipe() {
+        Ingredient wind = new Ingredient(NatureType.AIR);
+        Ingredient pull = new Ingredient(NatureType.AIR, NatureType.VOID);
+        return new Ingredient[][]{
+            {wind, wind, wind},
+            {wind, pull, wind},
+            {wind, wind, wind}
+        };
+    }
+
+}
