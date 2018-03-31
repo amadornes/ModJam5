@@ -15,6 +15,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CapabilityResonant {
 
@@ -51,7 +53,9 @@ public class CapabilityResonant {
             impl.natures.clear();
             for (ResourceLocation name : CrystalsRegistries.natureRegistry.getKeys()) {
                 NatureType natureType = CrystalsRegistries.natureRegistry.getValue(name);
-                impl.natures.put(natureType, natures.getFloat(name.toString()));
+                float amt = natures.getFloat(name.toString());
+                if (amt < 1e-4) continue;
+                impl.natures.put(natureType, amt);
             }
             impl.resonance = tag.getFloat("resonance");
         }
@@ -62,6 +66,7 @@ public class CapabilityResonant {
 
         private final TObjectFloatMap<NatureType> natures = new TObjectFloatHashMap<>(16, 0.75F, 0);
         private float resonance = 0;
+        private final Set<Runnable> callbacks = new HashSet<>();
 
         public DefaultImpl() {
             natures.put(NatureType.DISTORTED, 1);
@@ -69,7 +74,6 @@ public class CapabilityResonant {
 
         @Override
         public float getNatureAmount(NatureType natureType) {
-            if (resonance == 0) return 0;
             return natures.get(natureType);
         }
 
@@ -101,13 +105,17 @@ public class CapabilityResonant {
         public void setNatureAmounts(TObjectFloatMap<NatureType> natureAmounts) {
             float sum = 0;
             for (float amt : natureAmounts.values()) {
+                if (amt < 1e-4) continue;
                 sum += amt;
             }
-            if (Math.abs(sum - 1) > 1e-4) {
-                throw new IllegalArgumentException("The provided natures don't add up to 1, they add up to " + sum + "!");
-            }
+            float totalSum = sum;
             natures.clear();
-            natures.putAll(natureAmounts);
+            natureAmounts.forEachEntry((type, amt) -> {
+                if (amt < 1e-4) return true;
+                natures.put(type, amt / totalSum);
+                return true;
+            });
+            callbacks.forEach(Runnable::run);
         }
 
         @Override
@@ -119,6 +127,12 @@ public class CapabilityResonant {
                 return;
             }
             resonance = res;
+            callbacks.forEach(Runnable::run);
+        }
+
+        @Override
+        public void addChangeListener(Runnable listener) {
+            callbacks.add(listener);
         }
 
         @Override

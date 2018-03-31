@@ -23,6 +23,8 @@ public interface IResonant {
 
         int getColor();
 
+        void addChangeListener(Runnable listener);
+
     }
 
 }

@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -45,7 +46,8 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onModelRegister(ModelRegistryEvent event) {
         addModel(CrystalsBlocks.crystal, 0, "inventory");
-        addModel(CrystalsItems.tuning_fork, 0, "inventory");
+        addItemModel(CrystalsItems.tuning_fork, 0, "tuning_fork");
+        addItemModel(CrystalsItems.tuning_fork, 1, "tuning_fork_vibrating");
     }
 
     @SubscribeEvent
@@ -65,6 +67,11 @@ public class ClientProxy extends CommonProxy {
 
     private void addModel(Item item, int meta, String name) {
         ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(item.getRegistryName(), name));
+    }
+
+    private void addItemModel(Item item, int meta, String name) {
+        ResourceLocation res = new ResourceLocation(item.getRegistryName().getResourceDomain(), name);
+        ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(res, "inventory"));
     }
 
 }
