@@ -1,6 +1,6 @@
 package mod.crystals.seal;
 
-import mod.crystals.api.SealType;
+import mod.crystals.api.seal.SealType;
 
 import java.util.IdentityHashMap;
 import java.util.Map;

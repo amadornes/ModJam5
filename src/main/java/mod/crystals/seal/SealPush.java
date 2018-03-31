@@ -1,7 +1,7 @@
 package mod.crystals.seal;
 
 import mod.crystals.api.NatureType;
-import mod.crystals.api.SealType;
+import mod.crystals.api.seal.SealType;
 
 public class SealPush extends SealType {
 

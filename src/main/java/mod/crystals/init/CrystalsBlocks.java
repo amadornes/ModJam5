@@ -3,8 +3,10 @@ package mod.crystals.init;
 import mod.crystals.CrystalsMod;
 import mod.crystals.block.BlockCrystal;
 import mod.crystals.block.BlockPost;
+import mod.crystals.block.BlockSeal;
 import mod.crystals.block.BlockSlate;
 import mod.crystals.tile.TileCrystal;
+import mod.crystals.tile.TileSeal;
 import mod.crystals.tile.TileSlate;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -23,6 +25,7 @@ public class CrystalsBlocks {
     public static final Block crystal = new BlockCrystal();
     public static final Block post = new BlockPost();
     public static final Block slate = new BlockSlate();
+    public static final Block seal = new BlockSeal();
 
     @SubscribeEvent
     public static void onBlockRegistration(RegistryEvent.Register<Block> event) {
@@ -31,6 +34,7 @@ public class CrystalsBlocks {
         registerBlock(registry, crystal, TileCrystal.class, "crystal");
         registerBlock(registry, post, "post");
         registerBlock(registry, slate, TileSlate.class, "slate");
+        registerBlock(registry, seal, TileSeal.class, "seal");
     }
 
     @SubscribeEvent
@@ -40,6 +44,7 @@ public class CrystalsBlocks {
         registerItem(registry, crystal, "crystal");
         registerItem(registry, post, "post");
         registerItem(registry, slate, "slate");
+        registerItem(registry, seal, "seal");
     }
 
     private static ResourceLocation registerBlock(IForgeRegistry<Block> registry, Block block, String name) {

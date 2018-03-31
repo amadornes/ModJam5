@@ -1,5 +1,6 @@
-package mod.crystals.api;
+package mod.crystals.api.seal;
 
+import mod.crystals.api.NatureType;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.Arrays;
@@ -9,6 +10,8 @@ import java.util.Set;
 public abstract class SealType extends IForgeRegistryEntry.Impl<SealType> {
 
     public abstract Ingredient[][] createRecipe();
+
+    public abstract ISealInstance instantiate(ISeal seal);
 
     public static final class Ingredient {
 
@@ -22,7 +25,7 @@ public abstract class SealType extends IForgeRegistryEntry.Impl<SealType> {
         }
 
         public boolean matches(Set<NatureType> natureTypes) {
-            return natureTypes.containsAll(this.natureTypes);
+            return natureTypes.size() == this.natureTypes.size() && natureTypes.containsAll(this.natureTypes);
         }
 
     }

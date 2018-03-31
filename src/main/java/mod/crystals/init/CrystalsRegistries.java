@@ -2,7 +2,7 @@ package mod.crystals.init;
 
 import mod.crystals.CrystalsMod;
 import mod.crystals.api.NatureType;
-import mod.crystals.api.SealType;
+import mod.crystals.api.seal.SealType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;

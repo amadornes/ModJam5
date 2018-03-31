@@ -1,7 +1,7 @@
 package mod.crystals.tile;
 
 import mod.crystals.api.NatureType;
-import mod.crystals.api.SealType;
+import mod.crystals.api.seal.SealType;
 import mod.crystals.init.CrystalsRegistries;
 import mod.crystals.seal.SealManager;
 import net.minecraft.block.state.IBlockState;

@@ -1,7 +1,7 @@
 package mod.crystals.init;
 
 import mod.crystals.CrystalsMod;
-import mod.crystals.api.SealType;
+import mod.crystals.api.seal.SealType;
 import mod.crystals.seal.*;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
