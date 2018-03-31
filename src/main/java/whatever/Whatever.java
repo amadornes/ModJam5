@@ -8,8 +8,8 @@ import java.io.File;
 public class Whatever {
 
     public static void main(String[] args) throws Throwable {
-        File file = new File("D:\\development\\minecraft\\git\\ModJam5\\src\\main\\resources\\assets\\crystals\\textures\\misc\\laser.png");
-        File out = new File("D:\\development\\minecraft\\git\\ModJam5\\src\\main\\resources\\assets\\crystals\\textures\\misc\\laser_transparent.png");
+        File file = new File("src/main/resources/assets/crystals/textures/misc/laser.png");
+        File out = new File("src/main/resources/assets/crystals/textures/misc/laser_transparent.png");
         BufferedImage bi = ImageIO.read(file);
         BufferedImage outImg = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics g = outImg.getGraphics();
