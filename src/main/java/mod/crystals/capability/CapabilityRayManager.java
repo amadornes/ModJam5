@@ -26,7 +26,7 @@ public class CapabilityRayManager {
 
     @SubscribeEvent
     public static void onCapabilityAttach(AttachCapabilitiesEvent<World> event) {
-        RayManager manager = new RayManager();
+        RayManager manager = new RayManager(event.getObject());
         event.addCapability(NAME, new ICapabilityProvider() {
 
             @Override

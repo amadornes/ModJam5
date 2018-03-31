@@ -24,15 +24,8 @@ public class RayTracer {
         int sZ = MathHelper.floor(start.z);
 
         BlockPos pos = new BlockPos(sX, sY, sZ);
-        if (test.test(pos)) {
-            IBlockState state = world.getBlockState(pos);
-            Block block = state.getBlock();
-
-            if (block.canCollideCheck(state, false)) {
-                RayTraceResult hit = state.collisionRayTrace(world, pos, start, end);
-                if (hit != null) return hit;
-            }
-        }
+        RayTraceResult hit1 = rayTest(world, start, end, test, pos);
+        if (hit1 != null) return hit1;
 
         for (int i = 200; i >= 0; i--) {
             if (Double.isNaN(start.x) || Double.isNaN(start.y) || Double.isNaN(start.z)) return null;
@@ -103,15 +96,23 @@ public class RayTracer {
             sY = MathHelper.floor(start.y) - (side == EnumFacing.UP ? 1 : 0);
             sZ = MathHelper.floor(start.z) - (side == EnumFacing.SOUTH ? 1 : 0);
             pos = new BlockPos(sX, sY, sZ);
-            IBlockState state = world.getBlockState(pos);
-            Block block1 = state.getBlock();
+            RayTraceResult hit = rayTest(world, start, end, test, pos);
+            if (hit != null) return hit;
+        }
 
-            if (block1.canCollideCheck(state, false)) {
+        return null;
+    }
+
+    private static RayTraceResult rayTest(World world, Vec3d start, Vec3d end, Predicate<BlockPos> test, BlockPos pos) {
+        if (test.test(pos)) {
+            IBlockState state = world.getBlockState(pos);
+            Block block = state.getBlock();
+
+            if (block.canCollideCheck(state, false)) {
                 RayTraceResult hit = state.collisionRayTrace(world, pos, start, end);
                 if (hit != null) return hit;
             }
         }
-
         return null;
     }
 

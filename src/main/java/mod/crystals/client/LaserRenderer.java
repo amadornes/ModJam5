@@ -54,6 +54,8 @@ public class LaserRenderer {
         buffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
         buffer.setTranslation(-TileEntityRendererDispatcher.staticPlayerX, -TileEntityRendererDispatcher.staticPlayerY, -TileEntityRendererDispatcher.staticPlayerZ);
         for (Ray ray : manager.getRays()) {
+            if (!ray.hasLineOfSight()) continue;
+
             Vec3d start = ray.getStart(event.getPartialTicks());
             Vec3d end = ray.getEnd(event.getPartialTicks());
             Vec3d startColor = ray.getStartColor(event.getPartialTicks());

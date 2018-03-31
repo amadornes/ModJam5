@@ -2,6 +2,7 @@ package mod.crystals.init;
 
 import mod.crystals.CrystalsMod;
 import mod.crystals.block.BlockCrystal;
+import mod.crystals.block.BlockPost;
 import mod.crystals.tile.TileCrystal;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -18,12 +19,14 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class CrystalsBlocks {
 
     public static final Block crystal = new BlockCrystal();
+    public static final Block post = new BlockPost();
 
     @SubscribeEvent
     public static void onBlockRegistration(RegistryEvent.Register<Block> event) {
         IForgeRegistry<Block> registry = event.getRegistry();
 
         registerBlock(registry, crystal, TileCrystal.class, "crystal");
+        registerBlock(registry, post, "post");
     }
 
     @SubscribeEvent
@@ -31,6 +34,7 @@ public class CrystalsBlocks {
         IForgeRegistry<Item> registry = event.getRegistry();
 
         registerItem(registry, crystal, "crystal");
+        registerItem(registry, post, "post");
     }
 
     private static ResourceLocation registerBlock(IForgeRegistry<Block> registry, Block block, String name) {

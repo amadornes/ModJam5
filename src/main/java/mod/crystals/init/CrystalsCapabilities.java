@@ -15,7 +15,7 @@ public class CrystalsCapabilities {
         CapabilityManager.INSTANCE.register(CapabilityCrystalStorage.CrystalStorage.class,
                 new CapabilityCrystalStorage.Storage(), CapabilityCrystalStorage.CrystalStorage::new);
         CapabilityManager.INSTANCE.register(RayManager.class,
-                new CapabilityRayManager.Storage(), RayManager::new);
+                new CapabilityRayManager.Storage(), () -> null);
     }
 
 }

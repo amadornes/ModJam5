@@ -1,0 +1,35 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "texture": "crystals:blocks/crystal",
+      "particle": "crystals:blocks/crystal"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "component": {
+      "bottom": { "model": "crystals:post_bottom" },
+      "middle": { "model": "crystals:post_mid"    },
+      "top":    { "model": "crystals:post_mid"    },
+      "side":   { "model": "crystals:post_side"   }
+    },
+    "north": {
+      "true":  { "submodel": "crystals:post_top", "y": 270 },
+      "false": {}
+    },
+    "south": {
+      "true":  { "submodel": "crystals:post_top", "y": 90  },
+      "false": {}
+    },
+    "west": {
+      "true":  { "submodel": "crystals:post_top", "y": 180 },
+      "false": {}
+    },
+    "east": {
+      "true":  { "submodel": "crystals:post_top"           },
+      "false": {}
+    },
+    "inventory": [{ }]
+  }
+}

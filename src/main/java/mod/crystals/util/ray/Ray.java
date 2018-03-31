@@ -21,7 +21,7 @@ public class Ray {
 
     public void update(World world) {
         RayTraceResult hit = RayTracer.rayTrace(world, getStart(0), getEnd(0), this::shouldRayTrace);
-        hasLOS = hit != null;
+        hasLOS = hit == null;
     }
 
     private boolean shouldRayTrace(BlockPos pos) {
