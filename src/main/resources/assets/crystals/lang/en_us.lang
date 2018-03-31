@@ -1,0 +1,5 @@
+itemGroup.crystals=Crystals
+
+tile.crystals:crystal.name=Crystal
+
+item.crystals:tuning_fork.name=Tuning Fork
