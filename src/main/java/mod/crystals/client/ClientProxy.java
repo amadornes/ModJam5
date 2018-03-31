@@ -25,11 +25,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.function.Function;
 
 public class ClientProxy extends CommonProxy {
-    private Minecraft mc = Minecraft.getMinecraft();
+    private Minecraft mc;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
         super.preInit(e);
+        mc = Minecraft.getMinecraft();
         OBJLoader.INSTANCE.addDomain(CrystalsMod.MODID);
     }
 

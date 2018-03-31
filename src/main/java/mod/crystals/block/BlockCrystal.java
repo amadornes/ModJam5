@@ -71,16 +71,6 @@ public class BlockCrystal extends BlockBase implements ITileEntityProvider {
         IResonant resonant = te.getCapability(IResonant.CAPABILITY, null);
         System.out.println("Client? " + world.isRemote);
         System.out.println(" > " + resonant);
-
-        if (world.isRemote) {
-            // test code
-            for (int i = 0; i < 50; i++) {
-                float r1 = ((float) Math.random() - 0.5f) * 0.25f;
-                float r2 = ((float) Math.random() - 0.5f) * 0.25f;
-                float r3 = ((float) Math.random() - 0.5f) * 0.25f;
-                ParticleTestIGuess.spawnParticleAt(world, pos.getX() + 0.5 + r1, pos.getY() + 1 + r2, pos.getZ() + 0.5 + r3, 1, 1, 1);
-            }
-        }
         return true;
     }
 
