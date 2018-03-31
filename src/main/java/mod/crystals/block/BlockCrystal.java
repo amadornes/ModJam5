@@ -18,6 +18,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import scala.util.Random;
+import scala.util.Random$;
 
 import javax.annotation.Nullable;
 
@@ -73,7 +75,8 @@ public class BlockCrystal extends BlockBase implements ITileEntityProvider {
         System.out.println(" > " + resonant);
 
         for (int i = 0; i < 50; i++) {
-            ParticleTestIGuess.spawnParticleAt(world, pos.getX(), pos.getY() + 1, pos.getZ(), 0, 0.1, 0);
+            float r1 = Random$.MODULE$.nextFloat();
+            ParticleTestIGuess.spawnParticleAt(world, pos.getX(), pos.getY() + 1, pos.getZ(), 1, 1, 1);
         }
         return true;
     }

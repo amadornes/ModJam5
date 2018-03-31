@@ -1,6 +1,5 @@
 package mod.crystals;
 
-import net.minecraft.client.particle.Particle;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -16,6 +15,6 @@ public class CommonProxy {
 
     public void postInit(FMLPostInitializationEvent e) {}
 
-    public void spawnParticle(Particle p) {}
+    public void spawnParticle(Object particle) {}
 
 }
