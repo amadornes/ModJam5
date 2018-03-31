@@ -5,8 +5,6 @@ import mod.crystals.api.SealType;
 
 public class SealPull extends SealType {
 
-    private Ingredient[][] INGREDIENTS;
-
     @Override
     public Ingredient[][] createRecipe() {
         Ingredient wind = new Ingredient(NatureType.AIR);

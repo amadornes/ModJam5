@@ -5,8 +5,6 @@ import mod.crystals.api.SealType;
 
 public class SealRain extends SealType {
 
-    private Ingredient[][] INGREDIENTS;
-
     @Override
     public Ingredient[][] createRecipe() {
         Ingredient cloud = new Ingredient(NatureType.WATER, NatureType.AIR, NatureType.DISTORTED);
