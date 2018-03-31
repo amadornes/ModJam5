@@ -35,4 +35,10 @@ public class NatureType extends IForgeRegistryEntry.Impl<NatureType> {
         return Objects.toString(getRegistryName());
     }
 
+    public interface Acceptor {
+
+        void accept(NatureType natureType, float amount);
+
+    }
+
 }
