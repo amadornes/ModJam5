@@ -15,19 +15,19 @@
       "side":   { "model": "crystals:post_side"   }
     },
     "north": {
-      "true":  { "submodel": "crystals:post_top", "y": 270 },
+      "true":  { "submodel": "crystals:post_extension", "y": 270 },
       "false": {}
     },
     "south": {
-      "true":  { "submodel": "crystals:post_top", "y": 90  },
+      "true":  { "submodel": "crystals:post_extension", "y": 90  },
       "false": {}
     },
     "west": {
-      "true":  { "submodel": "crystals:post_top", "y": 180 },
+      "true":  { "submodel": "crystals:post_extension", "y": 180 },
       "false": {}
     },
     "east": {
-      "true":  { "submodel": "crystals:post_top"           },
+      "true":  { "submodel": "crystals:post_extension"           },
       "false": {}
     },
     "inventory": [{ }]
