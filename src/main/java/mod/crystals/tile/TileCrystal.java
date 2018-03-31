@@ -74,13 +74,15 @@ public class TileCrystal extends TileEntity {
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         handleUpdateTag(pkt.getNbtCompound());
 
-        float r1 = ((float) Math.random() - 0.5f) * 0.25f;
-        float r2 = ((float) Math.random() - 0.5f) * 0.25f;
-        float r3 = ((float) Math.random() - 0.5f) * 0.25f;
-        float r = (resonant.getColor() >> 16 & 0xFF) / 256f;
-        float g = (resonant.getColor() >> 8 & 0xFF) / 256f;
-        float b = (resonant.getColor() & 0xFF) / 256f;
-        ParticleTestIGuess.spawnParticleAt(world, pos.getX() + 0.5 + r1, pos.getY() + 1 + r2, pos.getZ() + 0.5 + r3, r, g, b);
+        if (Math.random() > 0.75) {
+            float r1 = ((float) Math.random() - 0.5f) * 0.25f;
+            float r2 = ((float) Math.random() - 0.5f) * 0.25f;
+            float r3 = ((float) Math.random() - 0.5f) * 0.25f;
+            float r = (resonant.getColor() >> 16 & 0xFF) / 256f;
+            float g = (resonant.getColor() >> 8 & 0xFF) / 256f;
+            float b = (resonant.getColor() & 0xFF) / 256f;
+            ParticleTestIGuess.spawnParticleAt(world, pos.getX() + 0.5 + r1, pos.getY() + 1 + r2, pos.getZ() + 0.5 + r3, r, g, b);
+        }
     }
 
     @SuppressWarnings("ConstantConditions")

@@ -17,7 +17,7 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class ParticleTestIGuess extends Particle {
 
-    private static final ResourceLocation PARTICLE = new ResourceLocation(CrystalsMod.MODID, "textures/entity/particles.png");
+    private static final ResourceLocation PARTICLE = new ResourceLocation(CrystalsMod.MODID, "textures/entity/particle.png");
     private static final VertexFormat VERTEX_FORMAT = new VertexFormat()
         .addElement(DefaultVertexFormats.POSITION_3F)
         .addElement(DefaultVertexFormats.TEX_2F)
@@ -32,6 +32,7 @@ public class ParticleTestIGuess extends Particle {
         this.motionY = ySpeedIn;
         this.motionZ = zSpeedIn;
         setRBGColorF(r, g, b);
+        setSize(0.3f, 0.3f);
     }
 
     @Override
@@ -43,46 +44,43 @@ public class ParticleTestIGuess extends Particle {
         RenderHelper.disableStandardItemLighting();
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(PARTICLE);
-        int i = (int) (((float) this.particleAge + partialTicks) * 15.0F / (float) this.particleMaxAge);
+        int scaledAge = (int) (((float) this.particleAge + partialTicks) * 15.0F / (float) this.particleMaxAge);
 
-        if (i <= 15) {
-            float f = 0f;
-            float f1 = 1f;
-            float f2 = 0f;
-            float f3 = 1f;
-            float f4 = .3f;
-            float f5 = (float) (this.prevPosX + (this.posX - this.prevPosX) * partialTicks - interpPosX);
-            float f6 = (float) (this.prevPosY + (this.posY - this.prevPosY) * partialTicks - interpPosY);
-            float f7 = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * partialTicks - interpPosZ);
+        if (scaledAge <= 15) {
+            float posX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
+            float posY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
+            float posZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
             color(1.0F, 1.0F, 1.0F, 1.0F);
             disableLighting();
             RenderHelper.disableStandardItemLighting();
-            buffer.begin(7, VERTEX_FORMAT);
+            buffer.begin(GL11.GL_QUADS, VERTEX_FORMAT);
             buffer
-                .pos(f5 - rotationX * f4 - rotationXY * f4, f6 - rotationZ * f4, f7 - rotationYZ * f4 - rotationXZ * f4)
-                .tex(f1, f3)
+                .pos(posX - rotationX * width - rotationXY * width, posY - rotationZ * height, posZ - rotationYZ * width - rotationXZ * width)
+                .tex(1f, 1f)
                 .color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F)
                 .lightmap(0, 240)
                 .normal(0.0F, 1.0F, 0.0F)
                 .endVertex();
             buffer
-                .pos(f5 - rotationX * f4 + rotationXY * f4, f6 + rotationZ * f4, f7 - rotationYZ * f4 + rotationXZ * f4)
-                .tex(f1, f2)
+                .pos(posX - rotationX * width + rotationXY * width, posY + rotationZ * height, posZ - rotationYZ * width + rotationXZ * width)
+                .tex(1f, 0f)
                 .color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F)
                 .lightmap(0, 240)
                 .normal(0.0F, 1.0F, 0.0F)
                 .endVertex();
             buffer
-                .pos(f5 + rotationX * f4 + rotationXY * f4, f6 + rotationZ * f4, f7 + rotationYZ * f4 + rotationXZ * f4)
-                .tex(f, f2)
+                .pos(posX + rotationX * width + rotationXY * width, posY + rotationZ * height, posZ + rotationYZ * width + rotationXZ * width)
+                .tex(0f, 0f)
                 .color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F)
-                .lightmap(0, 240).normal(0.0F, 1.0F, 0.0F)
+                .lightmap(0, 240)
+                .normal(0.0F, 1.0F, 0.0F)
                 .endVertex();
             buffer
-                .pos(f5 + rotationX * f4 - rotationXY * f4, f6 - rotationZ * f4, f7 + rotationYZ * f4 - rotationXZ * f4)
-                .tex(f, f3)
+                .pos(posX + rotationX * width - rotationXY * width, posY - rotationZ * height, posZ + rotationYZ * width - rotationXZ * width)
+                .tex(0f, 1f)
                 .color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F)
-                .lightmap(0, 240).normal(0.0F, 1.0F, 0.0F)
+                .lightmap(0, 240)
+                .normal(0.0F, 1.0F, 0.0F)
                 .endVertex();
             Tessellator.getInstance().draw();
             enableLighting();
