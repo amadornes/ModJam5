@@ -4,11 +4,6 @@ import mod.crystals.api.NatureType;
 import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
 import mod.crystals.api.seal.SealType;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
-
-import java.util.Collection;
 
 public class SealThunder extends SealType {
 
@@ -37,6 +32,7 @@ public class SealThunder extends SealType {
 
         @Override
         public void update() {
+            SealRain.startRain(seal, true, 20 * 60 * 5);
         }
 
     }

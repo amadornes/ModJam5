@@ -11,8 +11,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 
-import java.util.Collection;
-
 public class SealRain extends SealType {
 
     @Override
@@ -41,25 +39,29 @@ public class SealRain extends SealType {
 
         @Override
         public void update() {
-            World world = seal.getWorld();
-            if (world.isRemote) return;
-            if (world.isRaining()) return;
-            for (EntityItem item : world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(seal.getPos()))) {
-                ItemStack stack = item.getItem();
-                if (stack.isEmpty()) continue;
-                if (stack.getItem() == Items.WATER_BUCKET) {
-                    WorldInfo info = world.getWorldInfo();
-                    info.setCleanWeatherTime(0);
-                    info.setRainTime(20 * 60 * 5);
-                    info.setThunderTime(20 * 60 * 5);
-                    info.setRaining(true);
-                    info.setThundering(false);
-                    item.setDead();
-                    break;
-                }
-            }
+            startRain(seal, false, 20 * 60 * 5);
         }
 
+    }
+
+    public static void startRain(ISeal seal, boolean thunder, int duration) {
+        World world = seal.getWorld();
+        if (world.isRemote) return;
+        if (world.isRaining()) return;
+        for (EntityItem item : world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(seal.getPos()))) {
+            ItemStack stack = item.getItem();
+            if (stack.isEmpty()) continue;
+            if (stack.getItem() == Items.WATER_BUCKET) {
+                WorldInfo info = world.getWorldInfo();
+                info.setCleanWeatherTime(0);
+                info.setRainTime(duration);
+                info.setThunderTime(duration);
+                info.setRaining(true);
+                info.setThundering(thunder);
+                item.setDead();
+                break;
+            }
+        }
     }
 
 }
