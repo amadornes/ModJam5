@@ -1,6 +1,7 @@
 package mod.crystals.block;
 
 import mod.crystals.api.IResonant;
+import mod.crystals.client.particle.ParticleTestIGuess;
 import mod.crystals.tile.TileCrystal;
 import mod.crystals.util.UnlistedPropertyInt;
 import net.minecraft.block.ITileEntityProvider;
@@ -41,8 +42,8 @@ public class BlockCrystal extends BlockBase implements ITileEntityProvider {
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer.Builder(this)
-                .add(COLOR)
-                .build();
+            .add(COLOR)
+            .build();
     }
 
     @Override
@@ -70,6 +71,10 @@ public class BlockCrystal extends BlockBase implements ITileEntityProvider {
         IResonant resonant = te.getCapability(IResonant.CAPABILITY, null);
         System.out.println("Client? " + world.isRemote);
         System.out.println(" > " + resonant);
+
+        for (int i = 0; i < 50; i++) {
+            ParticleTestIGuess.spawnParticleAt(world, pos.getX(), pos.getY() + 1, pos.getZ(), 0, 0.1, 0);
+        }
         return true;
     }
 
