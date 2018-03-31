@@ -1,5 +1,14 @@
 itemGroup.crystals=Crystals
 
 tile.crystals:crystal.name=Crystal
+tile.crystals:post.name=Post
+tile.crystals:slate.name=Slate
 
 item.crystals:tuning_fork.name=Tuning Fork
+
+item.crystals:dust|0.name=Air Dust
+item.crystals:dust|1.name=Water Dust
+item.crystals:dust|2.name=Earth Dust
+item.crystals:dust|3.name=Fire Dust
+item.crystals:dust|4.name=Distorted Dust
+item.crystals:dust|5.name=Void Dust
