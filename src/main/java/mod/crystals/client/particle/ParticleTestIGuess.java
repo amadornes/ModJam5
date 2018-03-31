@@ -32,7 +32,6 @@ public class ParticleTestIGuess extends Particle {
         this.motionY = ySpeedIn;
         this.motionZ = zSpeedIn;
         setRBGColorF(r, g, b);
-        setAlphaF(0.3f); // Maybe?
     }
 
     @Override
