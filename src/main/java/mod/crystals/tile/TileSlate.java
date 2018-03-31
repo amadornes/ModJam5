@@ -2,8 +2,10 @@ package mod.crystals.tile;
 
 import mod.crystals.api.NatureType;
 import mod.crystals.api.seal.SealType;
+import mod.crystals.block.BlockSeal;
 import mod.crystals.init.CrystalsRegistries;
 import mod.crystals.seal.SealManager;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -12,6 +14,8 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
@@ -47,10 +51,16 @@ public class TileSlate extends TileEntity {
         if (!findSlates(slates)) return false;
 
         for (int i = 0; i < 4; i++) {
-            SealType seal = identifySeal(slates);
-            if (seal != null) {
-                // TODO: Actually form!
-                System.out.println("Hey! This could be " + seal.getRegistryName() + " (rot: " + i + ")");
+            SealType type = identifySeal(slates);
+            if (type != null) {
+                World world = getWorld();
+                BlockPos pos = getPos();
+                for (int x = -1; x <= 1; x++) {
+                    for (int z = -1; z <= 1; z++) {
+                        getWorld().setBlockToAir(pos.add(x, 0, z));
+                    }
+                }
+                Block.spawnAsEntity(world, pos, BlockSeal.createStack(type));
                 return true;
             }
             if (i != 3) slates = rotate(slates);

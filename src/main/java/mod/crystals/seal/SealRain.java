@@ -4,9 +4,12 @@ import mod.crystals.api.NatureType;
 import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
 import mod.crystals.api.seal.SealType;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraft.world.storage.WorldInfo;
 
 import java.util.Collection;
 
@@ -28,14 +31,33 @@ public class SealRain extends SealType {
         return new Instance(seal);
     }
 
-    private static class Instance implements ISealInstance {
+    private class Instance implements ISealInstance {
 
         private final ISeal seal;
 
-        public Instance(ISeal seal) {this.seal = seal;}
+        private Instance(ISeal seal) {
+            this.seal = seal;
+        }
 
         @Override
         public void update() {
+            World world = seal.getWorld();
+            if (world.isRemote) return;
+            if (world.isRaining()) return;
+            for (EntityItem item : world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(seal.getPos()))) {
+                ItemStack stack = item.getItem();
+                if (stack.isEmpty()) continue;
+                if (stack.getItem() == Items.WATER_BUCKET) {
+                    WorldInfo info = world.getWorldInfo();
+                    info.setCleanWeatherTime(0);
+                    info.setRainTime(20 * 60 * 5);
+                    info.setThunderTime(20 * 60 * 5);
+                    info.setRaining(true);
+                    info.setThundering(false);
+                    item.setDead();
+                    break;
+                }
+            }
         }
 
     }

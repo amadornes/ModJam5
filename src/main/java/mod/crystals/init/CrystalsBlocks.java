@@ -44,7 +44,7 @@ public class CrystalsBlocks {
         registerItem(registry, crystal, "crystal");
         registerItem(registry, post, "post");
         registerItem(registry, slate, "slate");
-        registerItem(registry, seal, "seal");
+        registerItem(registry, seal, "seal").setHasSubtypes(true);
     }
 
     private static ResourceLocation registerBlock(IForgeRegistry<Block> registry, Block block, String name) {
@@ -60,12 +60,13 @@ public class CrystalsBlocks {
         GameRegistry.registerTileEntity(teClass, rl.toString());
     }
 
-    private static void registerItem(IForgeRegistry<Item> registry, Block block, String name) {
+    private static ItemBlock registerItem(IForgeRegistry<Item> registry, Block block, String name) {
         ResourceLocation rl = new ResourceLocation(CrystalsMod.MODID, name);
-        Item item = new ItemBlock(block);
+        ItemBlock item = new ItemBlock(block);
         item.setRegistryName(rl);
         item.setUnlocalizedName(rl.toString());
         registry.register(item);
+        return item;
     }
 
 }

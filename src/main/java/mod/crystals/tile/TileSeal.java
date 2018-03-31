@@ -31,7 +31,7 @@ public class TileSeal extends TileEntity implements ITickable {
         seal.update();
     }
 
-    private void setSeal(SealType type) {
+    public void setSeal(SealType type) {
         this.type = type;
         this.seal = type.instantiate(host);
     }
