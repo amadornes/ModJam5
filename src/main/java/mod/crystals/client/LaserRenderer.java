@@ -70,29 +70,76 @@ public class LaserRenderer {
         Vec3d startUp = dir.crossProduct(start.subtract(playerHead)).normalize().scale(0.0625);
         Vec3d endUp = dir.crossProduct(end.subtract(playerHead)).normalize().scale(0.0625);
 
+        Vec3d ext1 = dir.scale(-startUp.lengthVector());
+        Vec3d ext2 = dir.scale(endUp.lengthVector());
+
         if (renderShimmer) {
             buffer.pos(start.x + startUp.x, start.y + startUp.y, start.z + startUp.z)
-                    .tex(0, 0).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
+                .tex(0, 0).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
             buffer.pos(start.x - startUp.x, start.y - startUp.y, start.z - startUp.z)
-                    .tex(0, 0.5).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
+                .tex(0, 0.5).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
             buffer.pos(end.x - endUp.x, end.y - endUp.y, end.z - endUp.z)
-                    .tex(0.5, 0.5).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
+                .tex(0.5, 0.5).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
             buffer.pos(end.x + endUp.x, end.y + endUp.y, end.z + endUp.z)
-                    .tex(0.5, 0).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
+                .tex(0.5, 0).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
 
             buffer.pos(start.x + startUp.x, start.y + startUp.y, start.z + startUp.z).tex(0, 0.5).color(1, 1, 1, 0.2F).endVertex();
             buffer.pos(start.x - startUp.x, start.y - startUp.y, start.z - startUp.z).tex(0, 1).color(1, 1, 1, 0.2F).endVertex();
             buffer.pos(end.x - endUp.x, end.y - endUp.y, end.z - endUp.z).tex(0.5, 1).color(1, 1, 1, 0.2F).endVertex();
             buffer.pos(end.x + endUp.x, end.y + endUp.y, end.z + endUp.z).tex(0.5, 0.5).color(1, 1, 1, 0.2F).endVertex();
+
+            // first end
+            buffer.pos(start.x + startUp.x + ext1.x, start.y + startUp.y + ext1.y, start.z + startUp.z + ext1.z)
+                .tex(1, 0).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
+            buffer.pos(start.x - startUp.x + ext1.x, start.y - startUp.y + ext1.y, start.z - startUp.z + ext1.z)
+                .tex(0.5, 0).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
+            buffer.pos(start.x - startUp.x, start.y - startUp.y, start.z - startUp.z)
+                .tex(0.5, 0.25).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
+            buffer.pos(start.x + startUp.x, start.y + startUp.y, start.z + startUp.z)
+                .tex(1, 0.25).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
+
+            buffer.pos(start.x + startUp.x + ext1.x, start.y + startUp.y + ext1.y, start.z + startUp.z + ext1.z).tex(1, 0.5).color(1, 1, 1, 0.2F).endVertex();
+            buffer.pos(start.x - startUp.x + ext1.x, start.y - startUp.y + ext1.y, start.z - startUp.z + ext1.z).tex(0.5, 0.5).color(1, 1, 1, 0.2F).endVertex();
+            buffer.pos(start.x - startUp.x, start.y - startUp.y, start.z - startUp.z).tex(0.5, 0.75).color(1, 1, 1, 0.2F).endVertex();
+            buffer.pos(start.x + startUp.x, start.y + startUp.y, start.z + startUp.z).tex(1, 0.75).color(1, 1, 1, 0.2F).endVertex();
+
+            // second end
+            buffer.pos(end.x + endUp.x, end.y + endUp.y, end.z + endUp.z)
+                .tex(1, 0.25).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
+            buffer.pos(end.x - endUp.x, end.y - endUp.y, end.z - endUp.z)
+                .tex(0.5, 0.25).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
+            buffer.pos(end.x - endUp.x + ext2.x, end.y - endUp.y + ext2.y, end.z - endUp.z + ext2.z)
+                .tex(0.5, 0).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
+            buffer.pos(end.x + endUp.x + ext2.x, end.y + endUp.y + ext2.y, end.z + endUp.z + ext2.z)
+                .tex(1, 0).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
+
+            buffer.pos(end.x + endUp.x, end.y + endUp.y, end.z + endUp.z).tex(1, 0.75).color(1, 1, 1, 0.2F).endVertex();
+            buffer.pos(end.x - endUp.x, end.y - endUp.y, end.z - endUp.z).tex(0.5, 0.75).color(1, 1, 1, 0.2F).endVertex();
+            buffer.pos(end.x - endUp.x + ext2.x, end.y - endUp.y + ext2.y, end.z - endUp.z + ext2.z).tex(0.5, 0.5).color(1, 1, 1, 0.2F).endVertex();
+            buffer.pos(end.x + endUp.x + ext2.x, end.y + endUp.y + ext2.y, end.z + endUp.z + ext2.z).tex(1, 0.5).color(1, 1, 1, 0.2F).endVertex();
+
+
         } else {
             buffer.pos(start.x + startUp.x, start.y + startUp.y, start.z + startUp.z)
-                    .tex(0, 0.5).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
+                .tex(0, 0.5).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
             buffer.pos(start.x - startUp.x, start.y - startUp.y, start.z - startUp.z)
-                    .tex(0, 1).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
+                .tex(0, 1).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
             buffer.pos(end.x - endUp.x, end.y - endUp.y, end.z - endUp.z)
-                    .tex(0.5, 1).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
+                .tex(0.5, 1).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
             buffer.pos(end.x + endUp.x, end.y + endUp.y, end.z + endUp.z)
-                    .tex(0.5, 0.5).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
+                .tex(0.5, 0.5).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
+
+            // first end
+            buffer.pos(start.x + startUp.x + ext1.x, start.y + startUp.y + ext1.y, start.z + startUp.z + ext1.z).tex(1, 0.5).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
+            buffer.pos(start.x - startUp.x + ext1.x, start.y - startUp.y + ext1.y, start.z - startUp.z + ext1.z).tex(0.5, 0.5).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
+            buffer.pos(start.x - startUp.x, start.y - startUp.y, start.z - startUp.z).tex(0.5, 0.75).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
+            buffer.pos(start.x + startUp.x, start.y + startUp.y, start.z + startUp.z).tex(1, 0.75).color((float) startColor.x, (float) startColor.y, (float) startColor.z, 0.5F).endVertex();
+
+            // second end
+            buffer.pos(end.x + endUp.x, end.y + endUp.y, end.z + endUp.z).tex(1, 0.75).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
+            buffer.pos(end.x - endUp.x, end.y - endUp.y, end.z - endUp.z).tex(0.5, 0.75).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
+            buffer.pos(end.x - endUp.x + ext2.x, end.y - endUp.y + ext2.y, end.z - endUp.z + ext2.z).tex(0.5, 0.5).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
+            buffer.pos(end.x + endUp.x + ext2.x, end.y + endUp.y + ext2.y, end.z + endUp.z + ext2.z).tex(1, 0.5).color((float) endColor.x, (float) endColor.y, (float) endColor.z, 0.5F).endVertex();
         }
     }
 
