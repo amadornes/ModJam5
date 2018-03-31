@@ -34,21 +34,18 @@ public class ItemTuningFork extends ItemBase {
         EntityPlayer player = (EntityPlayer) entity;
 
         if (player.getHeldItem(EnumHand.MAIN_HAND) == stack || player.getHeldItem(EnumHand.OFF_HAND) == stack) {
-            energizeFork(stack);
-            if (balanceCrystals(stack, world, player)) return;
             balanceFork(stack, world, player);
-        }
-    }
-
-    private void energizeFork(ItemStack stack) {
-        IResonant resonant = stack.getCapability(IResonant.CAPABILITY, null);
-        if (resonant.getResonance() < 1) {
-            resonant.setResonance(Math.min(resonant.getResonance() + ENVIRONMENT_TUNING_RATE, 1));
+            balanceCrystals(stack, world, player);
         }
     }
 
     private void balanceFork(ItemStack stack, World world, EntityPlayer player) {
         IResonant resonant = stack.getCapability(IResonant.CAPABILITY, null);
+
+        if (resonant.getResonance() < 1) {
+            resonant.setResonance(Math.min(resonant.getResonance() + ENVIRONMENT_TUNING_RATE, 1));
+        }
+
         TObjectFloatMap<NatureType> itemNatures = ResonantUtils.getNatureTypes(resonant, true);
         TObjectFloatMap<NatureType> worldNatures = EnvironmentHandler.INSTANCE.getNature(world, player.getPosition());
 
@@ -56,11 +53,10 @@ public class ItemTuningFork extends ItemBase {
         resonant.setNatureAmounts(itemNatures);
     }
 
-    private boolean balanceCrystals(ItemStack stack, World world, EntityPlayer player) {
+    private void balanceCrystals(ItemStack stack, World world, EntityPlayer player) {
         IResonant resonant = stack.getCapability(IResonant.CAPABILITY, null);
         TObjectFloatMap<NatureType> itemNatures = ResonantUtils.getNatureTypes(resonant, true);
         float itemRes = resonant.getResonance();
-        boolean found = false;
 
         AxisAlignedBB extendedPlayerAABB = player.getEntityBoundingBox().grow(2);
         BlockPos min = new BlockPos(extendedPlayerAABB.minX, extendedPlayerAABB.minY, extendedPlayerAABB.minZ);
@@ -85,12 +81,9 @@ public class ItemTuningFork extends ItemBase {
             }
 
             crystal.setNatureAmounts(crystalNatures);
-
-            found = true;
         }
 
         resonant.setNatureAmounts(itemNatures);
-        return found;
     }
 
     @Override

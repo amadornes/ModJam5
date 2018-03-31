@@ -1,6 +1,6 @@
 package mod.crystals.util.ray;
 
-import mod.crystals.util.IPosition;
+import mod.crystals.util.ILaserSource;
 import mod.crystals.util.RayTracer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -9,10 +9,12 @@ import net.minecraft.world.World;
 
 public class Ray {
 
-    private final IPosition start, end;
-    private boolean hasLOS;
+    private final ILaserSource start, end;
 
-    public Ray(IPosition start, IPosition end) {
+    private boolean hasLOS;
+    private Ray opposite;
+
+    public Ray(ILaserSource start, ILaserSource end) {
         this.start = start;
         this.end = end;
     }
@@ -36,6 +38,42 @@ public class Ray {
 
     public Vec3d getEnd(float partialTicks) {
         return end.getPosition(partialTicks);
+    }
+
+    public Vec3d getStartColor(float partialTicks) {
+        return start.getColor(partialTicks);
+    }
+
+    public Vec3d getEndColor(float partialTicks) {
+        return end.getColor(partialTicks);
+    }
+
+    public Ray getOpposite() {
+        if (opposite == null) {
+            return opposite = new OppositeRay(this);
+        }
+        return opposite;
+    }
+
+    private static class OppositeRay extends Ray {
+
+        private final Ray parent;
+
+        private OppositeRay(Ray parent) {
+            super(parent.end, parent.start);
+            this.parent = parent;
+        }
+
+        @Override
+        public void update(World world) {
+            throw new IllegalStateException("This should not be called manually >_>");
+        }
+
+        @Override
+        public boolean hasLineOfSight() {
+            return parent.hasLineOfSight();
+        }
+
     }
 
 }
