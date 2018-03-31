@@ -34,6 +34,14 @@ public class TileSlate extends TileEntity {
         return false;
     }
 
+    public int getDustCount() {
+        return natures.size();
+    }
+
+    public Set<NatureType> getNatures() {
+        return natures;
+    }
+
     public boolean tryForm() {
         TileSlate[][] slates = new TileSlate[3][3];
         if (!findSlates(slates)) return false;

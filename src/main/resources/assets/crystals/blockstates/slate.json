@@ -1,0 +1,23 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "texture": "crystals:blocks/slate",
+      "dust": "crystals:blocks/dust",
+      "particle": "crystals:blocks/slate"
+    },
+    "model": "crystals:slate",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": [{ }],
+    "dusts": {
+      "0": {},
+      "1": { "submodel": "crystals:dust_pile_1" },
+      "2": { "submodel": "crystals:dust_pile_2" },
+      "3": { "submodel": "crystals:dust_pile_3" },
+      "4": { "submodel": "crystals:dust_pile_4" }
+    },
+    "inventory": [{ }]
+  }
+}

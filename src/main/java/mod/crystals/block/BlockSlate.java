@@ -3,8 +3,12 @@ package mod.crystals.block;
 import mod.crystals.api.NatureType;
 import mod.crystals.init.CrystalsItems;
 import mod.crystals.tile.TileSlate;
+import mod.crystals.util.UnlistedPropertyInt;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -15,12 +19,22 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 import javax.annotation.Nullable;
 
 public class BlockSlate extends BlockBase implements ITileEntityProvider {
 
-    public static final AxisAlignedBB AABB = new AxisAlignedBB(0, 0, 0, 1, 0.5, 1);
+    public static final IProperty<Integer> DUST_COUNT = PropertyInteger.create("dusts", 0, 4);
+    public static final IUnlistedProperty[] COLORS = {
+            new UnlistedPropertyInt("color0"),
+            new UnlistedPropertyInt("color1"),
+            new UnlistedPropertyInt("color2"),
+            new UnlistedPropertyInt("color3")
+    };
+
+    private static final AxisAlignedBB AABB = new AxisAlignedBB(0, 0, 0, 1, 0.5, 1);
 
     public BlockSlate() {
         super(Material.ROCK);
@@ -33,8 +47,49 @@ public class BlockSlate extends BlockBase implements ITileEntityProvider {
     }
 
     @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer.Builder(this)
+                .add(DUST_COUNT)
+                .add(COLORS)
+                .build();
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState();
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return 0;
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileEntity te = world.getTileEntity(pos);
+        if (te == null || !(te instanceof TileSlate)) return state;
+        return state.withProperty(DUST_COUNT, ((TileSlate) te).getDustCount());
+    }
+
+    @Override
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileEntity te = world.getTileEntity(pos);
+        if (te == null || !(te instanceof TileSlate)) return state;
+        int i = 0;
+        for (NatureType type : ((TileSlate) te).getNatures()) {
+            state = ((IExtendedBlockState) state).withProperty(COLORS[i++], type.getColor());
+        }
+        return state;
+    }
+
+    @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         return AABB;
+    }
+
+    @Override
+    protected boolean isFull(IBlockState state) {
+        return false;
     }
 
     @Override

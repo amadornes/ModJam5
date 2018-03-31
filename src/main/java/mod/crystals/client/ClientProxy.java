@@ -3,6 +3,7 @@ package mod.crystals.client;
 import mod.crystals.CommonProxy;
 import mod.crystals.CrystalsMod;
 import mod.crystals.block.BlockCrystal;
+import mod.crystals.block.BlockSlate;
 import mod.crystals.init.CrystalsBlocks;
 import mod.crystals.init.CrystalsItems;
 import net.minecraft.block.Block;
@@ -43,6 +44,12 @@ public class ClientProxy extends CommonProxy {
             if (color == null) return 0x000000;
             return color;
         }, CrystalsBlocks.crystal);
+        blockColors.registerBlockColorHandler((state, world, pos, index) -> {
+            if(index < 0 || index >= 4) return 0x000000;
+            Integer color = (Integer) ((IExtendedBlockState) state).getValue(BlockSlate.COLORS[index]);
+            if (color == null) return 0x000000;
+            return color;
+        }, CrystalsBlocks.slate);
     }
 
     @Override
