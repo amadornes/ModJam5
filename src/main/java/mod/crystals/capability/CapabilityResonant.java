@@ -103,7 +103,7 @@ public class CapabilityResonant {
             for (float amt : natureAmounts.values()) {
                 sum += amt;
             }
-            if (Math.abs(sum - 1) < 1e-4) {
+            if (Math.abs(sum - 1) > 1e-4) {
                 throw new IllegalArgumentException("The provided natures don't add up to 1, they add up to " + sum + "!");
             }
             natures.clear();
