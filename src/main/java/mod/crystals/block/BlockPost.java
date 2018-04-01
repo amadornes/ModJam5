@@ -1,5 +1,6 @@
 package mod.crystals.block;
 
+import mod.crystals.api.IBlockAdvancedOutline;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -25,7 +26,7 @@ import java.util.stream.Stream;
 import static mod.crystals.block.BlockPost.PostComponent.*;
 import static net.minecraft.block.state.BlockFaceShape.*;
 
-public class BlockPost extends BlockBase {
+public class BlockPost extends BlockBase implements IBlockAdvancedOutline {
 
     public static final IProperty<PostComponent> COMPONENT = PropertyEnum.create("component", PostComponent.class);
     public static final IProperty<Boolean> NORTH = PropertyBool.create("north");
@@ -37,10 +38,10 @@ public class BlockPost extends BlockBase {
     public static final AxisAlignedBB BOTTOM_AABB = new AxisAlignedBB(0.3125, 0.0, 0.3125, 0.6875, 0.75, 0.6875);
     public static final AxisAlignedBB SIDE_AABB = new AxisAlignedBB(0.375, 0.625, 0.375, 0.625, 1.0, 0.625);
     public static final List<AxisAlignedBB> EXT_AABB = Collections.unmodifiableList(Arrays.asList(
-        new AxisAlignedBB(0.4375, 0.6875, 0.625, 0.5625, 0.9375, 1.0),
-        new AxisAlignedBB(0.0, 0.6875, 0.4375, 0.375, 0.9375, 0.5625),
-        new AxisAlignedBB(0.4375, 0.6875, 0.0, 0.5625, 0.9375, 0.375),
-        new AxisAlignedBB(0.625, 0.6875, 0.4375, 1.0, 0.9375, 0.5625)
+        new AxisAlignedBB(0.4375, 0.75, 0.625, 0.5625, 0.9375, 1.0),
+        new AxisAlignedBB(0.0, 0.75, 0.4375, 0.375, 0.9375, 0.5625),
+        new AxisAlignedBB(0.4375, 0.75, 0.0, 0.5625, 0.9375, 0.375),
+        new AxisAlignedBB(0.625, 0.75, 0.4375, 1.0, 0.9375, 0.5625)
     ));
 
     public BlockPost() {
@@ -168,13 +169,13 @@ public class BlockPost extends BlockBase {
         switch (state.getValue(COMPONENT)) {
             case BOTTOM:
                 boxes.add(BOTTOM_AABB);
-            case MIDDLE:
-            case TOP:
-                boxes.add(MIDDLE_AABB);
-                break;
             case SIDE:
                 boxes.add(SIDE_AABB);
                 break;
+            case MIDDLE:
+            case TOP:
+            boxes.add(MIDDLE_AABB);
+            break;
         }
 
         if (state.getValue(NORTH)) boxes.add(EXT_AABB.get(EnumFacing.NORTH.getHorizontalIndex()));
@@ -183,6 +184,11 @@ public class BlockPost extends BlockBase {
         if (state.getValue(EAST)) boxes.add(EXT_AABB.get(EnumFacing.EAST.getHorizontalIndex()));
 
         return boxes;
+    }
+
+    @Override
+    public Collection<AxisAlignedBB> getOutlineBoxes(World world, BlockPos pos, IBlockState state) {
+        return getBoundingBoxes(state, world, pos);
     }
 
     @Override
