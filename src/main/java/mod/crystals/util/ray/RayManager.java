@@ -12,6 +12,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class RayManager {
@@ -60,7 +61,7 @@ public class RayManager {
         }
         if (event.phase == TickEvent.Phase.START || event.world != world.get()) return;
 
-        for (Ray ray : getRays()) {
+        for (Ray ray : new ArrayList<>(getRays())) {
             ray.update(event.world);
         }
     }
@@ -76,7 +77,7 @@ public class RayManager {
         if (Minecraft.getMinecraft().isGamePaused()) return;
 
         World world = this.world.get();
-        for (Ray ray : getRays()) {
+        for (Ray ray : new ArrayList<>(getRays())) { // Avoid CMEs... Yay
             ray.update(world);
         }
     }

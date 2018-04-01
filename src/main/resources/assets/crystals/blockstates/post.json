@@ -12,7 +12,10 @@
       "bottom": { "model": "crystals:post_bottom" },
       "middle": { "model": "crystals:post_mid"    },
       "top":    { "model": "crystals:post_mid"    },
-      "side":   { "model": "crystals:post_side"   }
+      "side":   {
+        "model":    "crystals:post_side",
+        "textures": { "diag": "crystals:transparent" }
+      }
     },
     "north": {
       "true":  { "submodel": "crystals:post_extension", "y": 270 },

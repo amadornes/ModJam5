@@ -19,12 +19,12 @@
       "to":   [ 16, 9, 8.5 ],
       "rotation": { "origin": [ 10, 12, 7 ], "axis": "z", "angle": 45, "rescale": true },
       "faces": {
-        "down":  { "texture": "#top"  },
-        "up":    { "texture": "#top"  },
-        "north": { "texture": "#side" },
-        "south": { "texture": "#side" },
-        "west":  { "texture": "#side" },
-        "east":  { "texture": "#side" }
+        "down":  { "texture": "#diag" },
+        "up":    { "texture": "#diag" },
+        "north": { "texture": "#diag" },
+        "south": { "texture": "#diag" },
+        "west":  { "texture": "#diag" },
+        "east":  { "texture": "#diag" }
       }
     }
   ]
