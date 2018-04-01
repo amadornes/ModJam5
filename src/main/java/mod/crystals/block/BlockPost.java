@@ -35,16 +35,16 @@ import static net.minecraft.block.state.BlockFaceShape.*;
 
 public class BlockPost extends BlockBase implements IBlockAdvancedOutline {
 
-    public static final IProperty<PostComponent> COMPONENT = PropertyEnum.create("component", PostComponent.class);
-    public static final IProperty<Boolean> NORTH = PropertyBool.create("north");
-    public static final IProperty<Boolean> SOUTH = PropertyBool.create("south");
-    public static final IProperty<Boolean> WEST = PropertyBool.create("west");
-    public static final IProperty<Boolean> EAST = PropertyBool.create("east");
+    private static final IProperty<PostComponent> COMPONENT = PropertyEnum.create("component", PostComponent.class);
+    private static final IProperty<Boolean> NORTH = PropertyBool.create("north");
+    private static final IProperty<Boolean> SOUTH = PropertyBool.create("south");
+    private static final IProperty<Boolean> WEST = PropertyBool.create("west");
+    private static final IProperty<Boolean> EAST = PropertyBool.create("east");
 
-    public static final AxisAlignedBB MIDDLE_AABB = new AxisAlignedBB(0.375, 0.0, 0.375, 0.625, 1.0, 0.625);
-    public static final AxisAlignedBB BOTTOM_AABB = new AxisAlignedBB(0.3125, 0.0, 0.3125, 0.6875, 0.75, 0.6875);
-    public static final AxisAlignedBB SIDE_AABB = new AxisAlignedBB(0.375, 0.625, 0.375, 0.625, 1.0, 0.625);
-    public static final List<AxisAlignedBB> EXT_AABB = Collections.unmodifiableList(Arrays.asList(
+    private static final AxisAlignedBB MIDDLE_AABB = new AxisAlignedBB(0.375, 0.0, 0.375, 0.625, 1.0, 0.625);
+    private static final AxisAlignedBB BOTTOM_AABB = new AxisAlignedBB(0.3125, 0.0, 0.3125, 0.6875, 0.75, 0.6875);
+    private static final AxisAlignedBB SIDE_AABB = new AxisAlignedBB(0.375, 0.625, 0.375, 0.625, 1.0, 0.625);
+    private static final List<AxisAlignedBB> EXT_AABB = Collections.unmodifiableList(Arrays.asList(
         new AxisAlignedBB(0.4375, 0.75, 0.625, 0.5625, 0.9375, 1.0),
         new AxisAlignedBB(0.0, 0.75, 0.4375, 0.375, 0.9375, 0.5625),
         new AxisAlignedBB(0.4375, 0.75, 0.0, 0.5625, 0.9375, 0.375),
