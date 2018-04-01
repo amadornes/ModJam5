@@ -2,8 +2,12 @@
   "forge_marker": 1,
   "defaults": {
     "textures": {
-      "texture": "crystals:blocks/crystal",
-      "particle": "crystals:blocks/crystal"
+      "base": "crystals:blocks/slate",
+      "side": "crystals:blocks/post",
+      "top": "crystals:blocks/post_top",
+      "bottom": "crystals:blocks/post_flat",
+      "diag": "crystals:blocks/post_flat",
+      "particle": "crystals:blocks/post_flat"
     },
     "transform": "forge:default-block"
   },
