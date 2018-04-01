@@ -10,16 +10,16 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.Collection;
 
-public class SealPull extends SealType {
+public class SealPullLinear extends SealType {
 
     @Override
     public Ingredient[][] createRecipe() {
         Ingredient wind = new Ingredient(NatureType.AIR);
         Ingredient pull = new Ingredient(NatureType.AIR, NatureType.VOID);
         return new Ingredient[][]{
-            {wind, wind, wind},
-            {wind, pull, wind},
-            {wind, wind, wind}
+                {null, wind, null},
+                {wind, pull, wind},
+                {null, wind, null}
         };
     }
 
@@ -32,7 +32,9 @@ public class SealPull extends SealType {
 
         private final ISeal seal;
 
-        public Instance(ISeal seal) {this.seal = seal;}
+        public Instance(ISeal seal) {
+            this.seal = seal;
+        }
 
         @Override
         public void update() {

@@ -18,8 +18,10 @@ public class CrystalsSeals {
         registry.register(new SealRain().setRegistryName("rain"));
         registry.register(new SealThunder().setRegistryName("thunder"));
         registry.register(new SealLocalRain().setRegistryName("local_rain"));
-        registry.register(new SealPull().setRegistryName("pull"));
-        registry.register(new SealPush().setRegistryName("push"));
+        registry.register(new SealPullLinear().setRegistryName("pull_linear"));
+        registry.register(new SealPushLinear().setRegistryName("push_linear"));
+        registry.register(new SealPullRadial().setRegistryName("pull_radial"));
+        registry.register(new SealPushRadial().setRegistryName("push_radial"));
     }
 
 }

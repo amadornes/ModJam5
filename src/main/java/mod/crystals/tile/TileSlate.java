@@ -101,7 +101,7 @@ public class TileSlate extends TileEntity {
             boolean failed = false;
             for (int x = 0; x < 3; x++) {
                 for (int y = 0; y < 3; y++) {
-                    if (!ingredients[x][y].matches(slates[x][y].natures)) {
+                    if (ingredients[x][y] != null && !ingredients[x][y].matches(slates[x][y].natures)) {
                         failed = true;
                         break;
                     }

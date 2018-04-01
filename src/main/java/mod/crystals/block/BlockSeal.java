@@ -66,6 +66,11 @@ public class BlockSeal extends BlockBase implements ITileEntityProvider {
     }
 
     @Override
+    public boolean isCollidable() {
+        return true;
+    }
+
+    @Override
     protected boolean isFull(IBlockState state) {
         return false;
     }
@@ -78,7 +83,7 @@ public class BlockSeal extends BlockBase implements ITileEntityProvider {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced) {
+    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag advanced) {
         if (advanced != ITooltipFlag.TooltipFlags.ADVANCED) return;
         NBTTagCompound tag = stack.getTagCompound();
         if (tag == null) return;
