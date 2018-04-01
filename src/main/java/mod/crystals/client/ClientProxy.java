@@ -5,6 +5,12 @@ import mod.crystals.CrystalsMod;
 import mod.crystals.api.IBlockAdvancedOutline;
 import mod.crystals.block.BlockCrystal;
 import mod.crystals.block.BlockSlate;
+import mod.crystals.client.particle.ParticleRain;
+import mod.crystals.client.particle.ParticleTestIGuess;
+import mod.crystals.client.particle.ParticleType;
+import mod.crystals.client.particle.ParticleType.PPosColor;
+import mod.crystals.client.particle.ParticleType.PPosVelocity;
+import mod.crystals.client.particle.ParticleType.ParticleParams;
 import mod.crystals.init.CrystalsBlocks;
 import mod.crystals.init.CrystalsItems;
 import mod.crystals.tile.TileCrystal;
@@ -35,7 +41,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.util.Collection;
+import javax.annotation.Nonnull;
 import java.util.function.Function;
 
 public class ClientProxy extends CommonProxy {
@@ -68,11 +74,17 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void spawnParticle(Object particle) {
-        super.spawnParticle(particle);
-        if (particle instanceof Particle) {
-            mc.effectRenderer.addEffect((Particle) particle);
+    public <T extends ParticleParams> void spawnParticle(@Nonnull World world, @Nonnull ParticleType<T> type, @Nonnull T params) {
+        super.spawnParticle(world, type, params);
+        Particle particle = null;
+        if (type == ParticleType.TEST) {
+            PPosColor p = (PPosColor) params;
+            particle = new ParticleTestIGuess(world, p.position.x, p.position.y, p.position.z, 0, 0, 0, p.color.x, p.color.y, p.color.z);
+        } else if (type == ParticleType.RAIN) {
+            PPosVelocity p = (PPosVelocity) params;
+            particle = new ParticleRain(world, p.position.x, p.position.y, p.position.z, p.velocity.x, p.velocity.y, p.velocity.z);
         }
+        if (particle != null) mc.effectRenderer.addEffect(particle);
     }
 
     @SubscribeEvent
