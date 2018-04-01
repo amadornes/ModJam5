@@ -68,7 +68,7 @@ public class SealLocalRain extends SealType {
                     Vec3d pt = start;
                     Vec3d vel = velocity;
                     int tickCount = 1000; // simulate max 1000 ticks
-                    while (tickCount-- > 0) {
+                    outer: while (tickCount-- > 0) {
                         vel = vel.addVector(0, -0.06, 0); // gravity
                         Vec3d newPos = pt.add(vel);
                         vel = vel.scale(0.9800000190734863); // air resistance
@@ -76,7 +76,8 @@ public class SealLocalRain extends SealType {
                         AxisAlignedBB box = new AxisAlignedBB(pt.x, pt.y, pt.z, newPos.x, newPos.y, newPos.z);
                         List<AxisAlignedBB> boxes = world.getCollisionBoxes(null, box);
                         for (AxisAlignedBB aabb : boxes) {
-                            if (!aabb.intersects(Math.min(pt.x, newPos.x), Math.min(pt.y, newPos.y), Math.min(pt.z, newPos.z), Math.max(pt.x, newPos.x), Math.max(pt.y, newPos.y), Math.max(pt.z, newPos.z))) continue;
+                            if (!aabb.intersects(Math.min(pt.x, newPos.x), Math.min(pt.y, newPos.y), Math.min(pt.z, newPos.z), Math.max(pt.x, newPos.x), Math.max(pt.y, newPos.y), Math.max(pt.z, newPos.z)))
+                                continue;
                             RayTraceResult result = aabb.calculateIntercept(pt, newPos);
                             if (result == null) continue;
                             BlockPos center = new BlockPos(result.hitVec);
@@ -86,6 +87,7 @@ public class SealLocalRain extends SealType {
                                     world.setBlockState(p, state.withProperty(BlockFarmland.MOISTURE, Math.min(state.getValue(BlockFarmland.MOISTURE) + 2, 7)));
                                 }
                             }
+                            break outer;
                         }
                         pt = newPos;
                     }

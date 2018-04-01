@@ -10,8 +10,6 @@ import mod.crystals.client.render.SealRenderer;
 import mod.crystals.client.particle.ParticleRain;
 import mod.crystals.client.particle.ParticleTestIGuess;
 import mod.crystals.client.particle.ParticleType;
-import mod.crystals.client.particle.ParticleType.PPosColor;
-import mod.crystals.client.particle.ParticleType.PPosVelocity;
 import mod.crystals.client.particle.ParticleType.ParticleParams;
 import mod.crystals.init.CrystalsBlocks;
 import mod.crystals.init.CrystalsItems;
@@ -45,16 +43,25 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class ClientProxy extends CommonProxy {
     private Minecraft mc;
+
+    private Map<ParticleType, BiFunction<World, ParticleParams, Particle>> particleGenerators = new HashMap<>();
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
         super.preInit(e);
         mc = Minecraft.getMinecraft();
         OBJLoader.INSTANCE.addDomain(CrystalsMod.MODID);
+
+        registerParticle(ParticleType.TEST, (world, p) -> new ParticleTestIGuess(world, p.position.x, p.position.y, p.position.z, 0, 0, 0, p.color.x, p.color.y, p.color.z));
+        registerParticle(ParticleType.RAIN, (world, p) -> new ParticleRain(world, p.position.x, p.position.y, p.position.z, p.velocity.x, p.velocity.y, p.velocity.z));
     }
 
     @Override
@@ -80,15 +87,9 @@ public class ClientProxy extends CommonProxy {
     @Override
     public <T extends ParticleParams> void spawnParticle(@Nonnull World world, @Nonnull ParticleType<T> type, @Nonnull T params) {
         super.spawnParticle(world, type, params);
-        Particle particle = null;
-        if (type == ParticleType.TEST) {
-            PPosColor p = (PPosColor) params;
-            particle = new ParticleTestIGuess(world, p.position.x, p.position.y, p.position.z, 0, 0, 0, p.color.x, p.color.y, p.color.z);
-        } else if (type == ParticleType.RAIN) {
-            PPosVelocity p = (PPosVelocity) params;
-            particle = new ParticleRain(world, p.position.x, p.position.y, p.position.z, p.velocity.x, p.velocity.y, p.velocity.z);
-        }
-        if (particle != null) mc.effectRenderer.addEffect(particle);
+        Optional.ofNullable(particleGenerators.get(type))
+            .map(it -> it.apply(world, params))
+            .ifPresent(mc.effectRenderer::addEffect);
     }
 
     @SubscribeEvent
@@ -168,6 +169,11 @@ public class ClientProxy extends CommonProxy {
         GlStateManager.depthMask(true);
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends ParticleParams> void registerParticle(ParticleType<T> type, BiFunction<World, T, Particle> generator) {
+        particleGenerators.put(type, (BiFunction<World, ParticleParams, Particle>) generator);
     }
 
 }
