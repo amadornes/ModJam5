@@ -26,7 +26,7 @@ public class ParticleTestIGuess extends Particle {
         .addElement(DefaultVertexFormats.NORMAL_3B)
         .addElement(DefaultVertexFormats.PADDING_1B);
 
-    private ParticleTestIGuess(World worldIn, double x, double y, double z, double vX, double vY, double vZ, float r, float g, float b) {
+    public ParticleTestIGuess(World worldIn, double x, double y, double z, double vX, double vY, double vZ, float r, float g, float b) {
         super(worldIn, x, y, z);
         this.motionX = vX;
         this.motionY = vY;
@@ -111,11 +111,6 @@ public class ParticleTestIGuess extends Particle {
     @Override
     public int getFXLayer() {
         return 3;
-    }
-
-    public static void spawnParticleAt(World world, double x, double y, double z, float r, float g, float b) {
-        Particle particle = new ParticleTestIGuess(world, x, y, z, 0, 0, 0, r, g, b);
-        CrystalsMod.proxy.spawnParticle(particle);
     }
 
 }

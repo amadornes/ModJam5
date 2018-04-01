@@ -47,10 +47,11 @@ public class SealHarvest extends SealType {
 
         @Override
         public void update() {
+            World world = seal.getWorld();
+            if (world.isRemote) return;
             if (cooldown > 0) {
                 cooldown--;
             } else {
-                World world = seal.getWorld();
                 BlockPos pos = seal.getPos();
                 BlockPos center = pos.add(new BlockPos(new Vec3d(seal.getFace().getDirectionVec()).scale(3)));
                 for (BlockPos it : BlockPos.getAllInBox(center.add(-2, -1, -2), center.add(2, 1, 2))) {
