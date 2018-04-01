@@ -5,6 +5,7 @@ import mod.crystals.block.BlockCrystal;
 import mod.crystals.block.BlockPost;
 import mod.crystals.block.BlockSeal;
 import mod.crystals.block.BlockSlate;
+import mod.crystals.item.ItemSeal;
 import mod.crystals.tile.TileCrystal;
 import mod.crystals.tile.TileSeal;
 import mod.crystals.tile.TileSlate;
@@ -44,7 +45,7 @@ public class CrystalsBlocks {
         registerItem(registry, crystal, "crystal");
         registerItem(registry, post, "post");
         registerItem(registry, slate, "slate");
-        registerItem(registry, seal, "seal").setHasSubtypes(true);
+        CrystalsItems.registerItem(registry, new ItemSeal(seal), "seal");
     }
 
     private static ResourceLocation registerBlock(IForgeRegistry<Block> registry, Block block, String name) {

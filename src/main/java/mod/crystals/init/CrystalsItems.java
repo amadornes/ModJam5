@@ -24,7 +24,7 @@ public class CrystalsItems {
         registerItem(registry, dust, "dust");
     }
 
-    private static void registerItem(IForgeRegistry<Item> registry, Item item, String name) {
+    static void registerItem(IForgeRegistry<Item> registry, Item item, String name) {
         ResourceLocation rl = new ResourceLocation(CrystalsMod.MODID, name);
         item.setRegistryName(rl);
         item.setUnlocalizedName(rl.toString());

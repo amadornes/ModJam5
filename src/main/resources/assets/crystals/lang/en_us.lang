@@ -4,6 +4,15 @@ tile.crystals:crystal.name=Crystal
 tile.crystals:post.name=Post
 tile.crystals:slate.name=Slate
 
+tile.crystals:seal|crystals:rain.name=Rain Seal
+tile.crystals:seal|crystals:thunder.name=Thunder Seal
+tile.crystals:seal|crystals:local_rain.name=Local Rain Seal
+tile.crystals:seal|crystals:harvest.name=Harvest Seal
+tile.crystals:seal|crystals:push_linear.name=Linear Push Seal
+tile.crystals:seal|crystals:push_radial.name=Radial Push Seal
+tile.crystals:seal|crystals:pull_linear.name=Linear Pull Seal
+tile.crystals:seal|crystals:pull_radial.name=Radial Pull Seal
+
 item.crystals:tuning_fork.name=Tuning Fork
 
 item.crystals:dust|0.name=Air Dust
