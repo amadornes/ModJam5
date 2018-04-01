@@ -71,7 +71,7 @@ public class SealPullRadial extends SealType {
 
         for (Entity entity : seal.getWorld().getEntitiesWithinAABBExcludingEntity(null, bounds)) {
             Vec3d direction = entity.getPositionVector().subtract(center);
-            direction = direction.normalize().scale(0.15 * (MAX_DIST - direction.lengthSquared()) / MAX_DIST).scale(pull ? 1 : -1);
+            direction = direction.normalize().scale(0.15 * (MAX_DIST - direction.lengthSquared()) / MAX_DIST).scale(pull ? -1 : 1);
             entity.motionX += direction.x;
             entity.motionY += direction.y;
             entity.motionZ += direction.z;
