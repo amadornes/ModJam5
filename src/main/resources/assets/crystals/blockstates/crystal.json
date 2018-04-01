@@ -12,7 +12,12 @@
   "variants": {
     "variant": {
       "floating": { },
-      "ground":   { "submodel": "crystals:crystal_holder" }
+      "down":     { "x":   0, "y":   0, "submodel": { "base": { "model": "crystals:crystal_holder" } } },
+      "up":       { "x": 180, "y":   0, "submodel": { "base": { "model": "crystals:crystal_holder" } } },
+      "north":    { "x":  90, "y": 180, "submodel": { "base": { "model": "crystals:crystal_holder" } } },
+      "south":    { "x":  90, "y":   0, "submodel": { "base": { "model": "crystals:crystal_holder" } } },
+      "west":     { "x":  90, "y":  90, "submodel": { "base": { "model": "crystals:crystal_holder" } } },
+      "east":     { "x":  90, "y": 270, "submodel": { "base": { "model": "crystals:crystal_holder" } } }
     },
     "inventory": [{ }]
   }

@@ -2,7 +2,6 @@ package mod.crystals.util.ray;
 
 import mod.crystals.util.ILaserSource;
 import mod.crystals.util.RayTracer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -20,12 +19,8 @@ public class Ray {
     }
 
     public void update(World world) {
-        RayTraceResult hit = RayTracer.rayTrace(world, getStart(0), getEnd(0), this::shouldRayTrace);
+        RayTraceResult hit = RayTracer.rayTraceLaser(world, getStart(0), getEnd(0));
         hasLOS = hit == null;
-    }
-
-    private boolean shouldRayTrace(BlockPos pos) {
-        return !start.shouldIgnore(pos) && !end.shouldIgnore(pos);
     }
 
     public boolean hasLineOfSight() {

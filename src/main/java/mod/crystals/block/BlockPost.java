@@ -6,10 +6,12 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
@@ -20,7 +22,12 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static mod.crystals.block.BlockPost.PostComponent.*;
@@ -51,8 +58,8 @@ public class BlockPost extends BlockBase implements IBlockAdvancedOutline {
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer.Builder(this)
-            .add(COMPONENT, NORTH, SOUTH, WEST, EAST)
-            .build();
+                .add(COMPONENT, NORTH, SOUTH, WEST, EAST)
+                .build();
     }
 
     @Override
@@ -81,7 +88,7 @@ public class BlockPost extends BlockBase implements IBlockAdvancedOutline {
     @Override
     public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side) {
         return super.canPlaceBlockOnSide(worldIn, pos, side) &&
-            canStayAt(getStateForPlacement(worldIn, pos, side, 0, 0, 0, 0, null, null), worldIn, pos);
+                canStayAt(getStateForPlacement(worldIn, pos, side, 0, 0, 0, 0, null, null), worldIn, pos);
     }
 
     @Override
@@ -121,23 +128,23 @@ public class BlockPost extends BlockBase implements IBlockAdvancedOutline {
         switch (state.getValue(COMPONENT)) {
             case BOTTOM:
                 return state
-                    .withProperty(NORTH, false)
-                    .withProperty(SOUTH, false)
-                    .withProperty(WEST, false)
-                    .withProperty(EAST, false);
+                        .withProperty(NORTH, false)
+                        .withProperty(SOUTH, false)
+                        .withProperty(WEST, false)
+                        .withProperty(EAST, false);
             case MIDDLE:
             case TOP:
                 return state
-                    .withProperty(NORTH, isPostType(world, pos.north(), SIDE))
-                    .withProperty(SOUTH, isPostType(world, pos.south(), SIDE))
-                    .withProperty(WEST, isPostType(world, pos.west(), SIDE))
-                    .withProperty(EAST, isPostType(world, pos.east(), SIDE));
+                        .withProperty(NORTH, isPostType(world, pos.north(), SIDE))
+                        .withProperty(SOUTH, isPostType(world, pos.south(), SIDE))
+                        .withProperty(WEST, isPostType(world, pos.west(), SIDE))
+                        .withProperty(EAST, isPostType(world, pos.east(), SIDE));
             case SIDE:
                 return state
-                    .withProperty(NORTH, isPostType(world, pos.north(), MIDDLE, TOP))
-                    .withProperty(SOUTH, isPostType(world, pos.south(), MIDDLE, TOP))
-                    .withProperty(WEST, isPostType(world, pos.west(), MIDDLE, TOP))
-                    .withProperty(EAST, isPostType(world, pos.east(), MIDDLE, TOP));
+                        .withProperty(NORTH, isPostType(world, pos.north(), MIDDLE, TOP))
+                        .withProperty(SOUTH, isPostType(world, pos.south(), MIDDLE, TOP))
+                        .withProperty(WEST, isPostType(world, pos.west(), MIDDLE, TOP))
+                        .withProperty(EAST, isPostType(world, pos.east(), MIDDLE, TOP));
         }
         throw new IllegalStateException("something went very wrong!");
     }
@@ -146,19 +153,19 @@ public class BlockPost extends BlockBase implements IBlockAdvancedOutline {
         switch (state.getValue(COMPONENT)) {
             case BOTTOM:
                 return EnumSet.of(CENTER, CENTER_BIG, CENTER_SMALL, MIDDLE_POLE, MIDDLE_POLE_THICK, MIDDLE_POLE_THIN, SOLID)
-                    .contains(world.getBlockState(pos.down()).getBlockFaceShape(world, pos.down(), EnumFacing.UP));
+                        .contains(world.getBlockState(pos.down()).getBlockFaceShape(world, pos.down(), EnumFacing.UP));
             case MIDDLE:
             case TOP:
                 return isPostType(world, pos.down(), TOP, MIDDLE, BOTTOM);
             case SIDE:
                 return Stream.of(
-                    isPostType(world, pos.north(), TOP, MIDDLE),
-                    isPostType(world, pos.south(), TOP, MIDDLE),
-                    isPostType(world, pos.west(), TOP, MIDDLE),
-                    isPostType(world, pos.east(), TOP, MIDDLE)
+                        isPostType(world, pos.north(), TOP, MIDDLE),
+                        isPostType(world, pos.south(), TOP, MIDDLE),
+                        isPostType(world, pos.west(), TOP, MIDDLE),
+                        isPostType(world, pos.east(), TOP, MIDDLE)
                 )
-                    .filter(it -> it)
-                    .count() == 1;
+                        .filter(it -> it)
+                        .count() == 1;
         }
         throw new IllegalStateException("something went very wrong!");
     }
@@ -199,9 +206,9 @@ public class BlockPost extends BlockBase implements IBlockAdvancedOutline {
     @Override
     public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
         getBoundingBoxes(state, world, pos).stream()
-            .map(it -> it.offset(pos))
-            .filter(entityBox::intersects)
-            .forEach(collidingBoxes::add);
+                .map(it -> it.offset(pos))
+                .filter(entityBox::intersects)
+                .forEach(collidingBoxes::add);
     }
 
     private boolean isPostType(IBlockAccess world, BlockPos pos, PostComponent... validTypes) {
@@ -212,6 +219,16 @@ public class BlockPost extends BlockBase implements IBlockAdvancedOutline {
     @Override
     protected boolean isFull(IBlockState state) {
         return false;
+    }
+
+    @Override
+    public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
+        return face == EnumFacing.UP ? CENTER : UNDEFINED;
+    }
+
+    @Override
+    public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
+        return layer == BlockRenderLayer.CUTOUT;
     }
 
     public enum PostComponent implements IStringSerializable {

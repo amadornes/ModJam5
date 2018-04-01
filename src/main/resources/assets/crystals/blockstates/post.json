@@ -22,7 +22,7 @@
       "false": {}
     },
     "south": {
-      "true":  { "submodel": "crystals:post_extension", "y": 90  },
+      "true":  { "submodel": "crystals:post_extension", "y":  90 },
       "false": {}
     },
     "west": {
@@ -30,7 +30,7 @@
       "false": {}
     },
     "east": {
-      "true":  { "submodel": "crystals:post_extension"           },
+      "true":  { "submodel": "crystals:post_extension", "y":   0 },
       "false": {}
     },
     "inventory": [{ }]

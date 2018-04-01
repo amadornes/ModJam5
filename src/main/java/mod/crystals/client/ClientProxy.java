@@ -92,7 +92,12 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onModelBake(ModelBakeEvent event) {
         wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "variant=floating"), TintWrapper::new);
-        wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "variant=ground"), TintWrapper::new);
+        wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "variant=down"), TintWrapper::new);
+        wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "variant=up"), TintWrapper::new);
+        wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "variant=north"), TintWrapper::new);
+        wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "variant=south"), TintWrapper::new);
+        wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "variant=west"), TintWrapper::new);
+        wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "variant=east"), TintWrapper::new);
     }
 
     private void wrap(ModelBakeEvent event, ModelResourceLocation name, Function<IBakedModel, ? extends IBakedModel> wrapper) {
