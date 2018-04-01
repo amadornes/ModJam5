@@ -78,9 +78,9 @@ public class SealPullRadial extends SealType {
 
             if (seal.getWorld().isRemote) {
                 if (pull) {
-                    seal.getWorld().spawnParticle(EnumParticleTypes.CLOUD, center.x, center.y, center.z, direction.x * 5, direction.y * 5, direction.z * 5);
-                } else {
                     seal.getWorld().spawnParticle(EnumParticleTypes.CLOUD, entity.posX, entity.posY, entity.posZ, direction.x * 5, direction.y * 5, direction.z * 5);
+                } else {
+                    seal.getWorld().spawnParticle(EnumParticleTypes.CLOUD, center.x, center.y, center.z, direction.x * 5, direction.y * 5, direction.z * 5);
                 }
             }
         }
