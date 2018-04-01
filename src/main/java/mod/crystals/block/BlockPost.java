@@ -17,17 +17,14 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static mod.crystals.block.BlockPost.PostComponent.*;
@@ -58,8 +55,8 @@ public class BlockPost extends BlockBase implements IBlockAdvancedOutline {
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer.Builder(this)
-                .add(COMPONENT, NORTH, SOUTH, WEST, EAST)
-                .build();
+            .add(COMPONENT, NORTH, SOUTH, WEST, EAST)
+            .build();
     }
 
     @Override
@@ -88,7 +85,7 @@ public class BlockPost extends BlockBase implements IBlockAdvancedOutline {
     @Override
     public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side) {
         return super.canPlaceBlockOnSide(worldIn, pos, side) &&
-                canStayAt(getStateForPlacement(worldIn, pos, side, 0, 0, 0, 0, null, null), worldIn, pos);
+            canStayAt(getStateForPlacement(worldIn, pos, side, 0, 0, 0, 0, null, null), worldIn, pos);
     }
 
     @Override
@@ -128,23 +125,23 @@ public class BlockPost extends BlockBase implements IBlockAdvancedOutline {
         switch (state.getValue(COMPONENT)) {
             case BOTTOM:
                 return state
-                        .withProperty(NORTH, false)
-                        .withProperty(SOUTH, false)
-                        .withProperty(WEST, false)
-                        .withProperty(EAST, false);
+                    .withProperty(NORTH, false)
+                    .withProperty(SOUTH, false)
+                    .withProperty(WEST, false)
+                    .withProperty(EAST, false);
             case MIDDLE:
             case TOP:
                 return state
-                        .withProperty(NORTH, isPostType(world, pos.north(), SIDE))
-                        .withProperty(SOUTH, isPostType(world, pos.south(), SIDE))
-                        .withProperty(WEST, isPostType(world, pos.west(), SIDE))
-                        .withProperty(EAST, isPostType(world, pos.east(), SIDE));
+                    .withProperty(NORTH, isPostType(world, pos.north(), SIDE))
+                    .withProperty(SOUTH, isPostType(world, pos.south(), SIDE))
+                    .withProperty(WEST, isPostType(world, pos.west(), SIDE))
+                    .withProperty(EAST, isPostType(world, pos.east(), SIDE));
             case SIDE:
                 return state
-                        .withProperty(NORTH, isPostType(world, pos.north(), MIDDLE, TOP))
-                        .withProperty(SOUTH, isPostType(world, pos.south(), MIDDLE, TOP))
-                        .withProperty(WEST, isPostType(world, pos.west(), MIDDLE, TOP))
-                        .withProperty(EAST, isPostType(world, pos.east(), MIDDLE, TOP));
+                    .withProperty(NORTH, isPostType(world, pos.north(), MIDDLE, TOP))
+                    .withProperty(SOUTH, isPostType(world, pos.south(), MIDDLE, TOP))
+                    .withProperty(WEST, isPostType(world, pos.west(), MIDDLE, TOP))
+                    .withProperty(EAST, isPostType(world, pos.east(), MIDDLE, TOP));
         }
         throw new IllegalStateException("something went very wrong!");
     }
@@ -153,19 +150,19 @@ public class BlockPost extends BlockBase implements IBlockAdvancedOutline {
         switch (state.getValue(COMPONENT)) {
             case BOTTOM:
                 return EnumSet.of(CENTER, CENTER_BIG, CENTER_SMALL, MIDDLE_POLE, MIDDLE_POLE_THICK, MIDDLE_POLE_THIN, SOLID)
-                        .contains(world.getBlockState(pos.down()).getBlockFaceShape(world, pos.down(), EnumFacing.UP));
+                    .contains(world.getBlockState(pos.down()).getBlockFaceShape(world, pos.down(), EnumFacing.UP));
             case MIDDLE:
             case TOP:
                 return isPostType(world, pos.down(), TOP, MIDDLE, BOTTOM);
             case SIDE:
                 return Stream.of(
-                        isPostType(world, pos.north(), TOP, MIDDLE),
-                        isPostType(world, pos.south(), TOP, MIDDLE),
-                        isPostType(world, pos.west(), TOP, MIDDLE),
-                        isPostType(world, pos.east(), TOP, MIDDLE)
+                    isPostType(world, pos.north(), TOP, MIDDLE),
+                    isPostType(world, pos.south(), TOP, MIDDLE),
+                    isPostType(world, pos.west(), TOP, MIDDLE),
+                    isPostType(world, pos.east(), TOP, MIDDLE)
                 )
-                        .filter(it -> it)
-                        .count() == 1;
+                    .filter(it -> it)
+                    .count() == 1;
         }
         throw new IllegalStateException("something went very wrong!");
     }
@@ -181,8 +178,8 @@ public class BlockPost extends BlockBase implements IBlockAdvancedOutline {
                 break;
             case MIDDLE:
             case TOP:
-            boxes.add(MIDDLE_AABB);
-            break;
+                boxes.add(MIDDLE_AABB);
+                break;
         }
 
         if (state.getValue(NORTH)) boxes.add(EXT_AABB.get(EnumFacing.NORTH.getHorizontalIndex()));
@@ -203,12 +200,22 @@ public class BlockPost extends BlockBase implements IBlockAdvancedOutline {
         return getBoundingBoxes(state, source, pos).stream().reduce(null, (acc, a) -> acc == null ? a : acc.union(a));
     }
 
+    @Nullable
+    @Override
+    public RayTraceResult collisionRayTrace(IBlockState blockState, World worldIn, BlockPos pos, Vec3d start, Vec3d end) {
+        // TODO: use shortest raytrace? idk how to get the length of it though :P
+        return getBoundingBoxes(blockState, worldIn, pos).stream()
+            .map(it -> rayTrace(pos, start, end, it))
+            .filter(Objects::nonNull)
+            .findAny().orElse(null);
+    }
+
     @Override
     public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
         getBoundingBoxes(state, world, pos).stream()
-                .map(it -> it.offset(pos))
-                .filter(entityBox::intersects)
-                .forEach(collidingBoxes::add);
+            .map(it -> it.offset(pos))
+            .filter(entityBox::intersects)
+            .forEach(collidingBoxes::add);
     }
 
     private boolean isPostType(IBlockAccess world, BlockPos pos, PostComponent... validTypes) {
