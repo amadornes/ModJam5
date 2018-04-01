@@ -1,6 +1,7 @@
 package mod.crystals.api.seal;
 
 import mod.crystals.api.NatureType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.Arrays;
@@ -12,6 +13,20 @@ public abstract class SealType extends IForgeRegistryEntry.Impl<SealType> {
     public abstract Ingredient[][] createRecipe();
 
     public abstract ISealInstance instantiate(ISeal seal);
+
+    public ResourceLocation getGlowyTextureLocation(TextureType type) {
+        return null;
+    }
+
+    public int getGlowyColor() {
+        return 0xFFFFFF;
+    }
+
+    public enum TextureType {
+        GLOWY_BLACK,
+        GLOWY_TRANSPARENT,
+        GLOWY_SHIMMER;
+    }
 
     public static final class Ingredient {
 

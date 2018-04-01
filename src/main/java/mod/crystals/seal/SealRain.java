@@ -1,5 +1,6 @@
 package mod.crystals.seal;
 
+import mod.crystals.CrystalsMod;
 import mod.crystals.api.NatureType;
 import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
@@ -7,6 +8,7 @@ import mod.crystals.api.seal.SealType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
@@ -27,6 +29,24 @@ public class SealRain extends SealType {
     @Override
     public ISealInstance instantiate(ISeal seal) {
         return new Instance(seal);
+    }
+
+    @Override
+    public ResourceLocation getGlowyTextureLocation(TextureType type) {
+        switch (type) {
+            case GLOWY_BLACK:
+                return new ResourceLocation(CrystalsMod.MODID, "textures/seals/pushpull/glowy_thing_black.png");
+            case GLOWY_TRANSPARENT:
+                return new ResourceLocation(CrystalsMod.MODID, "textures/seals/pushpull/glowy_thing.png");
+            case GLOWY_SHIMMER:
+                //return new ResourceLocation(CrystalsMod.MODID, "textures/seals/pushpull/glowy_thing_shimmer.png");
+        }
+        return null;
+    }
+
+    @Override
+    public int getGlowyColor() {
+        return NatureType.AIR.getColor();
     }
 
     private class Instance implements ISealInstance {

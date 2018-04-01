@@ -1,4 +1,4 @@
-package mod.crystals.client;
+package mod.crystals.client.render;
 
 import mod.crystals.CrystalsMod;
 import mod.crystals.capability.CapabilityRayManager;

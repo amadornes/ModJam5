@@ -1,4 +1,4 @@
-package mod.crystals.client;
+package mod.crystals.client.render;
 
 import mod.crystals.tile.TileCrystal;
 import net.minecraft.block.state.IBlockState;

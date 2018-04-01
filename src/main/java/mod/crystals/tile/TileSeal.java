@@ -80,6 +80,14 @@ public class TileSeal extends TileEntity implements ITickable {
         handleUpdateTag(pkt.getNbtCompound());
     }
 
+    public SealType getSealType() {
+        return type;
+    }
+
+    public ISealInstance getSeal() {
+        return seal;
+    }
+
     private class Host implements ISeal {
 
         @Override

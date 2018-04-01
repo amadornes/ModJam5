@@ -5,6 +5,8 @@ import mod.crystals.CrystalsMod;
 import mod.crystals.api.IBlockAdvancedOutline;
 import mod.crystals.block.BlockCrystal;
 import mod.crystals.block.BlockSlate;
+import mod.crystals.client.render.FloatingCrystalRenderer;
+import mod.crystals.client.render.SealRenderer;
 import mod.crystals.client.particle.ParticleRain;
 import mod.crystals.client.particle.ParticleTestIGuess;
 import mod.crystals.client.particle.ParticleType;
@@ -14,6 +16,7 @@ import mod.crystals.client.particle.ParticleType.ParticleParams;
 import mod.crystals.init.CrystalsBlocks;
 import mod.crystals.init.CrystalsItems;
 import mod.crystals.tile.TileCrystal;
+import mod.crystals.tile.TileSeal;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -71,6 +74,7 @@ public class ClientProxy extends CommonProxy {
             return color;
         }, CrystalsBlocks.slate);
         ClientRegistry.bindTileEntitySpecialRenderer(TileCrystal.class, new FloatingCrystalRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileSeal.class, new SealRenderer());
     }
 
     @Override
