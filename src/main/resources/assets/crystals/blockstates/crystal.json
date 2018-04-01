@@ -3,13 +3,17 @@
   "defaults": {
     "textures": {
       "texture": "crystals:blocks/crystal",
+      "holder": "crystals:blocks/slate",
       "particle": "crystals:blocks/crystal"
     },
     "model": "crystals:crystal.obj",
     "transform": "forge:default-block"
   },
   "variants": {
-    "normal": [{ }],
+    "variant": {
+      "floating": { },
+      "ground":   { "submodel": "crystals:crystal_holder" }
+    },
     "inventory": [{ }]
   }
 }

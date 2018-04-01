@@ -28,8 +28,12 @@ public class TintWrapper extends WrappedModel {
         List<BakedQuad> originalQuads = super.getQuads(state, side, rand);
         List<BakedQuad> quads = new ArrayList<>();
         for (BakedQuad quad : originalQuads) {
-            quads.add(new BakedQuad(quad.getVertexData(), 0, quad.getFace(), quad.getSprite(),
-                    quad.shouldApplyDiffuseLighting(), quad.getFormat()));
+            if (quad.hasTintIndex()) {
+                quads.add(quad);
+            } else {
+                quads.add(new BakedQuad(quad.getVertexData(), 0, quad.getFace(), quad.getSprite(),
+                        quad.shouldApplyDiffuseLighting(), quad.getFormat()));
+            }
         }
         return quads;
     }
