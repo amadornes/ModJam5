@@ -82,12 +82,12 @@ public class SealHarvest extends SealType {
 
     @FunctionalInterface
     public interface BlockMatcher {
-        public boolean matches(World world, IBlockState state, BlockPos pos);
+        boolean matches(World world, IBlockState state, BlockPos pos);
     }
 
     @FunctionalInterface
     public interface HarvestOp {
-        public boolean harvest(World world, IBlockState state, BlockPos pos);
+        boolean harvest(World world, IBlockState state, BlockPos pos);
     }
 
     // API \o/

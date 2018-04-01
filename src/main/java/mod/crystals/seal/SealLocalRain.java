@@ -13,11 +13,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import scala.util.Random$;
 
 import java.util.List;
 
-import static mod.crystals.client.particle.ParticleType.posVelocity;
+import static mod.crystals.client.particle.ParticleType.*;
 
 public class SealLocalRain extends SealType {
 
@@ -57,9 +56,9 @@ public class SealLocalRain extends SealType {
                 // sorry for the scala ;_;
                 // this time there's no Math.whatever to save you >:D
                 Vec3d velocity =
-                    front.scale(1.0 + Random$.MODULE$.nextGaussian() * 0.25).scale(0.25)
-                        .add(skew1.scale(Random$.MODULE$.nextGaussian() * 0.1))
-                        .add(skew2.scale(Random$.MODULE$.nextGaussian() * 0.1));
+                    front.scale(1.0 + world.rand.nextGaussian() * 0.25).scale(0.25)
+                        .add(skew1.scale(world.rand.nextGaussian() * 0.1))
+                        .add(skew2.scale(world.rand.nextGaussian() * 0.1));
                 Vec3d start = new Vec3d(pos).addVector(0.5, 0.5, 0.5);
 
                 CrystalsMod.proxy.spawnParticle(world, ParticleType.RAIN, posVelocity(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, velocity.x, velocity.y, velocity.z));
