@@ -4,8 +4,8 @@ import mod.crystals.api.IResonant;
 import mod.crystals.capability.CapabilityCrystalStorage;
 import mod.crystals.capability.CapabilityRayManager;
 import mod.crystals.capability.CapabilityResonant;
-import mod.crystals.client.particle.ParticleTestIGuess;
 import mod.crystals.util.ILaserSource;
+import mod.crystals.util.ResonantUtils;
 import mod.crystals.util.ray.RayManager;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
@@ -34,8 +34,20 @@ public class TileCrystal extends TileEntity implements ILaserSource {
     private IResonant.Default resonant = (IResonant.Default) IResonant.CAPABILITY.getDefaultInstance();
     private static CapabilityResonant.Storage serializer = new CapabilityResonant.Storage();
 
+    private boolean ignoreJoin = false;
+
+    public TileCrystal(boolean ignoreJoin) {
+        this();
+        this.ignoreJoin = ignoreJoin;
+    }
+
     public TileCrystal() {
         resonant.addChangeListener(this::onChanged);
+    }
+
+    public void doJoin() {
+        ignoreJoin = false;
+        join();
     }
 
     private void onChanged() {
@@ -45,6 +57,7 @@ public class TileCrystal extends TileEntity implements ILaserSource {
     }
 
     private void join() {
+        if (ignoreJoin) return;
         if (!getWorld().isBlockLoaded(getPos())) return;
 
         Chunk chunk = getWorld().getChunkFromBlockCoords(getPos());
@@ -59,6 +72,7 @@ public class TileCrystal extends TileEntity implements ILaserSource {
 
                 Chunk c = getWorld().getChunkFromChunkCoords(chunkPos.x + x, chunkPos.z + z);
                 for (TileCrystal crystal : c.getCapability(CapabilityCrystalStorage.CAPABILITY, null).getCrystals()) {
+                    if (crystal == this) continue;
                     if (crystal.getPos().distanceSq(getPos()) < MAX_DISTANCE_SQ) {
                         connect(crystal);
                     }
@@ -74,6 +88,10 @@ public class TileCrystal extends TileEntity implements ILaserSource {
     }
 
     private void connect(TileCrystal crystal) {
+        float match = ResonantUtils.getMatch(resonant, crystal.resonant);
+        System.out.println(match);
+        if (match < 0.8) return;
+
         RayManager manager = getWorld().getCapability(CapabilityRayManager.CAPABILITY, null);
         manager.addRay(this, crystal);
     }
@@ -135,16 +153,8 @@ public class TileCrystal extends TileEntity implements ILaserSource {
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         handleUpdateTag(pkt.getNbtCompound());
-
-        if (Math.random() > 0.75) {
-            float r1 = ((float) Math.random() - 0.5f) * 0.25f;
-            float r2 = ((float) Math.random() - 0.5f) * 0.25f;
-            float r3 = ((float) Math.random() - 0.5f) * 0.25f;
-            float r = (resonant.getColor() >> 16 & 0xFF) / 256f;
-            float g = (resonant.getColor() >> 8 & 0xFF) / 256f;
-            float b = (resonant.getColor() & 0xFF) / 256f;
-            ParticleTestIGuess.spawnParticleAt(world, pos.getX() + 0.5 + r1, pos.getY() + 1 + r2, pos.getZ() + 0.5 + r3, r, g, b);
-        }
+        leave();
+        join();
     }
 
     @SuppressWarnings("ConstantConditions")

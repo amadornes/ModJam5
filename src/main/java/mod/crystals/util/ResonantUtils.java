@@ -70,4 +70,23 @@ public class ResonantUtils {
         }
     }
 
+    public static float getMatch(IResonant res1, IResonant res2) {
+        TObjectFloatMap<NatureType> map1 = getNatureTypes(res1, false);
+        TObjectFloatMap<NatureType> map2 = getNatureTypes(res2, false);
+        Set<NatureType> visited = new HashSet<>();
+
+        float dif = 0;
+
+        for (NatureType type : map1.keySet()) {
+            visited.add(type);
+            dif += Math.abs(map1.get(type) - map2.get(type));
+        }
+        for (NatureType type : map2.keySet()) {
+            if (!visited.add(type)) continue;
+            dif += map2.get(type);
+        }
+
+        return 1F - (dif / 2F);
+    }
+
 }

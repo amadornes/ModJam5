@@ -1,14 +1,15 @@
 package mod.crystals.block;
 
 import mod.crystals.api.IResonant;
-import mod.crystals.client.particle.ParticleTestIGuess;
 import mod.crystals.tile.TileCrystal;
 import mod.crystals.util.UnlistedPropertyInt;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -42,8 +43,8 @@ public class BlockCrystal extends BlockBase implements ITileEntityProvider {
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer.Builder(this)
-            .add(COLOR)
-            .build();
+                .add(COLOR)
+                .build();
     }
 
     @Override
@@ -74,4 +75,14 @@ public class BlockCrystal extends BlockBase implements ITileEntityProvider {
         return true;
     }
 
+    @Override
+    public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
+        world.setTileEntity(pos, new TileCrystal(true));
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+        TileCrystal crystal = (TileCrystal) world.getTileEntity(pos);
+        crystal.doJoin();
+    }
 }
