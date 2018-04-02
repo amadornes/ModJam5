@@ -2,7 +2,7 @@ package mod.crystals.client;
 
 import mod.crystals.CommonProxy;
 import mod.crystals.CrystalsMod;
-import mod.crystals.api.IBlockAdvancedOutline;
+import mod.crystals.util.IBlockAdvancedOutline;
 import mod.crystals.block.BlockCrystal;
 import mod.crystals.block.BlockSlate;
 import mod.crystals.client.particle.ParticleCircle;

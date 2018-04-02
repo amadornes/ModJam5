@@ -1,6 +1,6 @@
 package mod.crystals.block;
 
-import mod.crystals.api.IBlockAdvancedOutline;
+import mod.crystals.util.IBlockAdvancedOutline;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;

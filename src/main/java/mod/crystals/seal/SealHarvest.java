@@ -1,10 +1,16 @@
 package mod.crystals.seal;
 
+import gnu.trove.map.TObjectFloatMap;
+import gnu.trove.map.hash.TObjectFloatHashMap;
 import mod.crystals.api.NatureType;
 import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
 import mod.crystals.api.seal.SealType;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockMelon;
+import net.minecraft.block.BlockPumpkin;
+import net.minecraft.block.BlockStem;
+import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,15 +26,15 @@ import java.util.Optional;
 
 public class SealHarvest extends SealType {
 
-    private static List<Pair<BlockMatcher, HarvestOp>> harvestLogic = new ArrayList<>();
+    private static final List<Pair<BlockMatcher, HarvestOp>> harvestLogic = new ArrayList<>();
 
     @Override
     public Ingredient[][] createRecipe() {
         Ingredient i = new Ingredient(NatureType.DISTORTED, NatureType.EARTH); // TODO: sensible recipe
         return new Ingredient[][]{
-            {i, i, i},
-            {i, i, i},
-            {i, i, i}
+                {i, i, i},
+                {i, i, i},
+                {i, i, i}
         };
     }
 
@@ -40,10 +46,25 @@ public class SealHarvest extends SealType {
     private static class Instance implements ISealInstance {
 
         private final ISeal seal;
+        private final TObjectFloatMap<NatureType> energy = new TObjectFloatHashMap<>();
 
         private int cooldown = 80; // prevent exploiting it
 
-        public Instance(ISeal seal) {this.seal = seal;}
+        public Instance(ISeal seal) {
+            this.seal = seal;
+        }
+
+        @Override
+        public float getAccepted(NatureType type) {
+            if (type == NatureType.EARTH) return 100 - energy.get(type);
+            if (type == NatureType.DISTORTED) return 50 - energy.get(type);
+            return 0;
+        }
+
+        @Override
+        public void addNature(NatureType type, float amount) {
+            energy.adjustOrPutValue(type, amount, amount);
+        }
 
         @Override
         public void update() {
@@ -51,20 +72,25 @@ public class SealHarvest extends SealType {
             if (world.isRemote) return;
             if (cooldown > 0) {
                 cooldown--;
-            } else {
-                BlockPos pos = seal.getPos();
-                BlockPos center = pos.add(new BlockPos(new Vec3d(seal.getFace().getDirectionVec()).scale(3)));
-                for (BlockPos it : BlockPos.getAllInBox(center.add(-2, -1, -2), center.add(2, 1, 2))) {
-                    IBlockState state = world.getBlockState(it);
-                    for (Pair<BlockMatcher, HarvestOp> pair : harvestLogic) {
-                        if (pair.getLeft().matches(world, state, it)) {
-                            if (pair.getRight().harvest(world, state, it)) return;
-                            else break;
-                        }
+                return;
+            }
+
+            if (energy.get(NatureType.EARTH) < 50 || energy.get(NatureType.DISTORTED) < 25) return;
+            energy.adjustValue(NatureType.EARTH, -50);
+            energy.adjustValue(NatureType.DISTORTED, -25);
+
+            BlockPos pos = seal.getPos();
+            BlockPos center = pos.add(new BlockPos(new Vec3d(seal.getFace().getDirectionVec()).scale(3)));
+            for (BlockPos it : BlockPos.getAllInBox(center.add(-2, -1, -2), center.add(2, 1, 2))) {
+                IBlockState state = world.getBlockState(it);
+                for (Pair<BlockMatcher, HarvestOp> pair : harvestLogic) {
+                    if (pair.getLeft().matches(world, state, it)) {
+                        if (pair.getRight().harvest(world, state, it)) return;
+                        else break;
                     }
                 }
-                cooldown = 80;
             }
+            cooldown = 80;
         }
 
         @Override
@@ -98,42 +124,42 @@ public class SealHarvest extends SealType {
     static {
         // generic harvest code
         addHarvestOverride(
-            (world, state, pos) -> {
-                Block block = state.getBlock();
-                return block instanceof IGrowable && !((IGrowable) block).canGrow(world, pos, state, world.isRemote);
-            },
-            (world, state, pos) -> {
-                Block block = state.getBlock();
-                ItemStack item = block.getPickBlock(state, null, world, pos, null);
-                NonNullList<ItemStack> items = NonNullList.create();
-                block.getDrops(items, world, pos, state, 0);
-                Optional<ItemStack> seedItem = items.stream().filter(it1 -> ItemStack.areItemsEqual(it1, item)).findAny();
-                world.setBlockState(pos, state.getBlock().getDefaultState());
-                seedItem.ifPresent(it -> it.shrink(1));
-                items.forEach(it -> Block.spawnAsEntity(world, pos, it));
-                return true;
-            }
+                (world, state, pos) -> {
+                    Block block = state.getBlock();
+                    return block instanceof IGrowable && !((IGrowable) block).canGrow(world, pos, state, world.isRemote);
+                },
+                (world, state, pos) -> {
+                    Block block = state.getBlock();
+                    ItemStack item = block.getPickBlock(state, null, world, pos, null);
+                    NonNullList<ItemStack> items = NonNullList.create();
+                    block.getDrops(items, world, pos, state, 0);
+                    Optional<ItemStack> seedItem = items.stream().filter(it1 -> ItemStack.areItemsEqual(it1, item)).findAny();
+                    world.setBlockState(pos, state.getBlock().getDefaultState());
+                    seedItem.ifPresent(it -> it.shrink(1));
+                    items.forEach(it -> Block.spawnAsEntity(world, pos, it));
+                    return true;
+                }
         );
 
         // pumpkins & melons
         addHarvestOverride(
-            (world, state, pos) -> {
-                Block block = state.getBlock();
-                return block instanceof IGrowable && block instanceof BlockStem;
-            },
-            (world, state, pos) -> false
+                (world, state, pos) -> {
+                    Block block = state.getBlock();
+                    return block instanceof IGrowable && block instanceof BlockStem;
+                },
+                (world, state, pos) -> false
         );
 
         addHarvestOverride(
-            (world, state, pos) -> {
-                Block block = state.getBlock();
-                return block instanceof BlockMelon || block instanceof BlockPumpkin;
-            },
-            (world, state, pos) -> {
-                state.getBlock().dropBlockAsItem(world, pos, state, 0);
-                world.setBlockToAir(pos);
-                return true;
-            }
+                (world, state, pos) -> {
+                    Block block = state.getBlock();
+                    return block instanceof BlockMelon || block instanceof BlockPumpkin;
+                },
+                (world, state, pos) -> {
+                    state.getBlock().dropBlockAsItem(world, pos, state, 0);
+                    world.setBlockToAir(pos);
+                    return true;
+                }
         );
     }
 

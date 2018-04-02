@@ -1,4 +1,4 @@
-package mod.crystals.api;
+package mod.crystals.util;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -8,8 +8,10 @@ import net.minecraft.world.World;
 import java.util.Collection;
 
 public interface IBlockAdvancedOutline {
+
     /**
      * Replaces getSelectedBoundingBox.
      */
-    public Collection<AxisAlignedBB> getOutlineBoxes(World world, BlockPos pos, IBlockState state);
+    Collection<AxisAlignedBB> getOutlineBoxes(World world, BlockPos pos, IBlockState state);
+
 }
