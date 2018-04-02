@@ -32,6 +32,7 @@ public class CapabilityResonant {
             DefaultImpl impl = (DefaultImpl) obj;
             NBTTagCompound tag = new NBTTagCompound();
             NBTTagCompound natures = new NBTTagCompound();
+            natures.setFloat(NatureType.DISTORTED.getRegistryName().toString(), 0.0f);
             impl.natures.forEachEntry((nature, amt) -> {
                 natures.setFloat(nature.getRegistryName().toString(), amt);
                 return true;
