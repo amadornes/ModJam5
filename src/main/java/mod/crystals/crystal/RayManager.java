@@ -75,12 +75,12 @@ public class RayManager extends SimpleManager {
     public void updateRays(@Nullable BlockPos updatePos) {
         for (Ray ray : getRays()) {
             if (updatePos != null) {
-                AxisAlignedBB raybox = new AxisAlignedBB(updatePos);
-                AxisAlignedBB other = new AxisAlignedBB(
+                AxisAlignedBB updatePosBB = new AxisAlignedBB(updatePos);
+                AxisAlignedBB rayBox = new AxisAlignedBB(
                     ray.getStart(0).x, ray.getStart(0).y, ray.getStart(0).z,
                     ray.getEnd(0).x, ray.getEnd(0).y, ray.getEnd(0).z
                 );
-                if (!raybox.intersects(other)) continue;
+                if (!updatePosBB.intersects(rayBox)) continue;
             }
             needsUpdate.add(ray);
         }
