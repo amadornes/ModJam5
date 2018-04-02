@@ -11,6 +11,7 @@ import mod.crystals.client.particle.ParticleType;
 import mod.crystals.crystal.ILaserSource;
 import mod.crystals.crystal.Ray;
 import mod.crystals.crystal.RayManager;
+import mod.crystals.environment.EnvironmentHandler;
 import mod.crystals.util.ResonantUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
@@ -161,8 +162,9 @@ public class TileCrystal extends TileEntity implements ILaserSource, ITickable {
 
     private void visit(Queue<Pair<TileCrystal, TObjectFloatMap<NatureType>>> queue, Set<TileCrystal> visited,
                        TObjectFloatMap<NatureType> cap, TObjectFloatMap<NatureType> total) {
+        TObjectFloatMap<NatureType> worldNatures = EnvironmentHandler.INSTANCE.getNature(world, getPos());
         resonant.getNatureAmounts().forEachEntry((type, amt) -> {
-            float max = cap.get(type);
+            float max = Math.min(cap.get(type), worldNatures.get(type));
             float a = Math.min(amt, max);
             total.adjustOrPutValue(type, a, a);
             return true;

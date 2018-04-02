@@ -112,6 +112,10 @@ public class TileSeal extends TileEntity implements ITickable {
         return seal;
     }
 
+    public EnumFacing getFace() {
+        return getWorld().getBlockState(getPos()).getValue(BlockDirectional.FACING);
+    }
+
     private class Host implements ISeal {
 
         @Override
@@ -126,7 +130,7 @@ public class TileSeal extends TileEntity implements ITickable {
 
         @Override
         public EnumFacing getFace() {
-            return getWorld().getBlockState(getPos()).getValue(BlockDirectional.FACING);
+            return TileSeal.this.getFace();
         }
 
     }

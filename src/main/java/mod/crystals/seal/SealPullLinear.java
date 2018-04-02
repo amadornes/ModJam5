@@ -49,7 +49,7 @@ public class SealPullLinear extends SealType {
         Vec3d dv = new Vec3d(face.getDirectionVec()).scale(10);
         Vec3d center = new Vec3d(seal.getPos())
                 .addVector(0.5, 0.5, 0.5)
-                .add(new Vec3d(face.getDirectionVec()).scale(0.5));
+                .add(new Vec3d(face.getOpposite().getDirectionVec()).scale(0.5));
 
         Collection<Entity> entities = seal.getWorld().getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(seal.getPos()).expand(dv.x, dv.y, dv.z));
         entities.forEach(e -> {
