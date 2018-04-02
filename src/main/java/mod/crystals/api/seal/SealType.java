@@ -1,5 +1,6 @@
 package mod.crystals.api.seal;
 
+import mod.crystals.CrystalsMod;
 import mod.crystals.api.NatureType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -15,6 +16,14 @@ public abstract class SealType extends IForgeRegistryEntry.Impl<SealType> {
     public abstract ISealInstance instantiate(ISeal seal);
 
     public ResourceLocation getGlowyTextureLocation(TextureType type) {
+        switch (type) {
+            case GLOWY_BLACK:
+                return new ResourceLocation(CrystalsMod.MODID, "textures/seals/base/glowy_thing_black.png");
+            case GLOWY_TRANSPARENT:
+                return new ResourceLocation(CrystalsMod.MODID, "textures/seals/base/glowy_thing.png");
+            case GLOWY_SHIMMER:
+                //return new ResourceLocation(CrystalsMod.MODID, "textures/seals/pushpull/glowy_thing_shimmer.png");
+        }
         return null;
     }
 

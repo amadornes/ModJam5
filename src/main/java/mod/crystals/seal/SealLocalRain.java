@@ -10,7 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -36,18 +35,18 @@ public class SealLocalRain extends SealType {
         };
     }
 
-    @Override
-    public ResourceLocation getGlowyTextureLocation(TextureType type) {
-        switch (type) {
-            case GLOWY_BLACK:
-                return new ResourceLocation(CrystalsMod.MODID, "textures/seals/base/glowy_thing_black.png");
-            case GLOWY_TRANSPARENT:
-                return new ResourceLocation(CrystalsMod.MODID, "textures/seals/base/glowy_thing.png");
-            case GLOWY_SHIMMER:
-                //return new ResourceLocation(CrystalsMod.MODID, "textures/seals/pushpull/glowy_thing_shimmer.png");
-        }
-        return null;
-    }
+//    @Override
+//    public ResourceLocation getGlowyTextureLocation(TextureType type) {
+//        switch (type) {
+//            case GLOWY_BLACK:
+//                return new ResourceLocation(CrystalsMod.MODID, "textures/seals/base/glowy_thing_black.png");
+//            case GLOWY_TRANSPARENT:
+//                return new ResourceLocation(CrystalsMod.MODID, "textures/seals/base/glowy_thing.png");
+//            case GLOWY_SHIMMER:
+//                //return new ResourceLocation(CrystalsMod.MODID, "textures/seals/pushpull/glowy_thing_shimmer.png");
+//        }
+//        return null;
+//    }
 
     @Override
     public int getGlowyColor() {
