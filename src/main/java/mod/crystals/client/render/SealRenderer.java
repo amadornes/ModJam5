@@ -20,6 +20,8 @@ public class SealRenderer extends TileEntitySpecialRenderer<TileSeal> {
 
     @Override
     public void render(TileSeal te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+        if (te.getSealType() == null) return;
+
         pushMatrix();
         translate(x + 0.5, y + 0.002, z + 0.5);
 

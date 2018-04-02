@@ -154,6 +154,8 @@ public class TileCrystal extends TileEntity implements ILaserSource {
     public void handleUpdateTag(@Nonnull NBTTagCompound tag) {
         readFromNBT(tag);
         getWorld().markBlockRangeForRenderUpdate(getPos(), getPos());
+        leave();
+        join();
     }
 
     @Override
