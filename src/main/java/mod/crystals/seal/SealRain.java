@@ -1,7 +1,5 @@
 package mod.crystals.seal;
 
-import gnu.trove.map.TObjectFloatMap;
-import gnu.trove.map.hash.TObjectFloatHashMap;
 import mod.crystals.CrystalsMod;
 import mod.crystals.api.NatureType;
 import mod.crystals.api.seal.ISeal;
@@ -14,6 +12,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
+
+import java.util.function.BiConsumer;
 
 public class SealRain extends SealType {
 
@@ -51,13 +51,14 @@ public class SealRain extends SealType {
         return NatureType.AIR.getColor();
     }
 
-    private class Instance implements ISealInstance {
+    private class Instance extends AbstractSeal {
 
-        private final ISeal seal;
-        private final TObjectFloatMap<NatureType> energy = new TObjectFloatHashMap<>();
+        public Instance(ISeal seal) {
+            super(seal);
+        }
 
-        private Instance(ISeal seal) {
-            this.seal = seal;
+        @Override
+        public void addRequirements(BiConsumer<NatureType, Float> capacity, BiConsumer<NatureType, Float> consumption) {
         }
 
         @Override

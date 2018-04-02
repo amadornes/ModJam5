@@ -49,6 +49,7 @@ public class SealHarvest extends SealType {
         private int cooldown = 80; // prevent exploiting it
 
         public Instance(ISeal seal) {
+            super(seal);
             this.seal = seal;
         }
 

@@ -64,6 +64,7 @@ public class SealLocalRain extends SealType {
         private final ISeal seal;
 
         public Instance(ISeal seal) {
+            super(seal);
             this.seal = seal;
         }
 

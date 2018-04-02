@@ -10,6 +10,8 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.function.BiConsumer;
+
 public class SealPullRadial extends SealType {
 
     private static final float RADIUS = 5;
@@ -31,12 +33,14 @@ public class SealPullRadial extends SealType {
         return new Instance(seal);
     }
 
-    private static class Instance implements ISealInstance {
-
-        private final ISeal seal;
+    private static class Instance extends AbstractSeal {
 
         public Instance(ISeal seal) {
-            this.seal = seal;
+            super(seal);
+        }
+
+        @Override
+        public void addRequirements(BiConsumer<NatureType, Float> capacity, BiConsumer<NatureType, Float> consumption) {
         }
 
         @Override

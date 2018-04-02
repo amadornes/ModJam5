@@ -5,6 +5,8 @@ import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
 import mod.crystals.api.seal.SealType;
 
+import java.util.function.BiConsumer;
+
 public class SealThunder extends SealType {
 
     @Override
@@ -24,11 +26,15 @@ public class SealThunder extends SealType {
         return new Instance(seal);
     }
 
-    private static class Instance implements ISealInstance {
+    private static class Instance extends AbstractSeal {
 
-        private final ISeal seal;
+        public Instance(ISeal seal) {
+            super(seal);
+        }
 
-        public Instance(ISeal seal) {this.seal = seal;}
+        @Override
+        public void addRequirements(BiConsumer<NatureType, Float> capacity, BiConsumer<NatureType, Float> consumption) {
+        }
 
         @Override
         public void update() {

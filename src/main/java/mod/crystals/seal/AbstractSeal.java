@@ -3,18 +3,23 @@ package mod.crystals.seal;
 import gnu.trove.map.TObjectFloatMap;
 import gnu.trove.map.hash.TObjectFloatHashMap;
 import mod.crystals.api.NatureType;
+import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.function.BiConsumer;
 
 public abstract class AbstractSeal implements ISealInstance {
 
     protected final TObjectFloatMap<NatureType> energy = new TObjectFloatHashMap<>();
-
     private final TObjectFloatMap<NatureType> capacity = new TObjectFloatHashMap<>();
     private final TObjectFloatMap<NatureType> consumption = new TObjectFloatHashMap<>();
 
-    public AbstractSeal() {
+    protected final ISeal seal;
+
+    public AbstractSeal(ISeal seal) {
+        this.seal = seal;
         addRequirements(capacity::put, consumption::put);
     }
 
@@ -50,5 +55,25 @@ public abstract class AbstractSeal implements ISealInstance {
     // public void readFromNBT(NBTTagCompound tag) {
     //
     // }
+
+    protected AxisAlignedBB getAreaInFront(float radius){
+        EnumFacing face = seal.getFace().getOpposite();
+        AxisAlignedBB bounds = new AxisAlignedBB(seal.getPos());
+        switch (face.getAxis()) {
+            case X:
+                bounds = bounds.expand(0, -radius, -radius).expand(0, radius, radius)
+                        .expand(face.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ? radius : -radius, 0, 0);
+                break;
+            case Y:
+                bounds = bounds.expand(-radius, 0, -radius).expand(radius, 0, radius)
+                        .expand(0, face.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ? radius : -radius, 0);
+                break;
+            case Z:
+                bounds = bounds.expand(-radius, -radius, 0).expand(radius, radius, 0)
+                        .expand(0, 0, face.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ? radius : -radius);
+                break;
+        }
+        return bounds;
+    }
 
 }
