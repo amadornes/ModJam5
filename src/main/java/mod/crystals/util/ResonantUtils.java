@@ -5,6 +5,7 @@ import gnu.trove.map.hash.TObjectFloatHashMap;
 import mod.crystals.api.IResonant;
 import mod.crystals.api.NatureType;
 import mod.crystals.capability.CapabilityCrystalCache;
+import mod.crystals.capability.CapabilityLoadedCache;
 import mod.crystals.init.CrystalsRegistries;
 import mod.crystals.tile.TileCrystalBase;
 import mod.crystals.tile.TileCrystalCreative;
@@ -30,13 +31,15 @@ public class ResonantUtils {
 
     public static Set<TileCrystalBase> getCrystalsAround(World world, BlockPos pos, float radius, TileCrystalBase ignored) {
         Set<TileCrystalBase> crystals = new HashSet<>();
-        ChunkPos chunkPos = new ChunkPos(pos);
-        // TODO: Optimize to only check chunks in the correct range
-        for (int x = -1; x <= 1; x++) {
-            for (int z = -1; z <= 1; z++) {
-                if (!world.isBlockLoaded(pos.add(16 * x, 0, 16 * z))) continue;
+        ChunkPos min = new ChunkPos(pos.add(-radius, 0, -radius));
+        ChunkPos max = new ChunkPos(pos.add(radius, 0, radius));
+        CapabilityLoadedCache.LoadedChunks loaded = world.getCapability(CapabilityLoadedCache.CAPABILITY, null);
+        for (int x = min.x; x <= max.x; x++) {
+            for (int z = min.z; z <= max.z; z++) {
+                // TODO: Potentially AT the chunk load check method?
+                if (!loaded.isLoaded(x, z)) continue;
 
-                Chunk c = world.getChunkFromChunkCoords(chunkPos.x + x, chunkPos.z + z);
+                Chunk c = world.getChunkFromChunkCoords(x, z);
                 for (TileCrystalBase crystal : c.getCapability(CapabilityCrystalCache.CAPABILITY, null).getCrystals()) {
                     if (crystal == ignored) continue;
                     if (crystal.getPos().distanceSq(pos) < radius * radius) {
@@ -97,7 +100,8 @@ public class ResonantUtils {
 
     public static float getMatch(IResonant res1, IResonant res2) {
         // TODO not hardcode this?
-        if (res1 == TileCrystalCreative.CreativeResonant.instance || res2 == TileCrystalCreative.CreativeResonant.instance) return 1.0f;
+        if (res1 == TileCrystalCreative.CreativeResonant.instance || res2 == TileCrystalCreative.CreativeResonant.instance)
+            return 1.0f;
         TObjectFloatMap<NatureType> map1 = getNatureTypes(res1, false);
         TObjectFloatMap<NatureType> map2 = getNatureTypes(res2, false);
         Set<NatureType> visited = new HashSet<>();

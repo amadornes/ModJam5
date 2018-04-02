@@ -6,6 +6,7 @@ import mod.crystals.CrystalsMod;
 import mod.crystals.api.IResonant;
 import mod.crystals.api.NatureType;
 import mod.crystals.capability.CapabilityCrystalCache;
+import mod.crystals.capability.CapabilityLoadedCache;
 import mod.crystals.capability.CapabilityRayManager;
 import mod.crystals.client.particle.ParticleType;
 import mod.crystals.crystal.ILaserSource;
@@ -34,7 +35,7 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 
-import static mod.crystals.client.particle.ParticleType.posVelocityColor;
+import static mod.crystals.client.particle.ParticleType.*;
 
 public abstract class TileCrystalBase extends TileEntity implements ILaserSource, ITickable {
 
@@ -69,7 +70,7 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
 
     protected void join() {
         if (ignoreJoin) return;
-        if (!getWorld().isBlockLoaded(getPos())) return;
+        if (!CapabilityLoadedCache.isLoaded(getWorld(), getPos())) return;
 
         Chunk chunk = getWorld().getChunkFromBlockCoords(getPos());
         chunk.getCapability(CapabilityCrystalCache.CAPABILITY, null).join(this);
@@ -123,8 +124,8 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
         Vec3d pos = getPosition(0);
         Color color = new Color(resonant.getColor());
         CrystalsMod.proxy.spawnParticle(world, ParticleType.CIRCLE,
-            posVelocityColor(pos.x, pos.y, pos.z, 0, 0, 0,
-                color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F));
+                posVelocityColor(pos.x, pos.y, pos.z, 0, 0, 0,
+                        color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F));
     }
 
     public TObjectFloatMap<NatureType> visit() {
@@ -143,14 +144,8 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
     }
 
     protected void visit(Queue<Pair<TileCrystalBase, TObjectFloatMap<NatureType>>> queue, Set<TileCrystalBase> visited,
-                       TObjectFloatMap<NatureType> cap, TObjectFloatMap<NatureType> total) {
-        TObjectFloatMap<NatureType> worldNatures = EnvironmentHandler.INSTANCE.getNature(world, getPos());
-        resonant.getNatureAmounts().forEachEntry((type, amt) -> {
-            float max = Math.min(cap.get(type), worldNatures.get(type));
-            float a = Math.min(amt, max);
-            total.adjustOrPutValue(type, a, a);
-            return true;
-        });
+                         TObjectFloatMap<NatureType> cap, TObjectFloatMap<NatureType> total) {
+        addAvailableNatures(cap, total);
         for (Ray ray : rays) {
             if (!ray.hasLineOfSight()) continue;
             ILaserSource other = ray.getEnd();
@@ -165,6 +160,16 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
                 queue.add(Pair.of(crystal, newCap));
             }
         }
+    }
+
+    protected void addAvailableNatures(TObjectFloatMap<NatureType> cap, TObjectFloatMap<NatureType> total) {
+        TObjectFloatMap<NatureType> worldNatures = EnvironmentHandler.INSTANCE.getNature(world, getPos());
+        resonant.getNatureAmounts().forEachEntry((type, amt) -> {
+            float max = Math.min(cap.get(type), worldNatures.get(type));
+            float a = Math.min(amt, max);
+            total.adjustOrPutValue(type, a, a);
+            return true;
+        });
     }
 
     @Nullable

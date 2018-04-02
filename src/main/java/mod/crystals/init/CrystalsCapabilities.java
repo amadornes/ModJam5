@@ -2,6 +2,7 @@ package mod.crystals.init;
 
 import mod.crystals.api.IResonant;
 import mod.crystals.capability.CapabilityCrystalCache;
+import mod.crystals.capability.CapabilityLoadedCache;
 import mod.crystals.capability.CapabilityRayManager;
 import mod.crystals.capability.CapabilityResonant;
 import mod.crystals.capability.CapabilitySealManager;
@@ -21,6 +22,8 @@ public class CrystalsCapabilities {
                 new CapabilityRayManager.Storage(), () -> null);
         CapabilityManager.INSTANCE.register(SealManager.class,
                 new CapabilitySealManager.Storage(), () -> null);
+        CapabilityManager.INSTANCE.register(CapabilityLoadedCache.LoadedChunks.class,
+                new CapabilityLoadedCache.Storage(), () -> null);
     }
 
 }

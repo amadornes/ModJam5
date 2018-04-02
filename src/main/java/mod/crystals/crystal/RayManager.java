@@ -24,9 +24,7 @@ public class RayManager extends SimpleManager {
 
         ray = new Ray(from, to);
 
-        Table<ILaserSource, ILaserSource, Ray> rays = HashBasedTable.create(this.rays);
         rays.put(from, to, ray);
-        this.rays = rays;
 
         from.onConnect(to, ray);
         to.onConnect(from, ray.getOpposite());
@@ -44,10 +42,8 @@ public class RayManager extends SimpleManager {
             to.onDisconnect(src, ray.getOpposite());
         });
 
-        Table<ILaserSource, ILaserSource, Ray> rays = HashBasedTable.create(this.rays);
         rays.rowKeySet().remove(src);
         rays.columnKeySet().remove(src);
-        this.rays = rays;
     }
 
     public Collection<Ray> getRays() {

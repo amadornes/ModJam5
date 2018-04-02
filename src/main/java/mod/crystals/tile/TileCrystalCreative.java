@@ -4,15 +4,10 @@ import gnu.trove.map.TObjectFloatMap;
 import gnu.trove.map.hash.TObjectFloatHashMap;
 import mod.crystals.api.IResonant;
 import mod.crystals.api.NatureType;
-import mod.crystals.crystal.ILaserSource;
-import mod.crystals.crystal.Ray;
 import mod.crystals.init.CrystalsRegistries;
 import net.minecraft.util.math.Vec3d;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.awt.*;
-import java.util.Queue;
-import java.util.Set;
 
 public class TileCrystalCreative extends TileCrystalBase {
 
@@ -36,32 +31,17 @@ public class TileCrystalCreative extends TileCrystalBase {
     }
 
     @Override
-    protected void visit(Queue<Pair<TileCrystalBase, TObjectFloatMap<NatureType>>> queue, Set<TileCrystalBase> visited, TObjectFloatMap<NatureType> cap, TObjectFloatMap<NatureType> total) {
-        cap.forEachKey(it -> {
-            total.adjustOrPutValue(it, 1000, 1000);
-            return true;
-        });
-
-        for (Ray ray : rays) {
-            if (!ray.hasLineOfSight()) continue;
-            ILaserSource other = ray.getEnd();
-            if (other instanceof TileCrystalBase && visited.add((TileCrystalBase) other)) {
-                TileCrystalBase crystal = (TileCrystalBase) other;
-                TObjectFloatMap<NatureType> newCap = new TObjectFloatHashMap<>();
-                cap.forEachEntry((type, max) -> {
-                    float amt = crystal.resonant.getNatureAmount(type);
-                    newCap.put(type, Math.min(amt, max));
-                    return true;
-                });
-                queue.add(Pair.of(crystal, newCap));
-            }
+    protected void addAvailableNatures(TObjectFloatMap<NatureType> cap, TObjectFloatMap<NatureType> total) {
+        for (NatureType type : cap.keySet()) {
+            total.adjustOrPutValue(type, 1000, 1000);
         }
     }
 
     public static class CreativeResonant implements IResonant.Default {
         public static final CreativeResonant instance = new CreativeResonant();
 
-        private CreativeResonant() {}
+        private CreativeResonant() {
+        }
 
         @Override
         public float getNatureAmount(NatureType natureType) {
@@ -74,10 +54,12 @@ public class TileCrystalCreative extends TileCrystalBase {
         }
 
         @Override
-        public void setNatureAmounts(TObjectFloatMap<NatureType> natureAmounts) {}
+        public void setNatureAmounts(TObjectFloatMap<NatureType> natureAmounts) {
+        }
 
         @Override
-        public void setResonance(float resonance) {}
+        public void setResonance(float resonance) {
+        }
 
         @Override
         public TObjectFloatMap<NatureType> getNatureAmounts() {
@@ -92,6 +74,7 @@ public class TileCrystalCreative extends TileCrystalBase {
         }
 
         @Override
-        public void addChangeListener(Runnable listener) {}
+        public void addChangeListener(Runnable listener) {
+        }
     }
 }

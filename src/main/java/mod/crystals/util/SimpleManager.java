@@ -19,6 +19,10 @@ public abstract class SimpleManager {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
+    protected World getWorld() {
+        return world.get();
+    }
+
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event) {
         if (world.get() == null) {

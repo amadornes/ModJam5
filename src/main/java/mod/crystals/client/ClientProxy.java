@@ -89,9 +89,11 @@ public class ClientProxy extends CommonProxy {
     @Override
     public <T extends ParticleParams> void spawnParticle(@Nonnull World world, @Nonnull ParticleType<T> type, @Nonnull T params) {
         super.spawnParticle(world, type, params);
+        float chance = (3 - Minecraft.getMinecraft().gameSettings.particleSetting) / 3F;
+        if (world.rand.nextFloat() > chance) return;
         Optional.ofNullable(particleGenerators.get(type))
-            .map(it -> it.apply(world, params))
-            .ifPresent(mc.effectRenderer::addEffect);
+                .map(it -> it.apply(world, params))
+                .ifPresent(mc.effectRenderer::addEffect);
     }
 
     @SubscribeEvent
@@ -149,8 +151,8 @@ public class ClientProxy extends CommonProxy {
         Block block = state.getBlock();
         if (block instanceof IBlockAdvancedOutline) {
             ((IBlockAdvancedOutline) block).getOutlineBoxes(world, pos, state).stream()
-                .map(it -> it.offset(pos))
-                .forEach(it -> drawSelectionBox(world, e.getPlayer(), pos, it, e.getPartialTicks()));
+                    .map(it -> it.offset(pos))
+                    .forEach(it -> drawSelectionBox(world, e.getPlayer(), pos, it, e.getPartialTicks()));
             e.setCanceled(true);
         }
     }

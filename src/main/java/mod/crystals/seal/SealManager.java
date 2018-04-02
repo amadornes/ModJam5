@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static mod.crystals.client.particle.ParticleType.posVelocityColor;
+import static mod.crystals.client.particle.ParticleType.*;
 
 public class SealManager extends SimpleManager {
 
@@ -29,15 +29,11 @@ public class SealManager extends SimpleManager {
     }
 
     public void add(TileSeal seal) {
-        Set<TileSeal> seals = new HashSet<>(this.seals);
         seals.add(seal);
-        this.seals = seals;
     }
 
     public void remove(TileSeal seal) {
-        Set<TileSeal> seals = new HashSet<>(this.seals);
         seals.remove(seal);
-        this.seals = seals;
     }
 
     @Override

@@ -4,6 +4,7 @@ import gnu.trove.map.TObjectFloatMap;
 import gnu.trove.map.hash.TObjectFloatHashMap;
 import mod.crystals.api.IEnvironmentScanner;
 import mod.crystals.api.NatureType;
+import mod.crystals.capability.CapabilityLoadedCache;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
@@ -20,8 +21,9 @@ public class BlockEnvironmentScanner implements IEnvironmentScanner {
     public void compute(World world, BlockPos pos, NatureType.Acceptor acceptor) {
         TObjectFloatMap<NatureType> map = new TObjectFloatHashMap<>();
 
+        CapabilityLoadedCache.LoadedChunks loaded = world.getCapability(CapabilityLoadedCache.CAPABILITY, null);
         for (BlockPos p : BlockPos.getAllInBoxMutable(pos.add(-RADIUS, -RADIUS, -RADIUS), pos.add(RADIUS, RADIUS, RADIUS))) {
-            if (!world.isBlockLoaded(p)) continue;
+            if (!loaded.isLoaded(p)) continue;
             IBlockState state = world.getBlockState(p);
             Material mat = state.getMaterial();
 

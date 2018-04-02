@@ -1,11 +1,13 @@
 package mod.crystals.seal;
 
+import mod.crystals.CrystalsMod;
 import mod.crystals.api.NatureType;
 import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
 import mod.crystals.api.seal.SealType;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
@@ -24,6 +26,24 @@ public class SealPullLinear extends SealType {
                 {wind, pull, wind},
                 {null, wind, null}
         };
+    }
+
+    @Override
+    public ResourceLocation getGlowyTextureLocation(TextureType type) {
+        switch (type) {
+            case GLOWY_BLACK:
+                return new ResourceLocation(CrystalsMod.MODID, "textures/seals/pull_linear/glowy_thing_black.png");
+            case GLOWY_TRANSPARENT:
+                return new ResourceLocation(CrystalsMod.MODID, "textures/seals/pull_linear/glowy_thing.png");
+            case GLOWY_SHIMMER:
+                //return new ResourceLocation(CrystalsMod.MODID, "textures/seals/pushpull/glowy_thing_shimmer.png");
+        }
+        return null;
+    }
+
+    @Override
+    public int getGlowyColor() {
+        return NatureType.AIR.getColor();
     }
 
     @Override
@@ -69,7 +89,8 @@ public class SealPullLinear extends SealType {
             if (dif.lengthSquared() > radius * radius)continue;
 
             if (!consume.getAsBoolean()) break;
-            Vec3d dir = pull ? ePos.subtract(center).scale(pull ? -1 : 1).normalize().scale(0.1) : dv.normalize().scale(0.1);
+            dif = ePos.subtract(center).scale(pull ? -1 : 1);
+            Vec3d dir = pull ? (dif.lengthSquared() > 1 ? dif.normalize() : dif).scale(0.1) : dv.normalize().scale(0.1);
             entity.motionX += dir.x;
             entity.motionY += dir.y + 0.02;
             entity.motionZ += dir.z;
