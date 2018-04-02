@@ -4,11 +4,15 @@ import gnu.trove.map.TObjectFloatMap;
 import gnu.trove.map.hash.TObjectFloatHashMap;
 import mod.crystals.api.IResonant;
 import mod.crystals.api.NatureType;
+import mod.crystals.capability.CapabilityCrystalCache;
 import mod.crystals.init.CrystalsRegistries;
 import mod.crystals.tile.TileCrystal;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +25,26 @@ public class ResonantUtils {
             return te.getCapability(IResonant.CAPABILITY, null);
         }
         return null;
+    }
+
+    public static Set<TileCrystal> getCrystalsAround(World world, BlockPos pos, float radius, TileCrystal ignored) {
+        Set<TileCrystal> crystals = new HashSet<>();
+        ChunkPos chunkPos = new ChunkPos(pos);
+        // TODO: Optimize to only check chunks in the correct range
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                if (!world.isBlockLoaded(pos.add(16 * x, 0, 16 * z))) continue;
+
+                Chunk c = world.getChunkFromChunkCoords(chunkPos.x + x, chunkPos.z + z);
+                for (TileCrystal crystal : c.getCapability(CapabilityCrystalCache.CAPABILITY, null).getCrystals()) {
+                    if (crystal == ignored) continue;
+                    if (crystal.getPos().distanceSq(pos) < radius * radius) {
+                        crystals.add(crystal);
+                    }
+                }
+            }
+        }
+        return crystals;
     }
 
     public static TObjectFloatMap<NatureType> getNatureTypes(IResonant resonant, boolean copy) {

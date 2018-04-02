@@ -1,7 +1,7 @@
 package mod.crystals.capability;
 
 import mod.crystals.CrystalsMod;
-import mod.crystals.crystal.RayManager;
+import mod.crystals.seal.SealManager;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -17,16 +17,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Mod.EventBusSubscriber(modid = CrystalsMod.MODID)
-public class CapabilityRayManager {
+public class CapabilitySealManager {
 
-    private static final ResourceLocation NAME = new ResourceLocation(CrystalsMod.MODID, "ray_manager");
+    private static final ResourceLocation NAME = new ResourceLocation(CrystalsMod.MODID, "seal_manager");
 
-    @CapabilityInject(RayManager.class)
-    public static final Capability<RayManager> CAPABILITY = null;
+    @CapabilityInject(SealManager.class)
+    public static final Capability<SealManager> CAPABILITY = null;
 
     @SubscribeEvent
     public static void onCapabilityAttach(AttachCapabilitiesEvent<World> event) {
-        RayManager manager = new RayManager(event.getObject());
+        SealManager manager = new SealManager(event.getObject());
         event.addCapability(NAME, new ICapabilityProvider() {
 
             @Override
@@ -43,16 +43,16 @@ public class CapabilityRayManager {
         });
     }
 
-    public static class Storage implements Capability.IStorage<RayManager> {
+    public static class Storage implements Capability.IStorage<SealManager> {
 
         @Nullable
         @Override
-        public NBTBase writeNBT(Capability<RayManager> capability, RayManager instance, EnumFacing side) {
+        public NBTBase writeNBT(Capability<SealManager> capability, SealManager instance, EnumFacing side) {
             return null;
         }
 
         @Override
-        public void readNBT(Capability<RayManager> capability, RayManager instance, EnumFacing side, NBTBase nbt) {
+        public void readNBT(Capability<SealManager> capability, SealManager instance, EnumFacing side, NBTBase nbt) {
         }
 
     }

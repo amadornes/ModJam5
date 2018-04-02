@@ -1,7 +1,7 @@
 package mod.crystals.capability;
 
 import mod.crystals.CrystalsMod;
-import mod.crystals.tile.TileCrystal;
+import mod.crystals.crystal.ChunkCrystalCache;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -15,20 +15,18 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = CrystalsMod.MODID)
-public class CapabilityCrystalStorage {
+public class CapabilityCrystalCache {
 
-    private static final ResourceLocation NAME = new ResourceLocation(CrystalsMod.MODID, "crystal_storage");
+    private static final ResourceLocation NAME = new ResourceLocation(CrystalsMod.MODID, "crystal_cache");
 
-    @CapabilityInject(CrystalStorage.class)
-    public static final Capability<CrystalStorage> CAPABILITY = null;
+    @CapabilityInject(ChunkCrystalCache.class)
+    public static final Capability<ChunkCrystalCache> CAPABILITY = null;
 
     @SubscribeEvent
     public static void onCapabilityAttach(AttachCapabilitiesEvent<Chunk> event) {
-        CrystalStorage storage = new CrystalStorage();
+        ChunkCrystalCache storage = new ChunkCrystalCache();
         event.addCapability(NAME, new ICapabilityProvider() {
 
             @Override
@@ -45,34 +43,16 @@ public class CapabilityCrystalStorage {
         });
     }
 
-    public static class Storage implements Capability.IStorage<CrystalStorage> {
+    public static class Storage implements Capability.IStorage<ChunkCrystalCache> {
 
         @Nullable
         @Override
-        public NBTBase writeNBT(Capability<CrystalStorage> capability, CrystalStorage instance, EnumFacing side) {
+        public NBTBase writeNBT(Capability<ChunkCrystalCache> capability, ChunkCrystalCache instance, EnumFacing side) {
             return null;
         }
 
         @Override
-        public void readNBT(Capability<CrystalStorage> capability, CrystalStorage instance, EnumFacing side, NBTBase nbt) {
-        }
-
-    }
-
-    public static class CrystalStorage {
-
-        private final Set<TileCrystal> crystals = new HashSet<>();
-
-        public void join(TileCrystal crystal) {
-            crystals.add(crystal);
-        }
-
-        public void leave(TileCrystal crystal) {
-            crystals.remove(crystal);
-        }
-
-        public Set<TileCrystal> getCrystals() {
-            return crystals;
+        public void readNBT(Capability<ChunkCrystalCache> capability, ChunkCrystalCache instance, EnumFacing side, NBTBase nbt) {
         }
 
     }

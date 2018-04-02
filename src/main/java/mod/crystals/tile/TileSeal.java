@@ -3,6 +3,7 @@ package mod.crystals.tile;
 import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
 import mod.crystals.api.seal.SealType;
+import mod.crystals.capability.CapabilitySealManager;
 import mod.crystals.init.CrystalsRegistries;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.nbt.NBTTagCompound;
@@ -36,6 +37,29 @@ public class TileSeal extends TileEntity implements ITickable {
         this.seal = type.instantiate(host);
     }
 
+    @Override
+    public void validate() {
+        super.validate();
+        getWorld().getCapability(CapabilitySealManager.CAPABILITY, null).add(this);
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        getWorld().getCapability(CapabilitySealManager.CAPABILITY, null).remove(this);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        getWorld().getCapability(CapabilitySealManager.CAPABILITY, null).add(this);
+    }
+
+    @Override
+    public void onChunkUnload() {
+        super.onChunkUnload();
+        getWorld().getCapability(CapabilitySealManager.CAPABILITY, null).remove(this);
+    }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tag) {

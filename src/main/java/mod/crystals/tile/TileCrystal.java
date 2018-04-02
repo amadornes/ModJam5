@@ -1,14 +1,17 @@
 package mod.crystals.tile;
 
+import gnu.trove.map.TObjectFloatMap;
+import gnu.trove.map.hash.TObjectFloatHashMap;
 import mod.crystals.CrystalsMod;
 import mod.crystals.api.IResonant;
-import mod.crystals.capability.CapabilityCrystalStorage;
+import mod.crystals.api.NatureType;
+import mod.crystals.capability.CapabilityCrystalCache;
 import mod.crystals.capability.CapabilityRayManager;
 import mod.crystals.client.particle.ParticleType;
-import mod.crystals.util.ILaserSource;
+import mod.crystals.crystal.ILaserSource;
+import mod.crystals.crystal.Ray;
+import mod.crystals.crystal.RayManager;
 import mod.crystals.util.ResonantUtils;
-import mod.crystals.util.ray.Ray;
-import mod.crystals.util.ray.RayManager;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,22 +21,24 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.capabilities.Capability;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.ArrayDeque;
 import java.util.HashSet;
+import java.util.Queue;
 import java.util.Set;
 
 import static mod.crystals.client.particle.ParticleType.*;
 
 public class TileCrystal extends TileEntity implements ILaserSource, ITickable {
 
-    private static final float MAX_DISTANCE_SQ = 8 * 8;
+    private static final float MAX_DISTANCE = 8;
     private static final Vec3d OFFSET = new Vec3d(0.5, 0.5, 0.5);
 
     private IResonant.Default resonant = (IResonant.Default) IResonant.CAPABILITY.getDefaultInstance();
@@ -66,29 +71,14 @@ public class TileCrystal extends TileEntity implements ILaserSource, ITickable {
         if (!getWorld().isBlockLoaded(getPos())) return;
 
         Chunk chunk = getWorld().getChunkFromBlockCoords(getPos());
-        chunk.getCapability(CapabilityCrystalStorage.CAPABILITY, null).join(this);
+        chunk.getCapability(CapabilityCrystalCache.CAPABILITY, null).join(this);
 
-        Set<TileCrystal> crystals = new HashSet<>();
-        ChunkPos chunkPos = new ChunkPos(getPos());
-        // TODO: Optimize to only check chunks in the correct range
-        for (int x = -1; x <= 1; x++) {
-            for (int z = -1; z <= 1; z++) {
-                if (!getWorld().isBlockLoaded(getPos().add(16 * x, 0, 16 * z))) continue;
-
-                Chunk c = getWorld().getChunkFromChunkCoords(chunkPos.x + x, chunkPos.z + z);
-                for (TileCrystal crystal : c.getCapability(CapabilityCrystalStorage.CAPABILITY, null).getCrystals()) {
-                    if (crystal == this) continue;
-                    if (crystal.getPos().distanceSq(getPos()) < MAX_DISTANCE_SQ) {
-                        connect(crystal);
-                    }
-                }
-            }
-        }
+        ResonantUtils.getCrystalsAround(getWorld(), getPos(), MAX_DISTANCE, this).forEach(this::connect);
     }
 
     private void leave() {
         Chunk chunk = getWorld().getChunkFromBlockCoords(getPos());
-        chunk.getCapability(CapabilityCrystalStorage.CAPABILITY, null).leave(this);
+        chunk.getCapability(CapabilityCrystalCache.CAPABILITY, null).leave(this);
         disconnect();
     }
 
@@ -152,6 +142,45 @@ public class TileCrystal extends TileEntity implements ILaserSource, ITickable {
         CrystalsMod.proxy.spawnParticle(world, ParticleType.CIRCLE,
                 posVelocityColor(pos.x, pos.y, pos.z, 0, 0, 0,
                         color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F));
+    }
+
+    public TObjectFloatMap<NatureType> visit() {
+        TObjectFloatMap<NatureType> total = new TObjectFloatHashMap<>();
+
+        Queue<Pair<TileCrystal, TObjectFloatMap<NatureType>>> queue = new ArrayDeque<>();
+        Set<TileCrystal> visited = new HashSet<>();
+        queue.add(Pair.of(this, resonant.getNatureAmounts()));
+
+        while (!queue.isEmpty()) {
+            Pair<TileCrystal, TObjectFloatMap<NatureType>> pair = queue.poll();
+            pair.getKey().visit(queue, visited, pair.getValue(), total);
+        }
+
+        return total;
+    }
+
+    private void visit(Queue<Pair<TileCrystal, TObjectFloatMap<NatureType>>> queue, Set<TileCrystal> visited,
+                       TObjectFloatMap<NatureType> cap, TObjectFloatMap<NatureType> total) {
+        resonant.getNatureAmounts().forEachEntry((type, amt) -> {
+            float max = cap.get(type);
+            float a = Math.min(amt, max);
+            total.adjustOrPutValue(type, a, a);
+            return true;
+        });
+        for (Ray ray : rays) {
+            if (!ray.hasLineOfSight()) continue;
+            ILaserSource other = ray.getEnd();
+            if (other instanceof TileCrystal && visited.add((TileCrystal) other)) {
+                TileCrystal crystal = (TileCrystal) other;
+                TObjectFloatMap<NatureType> newCap = new TObjectFloatHashMap<>();
+                cap.forEachEntry((type, max) -> {
+                    float amt = crystal.resonant.getNatureAmount(type);
+                    newCap.put(type, Math.min(amt, max));
+                    return true;
+                });
+                queue.add(Pair.of(crystal, newCap));
+            }
+        }
     }
 
     @Override

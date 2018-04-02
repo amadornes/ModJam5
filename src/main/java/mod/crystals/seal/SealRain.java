@@ -1,5 +1,7 @@
 package mod.crystals.seal;
 
+import gnu.trove.map.TObjectFloatMap;
+import gnu.trove.map.hash.TObjectFloatHashMap;
 import mod.crystals.CrystalsMod;
 import mod.crystals.api.NatureType;
 import mod.crystals.api.seal.ISeal;
@@ -58,22 +60,34 @@ public class SealRain extends SealType {
     private class Instance implements ISealInstance {
 
         private final ISeal seal;
+        private final TObjectFloatMap<NatureType> energy = new TObjectFloatHashMap<>();
 
         private Instance(ISeal seal) {
             this.seal = seal;
         }
 
         @Override
+        public float getAccepted(NatureType type) {
+            if (type != NatureType.EARTH) return 0;
+            return 50 - energy.get(type);
+        }
+
+        @Override
+        public void addNature(NatureType type, float amount) {
+            energy.adjustOrPutValue(type, amount, amount);
+        }
+
+        @Override
         public void update() {
             startRain(seal, false, 20 * 60 * 5);
 
-            if(seal.getWorld().getTotalWorldTime() % 5 != 0) return;
+            if (seal.getWorld().getTotalWorldTime() % 5 != 0) return;
 
             Color color = new Color(NatureType.AIR.getColor());
 
             World world = seal.getWorld();
             BlockPos pos = seal.getPos();
-            for(int i = 0; i < 4; i++){
+            for (int i = 0; i < 4; i++) {
                 CrystalsMod.proxy.spawnParticle(world, ParticleType.CIRCLE,
                         posVelocityColor(
                                 pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5,

@@ -5,7 +5,11 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public interface ISealInstance {
 
-    default void addNature(NatureType type, float amount){
+    default float getAccepted(NatureType type) {
+        return 0;
+    }
+
+    default void addNature(NatureType type, float amount) {
     }
 
     void update();

@@ -1,6 +1,5 @@
-package mod.crystals.util;
+package mod.crystals.crystal;
 
-import mod.crystals.util.ray.Ray;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 

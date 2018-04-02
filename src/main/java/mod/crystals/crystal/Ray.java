@@ -1,6 +1,5 @@
-package mod.crystals.util.ray;
+package mod.crystals.crystal;
 
-import mod.crystals.util.ILaserSource;
 import mod.crystals.util.RayTracer;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -25,6 +24,14 @@ public class Ray {
 
     public boolean hasLineOfSight() {
         return hasLOS;
+    }
+
+    public ILaserSource getStart() {
+        return start;
+    }
+
+    public ILaserSource getEnd() {
+        return end;
     }
 
     public Vec3d getStart(float partialTicks) {

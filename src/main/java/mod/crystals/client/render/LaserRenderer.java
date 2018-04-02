@@ -2,8 +2,8 @@ package mod.crystals.client.render;
 
 import mod.crystals.CrystalsMod;
 import mod.crystals.capability.CapabilityRayManager;
-import mod.crystals.util.ray.Ray;
-import mod.crystals.util.ray.RayManager;
+import mod.crystals.crystal.Ray;
+import mod.crystals.crystal.RayManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
