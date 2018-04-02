@@ -1,5 +1,7 @@
 package mod.crystals.block;
 
+import mod.crystals.api.NatureType;
+import mod.crystals.init.CrystalsRegistries;
 import mod.crystals.tile.TileCrystal;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -7,12 +9,12 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -157,6 +159,37 @@ public class BlockCrystal extends BlockCrystalBase {
     @Override
     public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
         return state.getValue(VARIANT) != Variant.FLOATING && super.canRenderInLayer(state, layer);
+    }
+
+    @Override
+    public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items) {
+        super.getSubBlocks(itemIn, items);
+        CrystalsRegistries.natureRegistry.getValuesCollection().stream()
+            .map(this::getPureCrystal)
+            .forEach(items::add);
+    }
+
+    private ItemStack getPureCrystal(NatureType type) {
+        ItemStack stack = new ItemStack(this);
+        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+        stack.setStackDisplayName("Crystal (" + type.getRegistryName() + ")");
+
+        // can't really instantiate a new TE without it breaking, so we'll have to do this manually
+
+        NBTTagCompound tag = stack.getTagCompound();
+        NBTTagCompound teData = new NBTTagCompound();
+        NBTTagCompound tag_rd = new NBTTagCompound();
+        NBTTagCompound tag_natures = new NBTTagCompound();
+
+        tag.setTag("BlockEntityTag", teData);
+        teData.setTag("rd", tag_rd);
+        tag_rd.setTag("natures", tag_natures);
+
+        tag_rd.setFloat("resonance", 1.0f);
+        tag_natures.setFloat(NatureType.DISTORTED.getRegistryName().toString(), 0.0f);
+        tag_natures.setFloat(type.getRegistryName().toString(), 1.0f);
+
+        return stack;
     }
 
     public enum Variant implements IStringSerializable {
