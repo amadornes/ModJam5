@@ -5,12 +5,13 @@ import mod.crystals.CrystalsMod;
 import mod.crystals.api.IBlockAdvancedOutline;
 import mod.crystals.block.BlockCrystal;
 import mod.crystals.block.BlockSlate;
-import mod.crystals.client.render.FloatingCrystalRenderer;
-import mod.crystals.client.render.SealRenderer;
+import mod.crystals.client.particle.ParticleCircle;
 import mod.crystals.client.particle.ParticleRain;
 import mod.crystals.client.particle.ParticleTestIGuess;
 import mod.crystals.client.particle.ParticleType;
 import mod.crystals.client.particle.ParticleType.ParticleParams;
+import mod.crystals.client.render.FloatingCrystalRenderer;
+import mod.crystals.client.render.SealRenderer;
 import mod.crystals.init.CrystalsBlocks;
 import mod.crystals.init.CrystalsItems;
 import mod.crystals.tile.TileCrystal;
@@ -62,6 +63,7 @@ public class ClientProxy extends CommonProxy {
 
         registerParticle(ParticleType.TEST, (world, p) -> new ParticleTestIGuess(world, p.position.x, p.position.y, p.position.z, 0, 0, 0, p.color.x, p.color.y, p.color.z));
         registerParticle(ParticleType.RAIN, (world, p) -> new ParticleRain(world, p.position.x, p.position.y, p.position.z, p.velocity.x, p.velocity.y, p.velocity.z));
+        registerParticle(ParticleType.CIRCLE, (world, p) -> new ParticleCircle(world, p.position.x, p.position.y, p.position.z, p.velocity.x, p.velocity.y, p.velocity.z, p.color.x, p.color.y, p.color.z));
     }
 
     @Override

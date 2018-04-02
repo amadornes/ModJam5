@@ -13,6 +13,7 @@ public class ParticleType<T extends ParticleType.ParticleParams> {
     public static final ParticleType<PPosColor> TEST = new ParticleType<>();
 
     public static final ParticleType<PPosVelocity> RAIN = new ParticleType<>();
+    public static final ParticleType<PPosVelocityColor> CIRCLE = new ParticleType<>();
 
     private ParticleType() {}
 
@@ -38,6 +39,18 @@ public class ParticleType<T extends ParticleType.ParticleParams> {
         }
     }
 
+    public static class PPosVelocityColor implements ParticleParams {
+        public final Vec3d position;
+        public final Vec3d velocity;
+        public final Vec3f color;
+
+        public PPosVelocityColor(Vec3d position, Vec3d velocity, Vec3f color) {
+            this.position = position;
+            this.velocity = velocity;
+            this.color = color;
+        }
+    }
+
     public static PPosColor posColor(double x, double y, double z, float r, float g, float b) {
         return new PPosColor(new Vec3d(x, y, z), new Vec3f(r, g, b));
     }
@@ -46,5 +59,8 @@ public class ParticleType<T extends ParticleType.ParticleParams> {
         return new PPosVelocity(new Vec3d(x, y, z), new Vec3d(vX, vY, vZ));
     }
 
+    public static PPosVelocityColor posVelocityColor(double x, double y, double z, double vX, double vY, double vZ, float r, float g, float b) {
+        return new PPosVelocityColor(new Vec3d(x, y, z), new Vec3d(vX, vY, vZ), new Vec3f(r, g, b));
+    }
 
 }

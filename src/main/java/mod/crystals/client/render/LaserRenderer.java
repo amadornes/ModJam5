@@ -38,6 +38,7 @@ public class LaserRenderer {
         Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation(CrystalsMod.MODID, "textures/misc/laser_transparent.png"));
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         renderLasers(event, manager, look, false);
+
         Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation(CrystalsMod.MODID, "textures/misc/laser.png"));
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
         renderLasers(event, manager, look, true);

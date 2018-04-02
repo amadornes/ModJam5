@@ -1,11 +1,13 @@
 package mod.crystals.tile;
 
+import mod.crystals.CrystalsMod;
 import mod.crystals.api.IResonant;
 import mod.crystals.capability.CapabilityCrystalStorage;
 import mod.crystals.capability.CapabilityRayManager;
-import mod.crystals.capability.CapabilityResonant;
+import mod.crystals.client.particle.ParticleType;
 import mod.crystals.util.ILaserSource;
 import mod.crystals.util.ResonantUtils;
+import mod.crystals.util.ray.Ray;
 import mod.crystals.util.ray.RayManager;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
@@ -14,6 +16,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
@@ -26,13 +29,15 @@ import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TileCrystal extends TileEntity implements ILaserSource {
+import static mod.crystals.client.particle.ParticleType.*;
+
+public class TileCrystal extends TileEntity implements ILaserSource, ITickable {
 
     private static final float MAX_DISTANCE_SQ = 8 * 8;
     private static final Vec3d OFFSET = new Vec3d(0.5, 0.5, 0.5);
 
     private IResonant.Default resonant = (IResonant.Default) IResonant.CAPABILITY.getDefaultInstance();
-    private static CapabilityResonant.Storage serializer = new CapabilityResonant.Storage();
+    private Set<Ray> rays = new HashSet<>();
 
     private boolean ignoreJoin = false;
 
@@ -101,6 +106,16 @@ public class TileCrystal extends TileEntity implements ILaserSource {
     }
 
     @Override
+    public void onConnect(ILaserSource other, Ray ray) {
+        rays.add(ray);
+    }
+
+    @Override
+    public void onDisconnect(ILaserSource other, Ray ray) {
+        rays.remove(ray);
+    }
+
+    @Override
     public Vec3d getPosition(float partialTicks) {
         if (getBlockMetadata() == 0) {
             BlockPos pos = getPos();
@@ -124,9 +139,25 @@ public class TileCrystal extends TileEntity implements ILaserSource {
     }
 
     @Override
+    public void update() {
+        if (!world.isRemote) return;
+        if (rays.isEmpty()) return;
+
+        for (Ray ray : rays) {
+            if (!ray.hasLineOfSight()) return;
+        }
+
+        Vec3d pos = getPosition(0);
+        Color color = new Color(resonant.getColor());
+        CrystalsMod.proxy.spawnParticle(world, ParticleType.CIRCLE,
+                posVelocityColor(pos.x, pos.y, pos.z, 0, 0, 0,
+                        color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F));
+    }
+
+    @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
-        NBTBase tag = serializer.writeNBT(IResonant.CAPABILITY, resonant, null);
+        NBTBase tag = IResonant.CAPABILITY.writeNBT(resonant, null);
         compound.setTag("rd", tag);
         return compound;
     }
@@ -135,7 +166,7 @@ public class TileCrystal extends TileEntity implements ILaserSource {
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         NBTBase tag = compound.getTag("rd");
-        if (tag != null) serializer.readNBT(IResonant.CAPABILITY, resonant, null, tag);
+        if (tag != null) IResonant.CAPABILITY.readNBT(resonant, null, tag);
     }
 
     @Nullable

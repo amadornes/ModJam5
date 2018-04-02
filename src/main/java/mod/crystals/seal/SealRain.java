@@ -5,13 +5,19 @@ import mod.crystals.api.NatureType;
 import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
 import mod.crystals.api.seal.SealType;
+import mod.crystals.client.particle.ParticleType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
+
+import java.awt.*;
+
+import static mod.crystals.client.particle.ParticleType.*;
 
 public class SealRain extends SealType {
 
@@ -60,6 +66,20 @@ public class SealRain extends SealType {
         @Override
         public void update() {
             startRain(seal, false, 20 * 60 * 5);
+
+            if(seal.getWorld().getTotalWorldTime() % 5 != 0) return;
+
+            Color color = new Color(NatureType.AIR.getColor());
+
+            World world = seal.getWorld();
+            BlockPos pos = seal.getPos();
+            for(int i = 0; i < 4; i++){
+                CrystalsMod.proxy.spawnParticle(world, ParticleType.CIRCLE,
+                        posVelocityColor(
+                                pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5,
+                                0, 0.1 + Math.random() * 0.05, 0,
+                                color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F));
+            }
         }
 
     }

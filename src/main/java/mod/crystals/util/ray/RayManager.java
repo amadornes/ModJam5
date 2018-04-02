@@ -12,13 +12,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class RayManager {
 
     private final WeakReference<World> world;
-    private final Table<ILaserSource, ILaserSource, Ray> rays = HashBasedTable.create();
+    private Table<ILaserSource, ILaserSource, Ray> rays = HashBasedTable.create();
 
     public RayManager(World world) {
         this.world = new WeakReference<>(world);
@@ -33,18 +32,52 @@ public class RayManager {
         if (ray != null) return ray.getOpposite();
 
         ray = new Ray(from, to);
+
+        Table<ILaserSource, ILaserSource, Ray> rays = HashBasedTable.create(this.rays);
         rays.put(from, to, ray);
+        this.rays = rays;
+
+        from.onConnect(to, ray);
+        to.onConnect(from, ray);
+
         return ray;
     }
 
     public void removeRay(ILaserSource src1, ILaserSource src2) {
-        rays.remove(src1, src2);
-        rays.remove(src2, src1);
+        Ray ray;
+
+        Table<ILaserSource, ILaserSource, Ray> rays = HashBasedTable.create(this.rays);
+
+        ray = rays.remove(src1, src2);
+        if (ray != null) {
+            src1.onDisconnect(src2, ray);
+            src2.onDisconnect(src1, ray);
+            return;
+        }
+
+        ray = rays.remove(src2, src1);
+        if (ray != null) {
+            src1.onDisconnect(src2, ray);
+            src2.onDisconnect(src1, ray);
+        }
+
+        this.rays = rays;
     }
 
     public void removeAll(ILaserSource src) {
+        rays.row(src).forEach((to, ray) -> {
+            src.onDisconnect(to, ray);
+            to.onDisconnect(src, ray);
+        });
+        rays.column(src).forEach((to, ray) -> {
+            src.onDisconnect(to, ray);
+            to.onDisconnect(src, ray);
+        });
+
+        Table<ILaserSource, ILaserSource, Ray> rays = HashBasedTable.create(this.rays);
         rays.rowKeySet().remove(src);
         rays.columnKeySet().remove(src);
+        this.rays = rays;
     }
 
     public Collection<Ray> getRays() {
@@ -61,7 +94,7 @@ public class RayManager {
         }
         if (event.phase == TickEvent.Phase.START || event.world != world.get()) return;
 
-        for (Ray ray : new ArrayList<>(getRays())) {
+        for (Ray ray : getRays()) {
             ray.update(event.world);
         }
     }
@@ -77,7 +110,7 @@ public class RayManager {
         if (Minecraft.getMinecraft().isGamePaused()) return;
 
         World world = this.world.get();
-        for (Ray ray : new ArrayList<>(getRays())) { // Avoid CMEs... Yay
+        for (Ray ray : getRays()) { // Avoid CMEs... Yay
             ray.update(world);
         }
     }
