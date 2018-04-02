@@ -24,6 +24,7 @@ public class CrystalsSeals {
         registry.register(new SealPushRadial().setRegistryName("push_radial"));
         registry.register(new SealHarvest().setRegistryName("harvest"));
         registry.register(new SealFireBreath().setRegistryName("fire_breath"));
+        registry.register(new SealIceBreath().setRegistryName("ice_breath"));
     }
 
 }
