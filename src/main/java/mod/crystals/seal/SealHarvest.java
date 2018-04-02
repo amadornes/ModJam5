@@ -54,12 +54,12 @@ public class SealHarvest extends SealType {
             } else {
                 BlockPos pos = seal.getPos();
                 BlockPos center = pos.add(new BlockPos(new Vec3d(seal.getFace().getDirectionVec()).scale(3)));
-                outer: for (BlockPos it : BlockPos.getAllInBox(center.add(-2, -1, -2), center.add(2, 1, 2))) {
+                for (BlockPos it : BlockPos.getAllInBox(center.add(-2, -1, -2), center.add(2, 1, 2))) {
                     IBlockState state = world.getBlockState(it);
                     for (Pair<BlockMatcher, HarvestOp> pair : harvestLogic) {
                         if (pair.getLeft().matches(world, state, it)) {
-                            pair.getRight().harvest(world, state, it);
-                            break outer;
+                            if (pair.getRight().harvest(world, state, it)) return;
+                            else break;
                         }
                     }
                 }
