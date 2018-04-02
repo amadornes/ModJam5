@@ -8,6 +8,7 @@ import mod.crystals.api.seal.SealType;
 import mod.crystals.client.particle.ParticleType;
 import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -15,8 +16,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
-import static mod.crystals.client.particle.ParticleType.*;
+import static mod.crystals.client.particle.ParticleType.posVelocity;
 
 public class SealLocalRain extends SealType {
 
@@ -35,7 +37,7 @@ public class SealLocalRain extends SealType {
         return new Instance(seal);
     }
 
-    private static class Instance implements ISealInstance {
+    private static class Instance extends AbstractSeal {
 
         private final ISeal seal;
 
@@ -43,9 +45,17 @@ public class SealLocalRain extends SealType {
             this.seal = seal;
         }
 
+        @Override
+        public void addRequirements(BiConsumer<NatureType, Float> capacity, BiConsumer<NatureType, Float> consumption) {
+            capacity.accept(NatureType.WATER, 100f);
+            consumption.accept(NatureType.WATER, 10f);
+        }
+
         @SuppressWarnings("SuspiciousNameCombination")
         @Override
         public void update() {
+            if (!consumeEnergy()) return;
+
             BlockPos pos = seal.getPos();
             World world = seal.getWorld();
             Vec3d front = new Vec3d(seal.getFace().getDirectionVec());
@@ -53,8 +63,6 @@ public class SealLocalRain extends SealType {
             Vec3d skew2 = new Vec3d(front.y, front.z, front.x);
 
             for (int i = 0; i < 10; i++) {
-                // sorry for the scala ;_;
-                // this time there's no Math.whatever to save you >:D
                 Vec3d velocity =
                     front.scale(1.0 + world.rand.nextGaussian() * 0.25).scale(0.25)
                         .add(skew1.scale(world.rand.nextGaussian() * 0.1))
@@ -68,7 +76,8 @@ public class SealLocalRain extends SealType {
                     Vec3d pt = start;
                     Vec3d vel = velocity;
                     int tickCount = 1000; // simulate max 1000 ticks
-                    outer: while (tickCount-- > 0) {
+                    outer:
+                    while (tickCount-- > 0) {
                         vel = vel.addVector(0, -0.06, 0); // gravity
                         Vec3d newPos = pt.add(vel);
                         vel = vel.scale(0.9800000190734863); // air resistance
@@ -80,6 +89,7 @@ public class SealLocalRain extends SealType {
                                 continue;
                             RayTraceResult result = aabb.calculateIntercept(pt, newPos);
                             if (result == null) continue;
+                            if (result.sideHit != EnumFacing.DOWN) continue;
                             BlockPos center = new BlockPos(result.hitVec);
                             for (BlockPos p : BlockPos.getAllInBox(center.offset(result.sideHit), center.offset(result.sideHit.getOpposite()))) {
                                 IBlockState state = world.getBlockState(p);

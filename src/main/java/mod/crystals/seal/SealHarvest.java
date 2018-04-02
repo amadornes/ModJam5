@@ -1,7 +1,5 @@
 package mod.crystals.seal;
 
-import gnu.trove.map.TObjectFloatMap;
-import gnu.trove.map.hash.TObjectFloatHashMap;
 import mod.crystals.api.NatureType;
 import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
@@ -23,6 +21,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 public class SealHarvest extends SealType {
 
@@ -43,10 +42,9 @@ public class SealHarvest extends SealType {
         return new Instance(seal);
     }
 
-    private static class Instance implements ISealInstance {
+    private static class Instance extends AbstractSeal {
 
         private final ISeal seal;
-        private final TObjectFloatMap<NatureType> energy = new TObjectFloatHashMap<>();
 
         private int cooldown = 80; // prevent exploiting it
 
@@ -55,15 +53,12 @@ public class SealHarvest extends SealType {
         }
 
         @Override
-        public float getAccepted(NatureType type) {
-            if (type == NatureType.EARTH) return 100 - energy.get(type);
-            if (type == NatureType.DISTORTED) return 50 - energy.get(type);
-            return 0;
-        }
+        public void addRequirements(BiConsumer<NatureType, Float> capacity, BiConsumer<NatureType, Float> consumption) {
+            capacity.accept(NatureType.EARTH, 100f);
+            capacity.accept(NatureType.DISTORTED, 50f);
 
-        @Override
-        public void addNature(NatureType type, float amount) {
-            energy.adjustOrPutValue(type, amount, amount);
+            consumption.accept(NatureType.EARTH, 50f);
+            consumption.accept(NatureType.DISTORTED, 25f);
         }
 
         @Override
@@ -75,9 +70,7 @@ public class SealHarvest extends SealType {
                 return;
             }
 
-            if (energy.get(NatureType.EARTH) < 50 || energy.get(NatureType.DISTORTED) < 25) return;
-            energy.adjustValue(NatureType.EARTH, -50);
-            energy.adjustValue(NatureType.DISTORTED, -25);
+            if (!consumeEnergy()) return;
 
             BlockPos pos = seal.getPos();
             BlockPos center = pos.add(new BlockPos(new Vec3d(seal.getFace().getDirectionVec()).scale(3)));
