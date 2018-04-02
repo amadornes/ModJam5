@@ -6,8 +6,8 @@ import mod.crystals.api.IResonant;
 import mod.crystals.api.NatureType;
 import mod.crystals.crystal.ILaserSource;
 import mod.crystals.crystal.Ray;
+import mod.crystals.init.CrystalsRegistries;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.awt.*;
@@ -82,7 +82,7 @@ public class TileCrystalCreative extends TileCrystalBase {
         @Override
         public TObjectFloatMap<NatureType> getNatureAmounts() {
             TObjectFloatMap<NatureType> map = new TObjectFloatHashMap<>();
-            GameRegistry.findRegistry(NatureType.class).getValuesCollection().forEach(it -> map.put(it, 1.0f));
+            CrystalsRegistries.natureRegistry.getValuesCollection().forEach(it -> map.put(it, 1.0f));
             return map;
         }
 
