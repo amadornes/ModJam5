@@ -100,7 +100,7 @@ public class SealLocalRain extends SealType {
                     if (Math.random() > 1 / 64F) continue;
                     double speed = (0.75 + 0.25 * Math.random()) * 0.125;
                     double off = Math.random() * 0.125;
-                    Vec3d pos = center.add(perp1.scale(i / 13F)).add(perp2.scale(j / 13F)).add(front.scale(off));
+                    Vec3d pos = center.add(perp1.scale(i / 10F)).add(perp2.scale(j / 10F)).add(front.scale(off));
                     if (face.getAxis() != EnumFacing.Axis.Y) {
                         int h = face.getAxis() == EnumFacing.Axis.X ? j : i;
                         speed += (0.75 + (26 - h) / 26F) * 0.25;
