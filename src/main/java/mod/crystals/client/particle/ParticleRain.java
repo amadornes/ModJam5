@@ -2,6 +2,8 @@ package mod.crystals.client.particle;
 
 import mod.crystals.CrystalsMod;
 import mod.crystals.block.BlockSeal;
+import mod.crystals.block.BlockSealExt;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -71,10 +73,11 @@ public class ParticleRain extends Particle {
         IBlockState iblockstate = this.world.getBlockState(blockpos);
         Material material = iblockstate.getMaterial();
 
-        if (!(iblockstate.getBlock() instanceof BlockSeal) && (material.isLiquid() || material.isSolid())) { // FIXME make this not hardcoded
+        Block block = iblockstate.getBlock();
+        if (!(block instanceof BlockSeal || block instanceof BlockSealExt) && (material.isLiquid() || material.isSolid())) { // FIXME make this not hardcoded
             double d0 = 0.0D;
 
-            if (iblockstate.getBlock() instanceof BlockLiquid) {
+            if (block instanceof BlockLiquid) {
                 d0 = (double) BlockLiquid.getLiquidHeightPercent(iblockstate.getValue(BlockLiquid.LEVEL));
             }
 
