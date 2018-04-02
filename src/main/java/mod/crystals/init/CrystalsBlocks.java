@@ -1,12 +1,10 @@
 package mod.crystals.init;
 
 import mod.crystals.CrystalsMod;
-import mod.crystals.block.BlockCrystal;
-import mod.crystals.block.BlockPost;
-import mod.crystals.block.BlockSeal;
-import mod.crystals.block.BlockSlate;
+import mod.crystals.block.*;
 import mod.crystals.item.ItemSeal;
 import mod.crystals.tile.TileCrystal;
+import mod.crystals.tile.TileCrystalCreative;
 import mod.crystals.tile.TileSeal;
 import mod.crystals.tile.TileSlate;
 import net.minecraft.block.Block;
@@ -24,6 +22,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class CrystalsBlocks {
 
     public static final Block crystal = new BlockCrystal();
+    public static final Block crystal_creative = new BlockCrystalCreative();
     public static final Block post = new BlockPost();
     public static final Block slate = new BlockSlate();
     public static final Block seal = new BlockSeal();
@@ -33,6 +32,7 @@ public class CrystalsBlocks {
         IForgeRegistry<Block> registry = event.getRegistry();
 
         registerBlock(registry, crystal, TileCrystal.class, "crystal");
+        registerBlock(registry, crystal_creative, TileCrystalCreative.class, "crystal_creative");
         registerBlock(registry, post, "post");
         registerBlock(registry, slate, TileSlate.class, "slate");
         registerBlock(registry, seal, TileSeal.class, "seal");
@@ -43,6 +43,7 @@ public class CrystalsBlocks {
         IForgeRegistry<Item> registry = event.getRegistry();
 
         registerItem(registry, crystal, "crystal");
+        registerItem(registry, crystal_creative, "crystal_creative");
         registerItem(registry, post, "post");
         registerItem(registry, slate, "slate");
         CrystalsItems.registerItem(registry, new ItemSeal(seal), "seal");

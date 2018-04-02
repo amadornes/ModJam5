@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-import static mod.crystals.client.particle.ParticleType.*;
+import static mod.crystals.client.particle.ParticleType.posVelocity;
 
 public class SealLocalRain extends SealType {
 
@@ -77,7 +77,7 @@ public class SealLocalRain extends SealType {
         @SuppressWarnings("SuspiciousNameCombination")
         @Override
         public void update() {
-            //if (!consumeEnergy()) return;
+            if (!consumeEnergy()) return;
 
             World world = seal.getWorld();
             EnumFacing face = seal.getFace();

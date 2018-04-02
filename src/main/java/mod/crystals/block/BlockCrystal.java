@@ -1,19 +1,13 @@
 package mod.crystals.block;
 
-import mod.crystals.api.ILaserRayTrace;
-import mod.crystals.api.IResonant;
 import mod.crystals.tile.TileCrystal;
-import mod.crystals.util.UnlistedPropertyInt;
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -25,49 +19,45 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 
 import javax.annotation.Nullable;
 
-public class BlockCrystal extends BlockBase implements ITileEntityProvider, ILaserRayTrace {
+public class BlockCrystal extends BlockCrystalBase {
 
     private static final AxisAlignedBB[] AABBS_GROUND = {
-            new AxisAlignedBB(6 / 16F, 0, 6 / 16F, 10 / 16F, 8.5 / 16F, 10 / 16F),
-            new AxisAlignedBB(6 / 16F, 7.5 / 16F, 6 / 16F, 10 / 16F, 1, 10 / 16F),
-            new AxisAlignedBB(6 / 16F, 6 / 16F, 0, 10 / 16F, 10 / 16F, 8.5 / 16F),
-            new AxisAlignedBB(6 / 16F, 6 / 16F, 7.5 / 16F, 10 / 16F, 10 / 16F, 1),
-            new AxisAlignedBB(0, 6 / 16F, 6 / 16F, 8.5 / 16F, 10 / 16F, 10 / 16F),
-            new AxisAlignedBB(7.5 / 16F, 6 / 16F, 6 / 16F, 1, 10 / 16F, 10 / 16F)
+        new AxisAlignedBB(6 / 16F, 0, 6 / 16F, 10 / 16F, 8.5 / 16F, 10 / 16F),
+        new AxisAlignedBB(6 / 16F, 7.5 / 16F, 6 / 16F, 10 / 16F, 1, 10 / 16F),
+        new AxisAlignedBB(6 / 16F, 6 / 16F, 0, 10 / 16F, 10 / 16F, 8.5 / 16F),
+        new AxisAlignedBB(6 / 16F, 6 / 16F, 7.5 / 16F, 10 / 16F, 10 / 16F, 1),
+        new AxisAlignedBB(0, 6 / 16F, 6 / 16F, 8.5 / 16F, 10 / 16F, 10 / 16F),
+        new AxisAlignedBB(7.5 / 16F, 6 / 16F, 6 / 16F, 1, 10 / 16F, 10 / 16F)
     };
+
     private static final AxisAlignedBB AABB_FLOATING =
-            new AxisAlignedBB(6.5 / 16F, 3.75 / 16F, 6.5 / 16F, 9.5 / 16F, 12.25 / 16F, 9.5 / 16F);
+        new AxisAlignedBB(6.5 / 16F, 3.75 / 16F, 6.5 / 16F, 9.5 / 16F, 12.25 / 16F, 9.5 / 16F);
 
     private static final AxisAlignedBB[] RT_AABBS_GROUND = {
-            new AxisAlignedBB(7 / 16F, 2 / 16F, 7 / 16F, 9 / 16F, 6 / 16F, 9 / 16F),
-            new AxisAlignedBB(7 / 16F, 10 / 16F, 7 / 16F, 9 / 16F, 14 / 16F, 9 / 16F),
-            new AxisAlignedBB(7 / 16F, 7 / 16F, 2 / 16F, 9 / 16F, 9 / 16F, 6 / 16F),
-            new AxisAlignedBB(7 / 16F, 7 / 16F, 10 / 16F, 9 / 16F, 9 / 16F, 14 / 16F),
-            new AxisAlignedBB(2 / 16F, 7 / 16F, 7 / 16F, 6 / 16F, 9 / 16F, 9 / 16F),
-            new AxisAlignedBB(10 / 16F, 7 / 16F, 7 / 16F, 14 / 16F, 9 / 16F, 9 / 16F)
+        new AxisAlignedBB(7 / 16F, 2 / 16F, 7 / 16F, 9 / 16F, 6 / 16F, 9 / 16F),
+        new AxisAlignedBB(7 / 16F, 10 / 16F, 7 / 16F, 9 / 16F, 14 / 16F, 9 / 16F),
+        new AxisAlignedBB(7 / 16F, 7 / 16F, 2 / 16F, 9 / 16F, 9 / 16F, 6 / 16F),
+        new AxisAlignedBB(7 / 16F, 7 / 16F, 10 / 16F, 9 / 16F, 9 / 16F, 14 / 16F),
+        new AxisAlignedBB(2 / 16F, 7 / 16F, 7 / 16F, 6 / 16F, 9 / 16F, 9 / 16F),
+        new AxisAlignedBB(10 / 16F, 7 / 16F, 7 / 16F, 14 / 16F, 9 / 16F, 9 / 16F)
     };
+
     private static final AxisAlignedBB RT_AABB_FLOATING =
-            new AxisAlignedBB(7 / 16F, 6 / 16F, 7 / 16F, 9 / 16F, 10 / 16F, 9 / 16F);
+        new AxisAlignedBB(7 / 16F, 6 / 16F, 7 / 16F, 9 / 16F, 10 / 16F, 9 / 16F);
+
     private static final AxisAlignedBB[] RT_AABBS_BASE = {
-            new AxisAlignedBB(6 / 16F, 0, 6 / 16F, 10 / 16F, 4 / 16F, 10 / 16F),
-            new AxisAlignedBB(6 / 16F, 12 / 16F, 6 / 16F, 10 / 16F, 1, 10 / 16F),
-            new AxisAlignedBB(0, 6 / 16F, 6 / 16F, 4 / 16F, 10 / 16F, 10 / 16F),
-            new AxisAlignedBB(12 / 16F, 6 / 16F, 6 / 16F, 1, 10 / 16F, 10 / 16F),
-            new AxisAlignedBB(6 / 16F, 6 / 16F, 0, 10 / 16F, 10 / 16F, 4 / 16F),
-            new AxisAlignedBB(6 / 16F, 6 / 16F, 12 / 16F, 10 / 16F, 10 / 16F, 1)
+        new AxisAlignedBB(6 / 16F, 0, 6 / 16F, 10 / 16F, 4 / 16F, 10 / 16F),
+        new AxisAlignedBB(6 / 16F, 12 / 16F, 6 / 16F, 10 / 16F, 1, 10 / 16F),
+        new AxisAlignedBB(0, 6 / 16F, 6 / 16F, 4 / 16F, 10 / 16F, 10 / 16F),
+        new AxisAlignedBB(12 / 16F, 6 / 16F, 6 / 16F, 1, 10 / 16F, 10 / 16F),
+        new AxisAlignedBB(6 / 16F, 6 / 16F, 0, 10 / 16F, 10 / 16F, 4 / 16F),
+        new AxisAlignedBB(6 / 16F, 6 / 16F, 12 / 16F, 10 / 16F, 10 / 16F, 1)
     };
 
     public static final IProperty<Variant> VARIANT = PropertyEnum.create("variant", Variant.class);
-    public static final IUnlistedProperty<Integer> COLOR = new UnlistedPropertyInt("color");
-
-    public BlockCrystal() {
-        super(Material.GLASS);
-    }
 
     @Nullable
     @Override
@@ -78,9 +68,9 @@ public class BlockCrystal extends BlockBase implements ITileEntityProvider, ILas
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer.Builder(this)
-                .add(VARIANT)
-                .add(COLOR)
-                .build();
+            .add(VARIANT)
+            .add(BlockCrystalBase.COLOR)
+            .build();
     }
 
     @Override
@@ -91,14 +81,6 @@ public class BlockCrystal extends BlockBase implements ITileEntityProvider, ILas
     @Override
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(VARIANT, Variant.VALUES[meta]);
-    }
-
-    @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileEntity te = world.getTileEntity(pos);
-        if (te == null) return state;
-        IResonant.Default resonant = (IResonant.Default) te.getCapability(IResonant.CAPABILITY, null);
-        return ((IExtendedBlockState) state).withProperty(COLOR, resonant.getColor());
     }
 
     @Override
@@ -139,15 +121,9 @@ public class BlockCrystal extends BlockBase implements ITileEntityProvider, ILas
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        TileCrystal crystal = (TileCrystal) world.getTileEntity(pos);
-        crystal.doJoin(); // TODO: Probably change this
-    }
-
-    @Override
     public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side) {
         return super.canPlaceBlockOnSide(world, pos, side) &&
-                canStayAt(getStateForPlacement(world, pos, side, 0, 0, 0, 0, null, null), world, pos);
+            canStayAt(getStateForPlacement(world, pos, side, 0, 0, 0, 0, null, null), world, pos);
     }
 
     @Override
@@ -198,7 +174,6 @@ public class BlockCrystal extends BlockBase implements ITileEntityProvider, ILas
         public String getName() {
             return name().toLowerCase();
         }
-
     }
 
 }

@@ -4,7 +4,7 @@ import gnu.trove.map.TObjectFloatMap;
 import mod.crystals.api.IResonant;
 import mod.crystals.api.NatureType;
 import mod.crystals.environment.EnvironmentHandler;
-import mod.crystals.tile.TileCrystal;
+import mod.crystals.tile.TileCrystalBase;
 import mod.crystals.util.ResonantUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,8 +58,8 @@ public class ItemTuningFork extends ItemBase {
         TObjectFloatMap<NatureType> itemNatures = ResonantUtils.getNatureTypes(resonant, true);
         float itemRes = resonant.getResonance();
 
-        Set<TileCrystal> crystals = ResonantUtils.getCrystalsAround(world, player.getPosition(), 2, null);
-        for(TileCrystal te : crystals) {
+        Set<TileCrystalBase> crystals = ResonantUtils.getCrystalsAround(world, player.getPosition(), 2, null);
+        for(TileCrystalBase te : crystals) {
             IResonant crystal = te.getCapability(IResonant.CAPABILITY, null);
 
             TObjectFloatMap<NatureType> crystalNatures = ResonantUtils.getNatureTypes(crystal, true);

@@ -5,7 +5,7 @@ import mod.crystals.CrystalsMod;
 import mod.crystals.api.NatureType;
 import mod.crystals.api.seal.ISealInstance;
 import mod.crystals.client.particle.ParticleType;
-import mod.crystals.tile.TileCrystal;
+import mod.crystals.tile.TileCrystalBase;
 import mod.crystals.tile.TileSeal;
 import mod.crystals.util.ResonantUtils;
 import mod.crystals.util.SimpleManager;
@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static mod.crystals.client.particle.ParticleType.*;
+import static mod.crystals.client.particle.ParticleType.posVelocityColor;
 
 public class SealManager extends SimpleManager {
 
@@ -42,13 +42,13 @@ public class SealManager extends SimpleManager {
 
     @Override
     protected void update(World world) {
-        Map<TileCrystal, TObjectFloatMap<NatureType>> natures = new HashMap<>();
+        Map<TileCrystalBase, TObjectFloatMap<NatureType>> natures = new HashMap<>();
 
         for (TileSeal seal : seals) {
             if (seal.getSeal() == null) continue;
             ISealInstance instance = seal.getSeal();
-            for (TileCrystal crystal : findCrystals(seal)) {
-                TObjectFloatMap<NatureType> cNatures = natures.computeIfAbsent(crystal, TileCrystal::visit);
+            for (TileCrystalBase crystal : findCrystals(seal)) {
+                TObjectFloatMap<NatureType> cNatures = natures.computeIfAbsent(crystal, TileCrystalBase::visit);
                 cNatures.forEachEntry((type, max) -> {
                     float accepted = instance.getAccepted(type);
                     if (accepted == 0) return true;
@@ -63,7 +63,7 @@ public class SealManager extends SimpleManager {
         }
     }
 
-    private void spawnParticles(TileSeal seal, TileCrystal crystal, NatureType type, float amt) {
+    private void spawnParticles(TileSeal seal, TileCrystalBase crystal, NatureType type, float amt) {
         Color color = new Color(type.getColor());
         World world = seal.getWorld();
         int count = Math.min(1 + (int) Math.sqrt(amt), 5);
@@ -82,7 +82,7 @@ public class SealManager extends SimpleManager {
         }
     }
 
-    private Iterable<TileCrystal> findCrystals(TileSeal seal) {
+    private Iterable<TileCrystalBase> findCrystals(TileSeal seal) {
         return ResonantUtils.getCrystalsAround(seal.getWorld(), seal.getPos(), 5, null);
     }
 

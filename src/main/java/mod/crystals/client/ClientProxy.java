@@ -2,8 +2,7 @@ package mod.crystals.client;
 
 import mod.crystals.CommonProxy;
 import mod.crystals.CrystalsMod;
-import mod.crystals.util.IBlockAdvancedOutline;
-import mod.crystals.block.BlockCrystal;
+import mod.crystals.block.BlockCrystalBase;
 import mod.crystals.block.BlockSlate;
 import mod.crystals.client.particle.ParticleCircle;
 import mod.crystals.client.particle.ParticleRain;
@@ -16,6 +15,7 @@ import mod.crystals.init.CrystalsBlocks;
 import mod.crystals.init.CrystalsItems;
 import mod.crystals.tile.TileCrystal;
 import mod.crystals.tile.TileSeal;
+import mod.crystals.util.IBlockAdvancedOutline;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -72,10 +72,10 @@ public class ClientProxy extends CommonProxy {
         BlockColors blockColors = mc.getBlockColors();
         blockColors.registerBlockColorHandler((state, world, pos, index) -> {
             if (index == 1) return 0xFFFFFF;
-            Integer color = ((IExtendedBlockState) state).getValue(BlockCrystal.COLOR);
+            Integer color = ((IExtendedBlockState) state).getValue(BlockCrystalBase.COLOR);
             if (color == null) return 0x000000;
             return color;
-        }, CrystalsBlocks.crystal);
+        }, CrystalsBlocks.crystal, CrystalsBlocks.crystal_creative);
         blockColors.registerBlockColorHandler((state, world, pos, index) -> {
             if (index < 0 || index >= 4) return 0x000000;
             Integer color = (Integer) ((IExtendedBlockState) state).getValue(BlockSlate.COLORS[index]);
@@ -97,6 +97,7 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onModelRegister(ModelRegistryEvent event) {
         addModel(CrystalsBlocks.crystal, 0, "inventory");
+        addModel(CrystalsBlocks.crystal_creative, 0, "inventory");
         addModel(CrystalsBlocks.slate, 0, "inventory");
         addItemModel(CrystalsItems.tuning_fork, 0, "tuning_fork");
         addItemModel(CrystalsItems.tuning_fork, 1, "tuning_fork_vibrating");
@@ -117,6 +118,7 @@ public class ClientProxy extends CommonProxy {
         wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "variant=south"), TintWrapper::new);
         wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "variant=west"), TintWrapper::new);
         wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "variant=east"), TintWrapper::new);
+        wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal_creative.getRegistryName(), ""), TintWrapper::new);
     }
 
     private void wrap(ModelBakeEvent event, ModelResourceLocation name, Function<IBakedModel, ? extends IBakedModel> wrapper) {

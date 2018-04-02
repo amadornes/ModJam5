@@ -6,7 +6,8 @@ import mod.crystals.api.IResonant;
 import mod.crystals.api.NatureType;
 import mod.crystals.capability.CapabilityCrystalCache;
 import mod.crystals.init.CrystalsRegistries;
-import mod.crystals.tile.TileCrystal;
+import mod.crystals.tile.TileCrystalBase;
+import mod.crystals.tile.TileCrystalCreative;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -21,14 +22,14 @@ public class ResonantUtils {
 
     public static IResonant getCrystal(IBlockAccess world, BlockPos pos) {
         TileEntity te = world.getTileEntity(pos);
-        if (te != null && te instanceof TileCrystal) {
+        if (te != null && te instanceof TileCrystalBase) {
             return te.getCapability(IResonant.CAPABILITY, null);
         }
         return null;
     }
 
-    public static Set<TileCrystal> getCrystalsAround(World world, BlockPos pos, float radius, TileCrystal ignored) {
-        Set<TileCrystal> crystals = new HashSet<>();
+    public static Set<TileCrystalBase> getCrystalsAround(World world, BlockPos pos, float radius, TileCrystalBase ignored) {
+        Set<TileCrystalBase> crystals = new HashSet<>();
         ChunkPos chunkPos = new ChunkPos(pos);
         // TODO: Optimize to only check chunks in the correct range
         for (int x = -1; x <= 1; x++) {
@@ -36,7 +37,7 @@ public class ResonantUtils {
                 if (!world.isBlockLoaded(pos.add(16 * x, 0, 16 * z))) continue;
 
                 Chunk c = world.getChunkFromChunkCoords(chunkPos.x + x, chunkPos.z + z);
-                for (TileCrystal crystal : c.getCapability(CapabilityCrystalCache.CAPABILITY, null).getCrystals()) {
+                for (TileCrystalBase crystal : c.getCapability(CapabilityCrystalCache.CAPABILITY, null).getCrystals()) {
                     if (crystal == ignored) continue;
                     if (crystal.getPos().distanceSq(pos) < radius * radius) {
                         crystals.add(crystal);
@@ -95,6 +96,8 @@ public class ResonantUtils {
     }
 
     public static float getMatch(IResonant res1, IResonant res2) {
+        // TODO not hardcode this?
+        if (res1 == TileCrystalCreative.CreativeResonant.instance || res2 == TileCrystalCreative.CreativeResonant.instance) return 1.0f;
         TObjectFloatMap<NatureType> map1 = getNatureTypes(res1, false);
         TObjectFloatMap<NatureType> map2 = getNatureTypes(res2, false);
         Set<NatureType> visited = new HashSet<>();
