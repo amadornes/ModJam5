@@ -55,11 +55,12 @@ public class SealFireBreath extends SealType {
                 if (!(entity instanceof EntityLivingBase)) continue;
                 Vec3d ePos = entity.getPositionEyes(0);
                 if (ePos.squareDistanceTo(center) > RADIUS * RADIUS) continue;
-                Vec3d dir = ePos.subtract(center).scale(0.05);
-                Vec3d up = new Vec3d(0, 1, 0);
-                Vec3d side = dir.normalize().crossProduct(up).normalize();
 
                 if (seal.getWorld().isRemote) {
+                    Vec3d dir = ePos.subtract(center).scale(0.05);
+                    Vec3d up = new Vec3d(0, 1, 0);
+                    Vec3d side = dir.normalize().crossProduct(up).normalize();
+                    
                     for (int x = -3; x <= 3; x++) {
                         for (int y = -3; y <= 3; y++) {
                             if (x * x + y * y > 3 * 3) continue;
