@@ -51,9 +51,9 @@ public class ParticleRain extends Particle {
         this.motionY -= (double) this.particleGravity;
 
         this.move(this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.9800000190734863D;
+        this.motionX = Math.copySign(Math.max(0, Math.abs(motionX) - 0.05), motionX);
         this.motionY *= 0.9800000190734863D;
-        this.motionZ *= 0.9800000190734863D;
+        this.motionZ = Math.copySign(Math.max(0, Math.abs(motionZ) - 0.05), motionZ);
 
         if (this.particleMaxAge-- <= 0) {
             this.setExpired();

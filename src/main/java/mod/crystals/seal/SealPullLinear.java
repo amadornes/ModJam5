@@ -55,7 +55,7 @@ public class SealPullLinear extends SealType {
         entities.forEach(e -> {
             Vec3d dir = e.getPositionVector().subtract(center).scale(pull ? -1 : 1).normalize().scale(0.1);
             e.motionX += dir.x;
-            e.motionY += dir.y;
+            e.motionY += dir.y + 0.02;
             e.motionZ += dir.z;
         });
     }

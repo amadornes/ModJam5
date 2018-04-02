@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -23,7 +24,29 @@ public class SealRenderer extends TileEntitySpecialRenderer<TileSeal> {
         if(te.getSeal() == null) return;
 
         pushMatrix();
-        translate(x + 0.5, y + 0.002, z + 0.5);
+        translate(x + 0.5, y + 0.5, z + 0.5);
+        switch (te.getFace()) {
+            case DOWN:
+                rotate(180, 0, 0, 1);
+                break;
+            case UP:
+                break;
+            case NORTH:
+                rotate(180, 0, 1, 0);
+                break;
+            case SOUTH:
+                break;
+            case WEST:
+                rotate(270, 0, 1, 0);
+                break;
+            case EAST:
+                rotate(90, 0, 1, 0);
+                break;
+        }
+        if(te.getFace().getAxis() != EnumFacing.Axis.Y){
+            rotate(90, 1, 0, 0);
+        }
+        translate(0, 0.002 - 0.5, 0);
 
         float time = (float) (((double) te.getWorld().getTotalWorldTime() + partialTicks) % 500) / 500F;
         rotate(360 * time, 0, 1, 0);
