@@ -3,6 +3,8 @@ package mod.crystals.tile;
 import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
 import mod.crystals.api.seal.SealType;
+import mod.crystals.block.BlockSeal;
+import mod.crystals.block.BlockSealExt;
 import mod.crystals.capability.CapabilitySealManager;
 import mod.crystals.init.CrystalsRegistries;
 import net.minecraft.block.BlockDirectional;
@@ -79,6 +81,11 @@ public class TileSeal extends TileEntity implements ITickable {
             setSeal(type);
             seal.readFromNBT(tag.getCompoundTag("data"));
         }
+    }
+
+    @SuppressWarnings("SuspiciousNameCombination")
+    public Iterable<BlockPos> getSealBox() {
+        return BlockSealExt.getSealBounds(BlockSeal.SEAL_RADIUS, getFace(), getPos());
     }
 
     @Nullable

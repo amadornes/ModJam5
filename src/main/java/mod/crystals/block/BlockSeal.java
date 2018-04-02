@@ -4,6 +4,7 @@ import mod.crystals.api.seal.SealType;
 import mod.crystals.init.CrystalsBlocks;
 import mod.crystals.init.CrystalsRegistries;
 import mod.crystals.tile.TileSeal;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -13,22 +14,24 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockSeal extends BlockBase implements ITileEntityProvider {
+
+    public static final int SEAL_RADIUS = 1;
 
     public BlockSeal() {
         super(Material.ROCK);
@@ -43,8 +46,8 @@ public class BlockSeal extends BlockBase implements ITileEntityProvider {
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer.Builder(this)
-                .add(BlockDirectional.FACING)
-                .build();
+            .add(BlockDirectional.FACING)
+            .build();
     }
 
     @Override
@@ -84,12 +87,50 @@ public class BlockSeal extends BlockBase implements ITileEntityProvider {
     }
 
     @Override
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+        TileSeal te = (TileSeal) world.getTileEntity(pos);
+        return createStack(te.getSealType());
+    }
+
+    @Override
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+        TileSeal te = (TileSeal) world.getTileEntity(pos);
+        drops.add(createStack(te.getSealType()));
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        Vec3d front = new Vec3d(state.getValue(BlockDirectional.FACING).getDirectionVec());
+        Vec3d off1 = new Vec3d(front.y, front.z, front.x).scale(SEAL_RADIUS);
+        Vec3d off2 = new Vec3d(front.z, front.x, front.y).scale(SEAL_RADIUS);
+        Vec3d off3 = off1.add(off2);
+        Vec3d front1 = front.scale(15/16F);
+        return FULL_BLOCK_AABB
+            .grow(off3.x, off3.y, off3.z)
+            .contract(front1.x, front1.y, front1.z);
+    }
+
+    @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag advanced) {
         if (advanced != ITooltipFlag.TooltipFlags.ADVANCED) return;
         NBTTagCompound tag = stack.getTagCompound();
         if (tag == null) return;
         if (!tag.hasKey("type")) return;
         tooltip.add("Seal type: " + tag.getString("type"));
+    }
+
+    @Override
+    public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side) {
+        return super.canPlaceBlockOnSide(worldIn, pos, side) && BlockSealExt.canPlaceAt(worldIn, pos, side, SEAL_RADIUS);
+    }
+
+    @Override
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
+        super.neighborChanged(state, worldIn, pos, blockIn, fromPos);
+        if (!BlockSealExt.checkIntegrity(worldIn, pos)) {
+            dropBlockAsItem(worldIn, pos, state, 0);
+            worldIn.setBlockToAir(pos);
+        }
     }
 
     @Override
@@ -100,6 +141,8 @@ public class BlockSeal extends BlockBase implements ITileEntityProvider {
         SealType type = CrystalsRegistries.sealTypeRegistry.getValue(new ResourceLocation(tag.getString("type")));
         TileSeal te = (TileSeal) world.getTileEntity(pos);
         te.setSeal(type);
+        BlockSealExt.placeSealExt(world, pos);
+
     }
 
     @Override

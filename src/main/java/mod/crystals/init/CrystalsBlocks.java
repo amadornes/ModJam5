@@ -3,10 +3,7 @@ package mod.crystals.init;
 import mod.crystals.CrystalsMod;
 import mod.crystals.block.*;
 import mod.crystals.item.ItemSeal;
-import mod.crystals.tile.TileCrystal;
-import mod.crystals.tile.TileCrystalCreative;
-import mod.crystals.tile.TileSeal;
-import mod.crystals.tile.TileSlate;
+import mod.crystals.tile.*;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -26,6 +23,7 @@ public class CrystalsBlocks {
     public static final Block post = new BlockPost();
     public static final Block slate = new BlockSlate();
     public static final Block seal = new BlockSeal();
+    public static final Block seal_ext = new BlockSealExt();
 
     @SubscribeEvent
     public static void onBlockRegistration(RegistryEvent.Register<Block> event) {
@@ -36,6 +34,7 @@ public class CrystalsBlocks {
         registerBlock(registry, post, "post");
         registerBlock(registry, slate, TileSlate.class, "slate");
         registerBlock(registry, seal, TileSeal.class, "seal");
+        registerBlock(registry, seal_ext, TileSealExt.class, "seal_ext");
     }
 
     @SubscribeEvent
