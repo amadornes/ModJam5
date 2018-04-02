@@ -29,6 +29,8 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static java.lang.Math.abs;
+
 public class BlockSeal extends BlockBase implements ITileEntityProvider {
 
     public static final int SEAL_RADIUS = 1;
@@ -104,9 +106,9 @@ public class BlockSeal extends BlockBase implements ITileEntityProvider {
         Vec3d off1 = new Vec3d(front.y, front.z, front.x).scale(SEAL_RADIUS);
         Vec3d off2 = new Vec3d(front.z, front.x, front.y).scale(SEAL_RADIUS);
         Vec3d off3 = off1.add(off2);
-        Vec3d front1 = front.scale(15/16F);
+        Vec3d front1 = front.scale(15 / 16F);
         return FULL_BLOCK_AABB
-            .grow(off3.x, off3.y, off3.z)
+            .grow(abs(off3.x), abs(off3.y), abs(off3.z))
             .contract(front1.x, front1.y, front1.z);
     }
 
