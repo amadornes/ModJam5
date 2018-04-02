@@ -1,6 +1,5 @@
 package mod.crystals.client.particle;
 
-import mod.crystals.CrystalsMod;
 import mod.crystals.block.BlockSeal;
 import mod.crystals.block.BlockSealExt;
 import net.minecraft.block.Block;
@@ -8,24 +7,12 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 public class ParticleRain extends Particle {
-
-    private static final ResourceLocation PARTICLE = new ResourceLocation(CrystalsMod.MODID, "textures/entity/particle.png");
-    private static final VertexFormat VERTEX_FORMAT = new VertexFormat()
-        .addElement(DefaultVertexFormats.POSITION_3F)
-        .addElement(DefaultVertexFormats.TEX_2F)
-        .addElement(DefaultVertexFormats.COLOR_4UB)
-        .addElement(DefaultVertexFormats.TEX_2S)
-        .addElement(DefaultVertexFormats.NORMAL_3B)
-        .addElement(DefaultVertexFormats.PADDING_1B);
 
     public ParticleRain(World worldIn, double x, double y, double z, double vX, double vY, double vZ) {
         super(worldIn, x, y, z);

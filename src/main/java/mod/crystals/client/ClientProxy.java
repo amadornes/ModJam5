@@ -6,7 +6,6 @@ import mod.crystals.block.BlockCrystalBase;
 import mod.crystals.block.BlockSlate;
 import mod.crystals.client.particle.ParticleCircle;
 import mod.crystals.client.particle.ParticleRain;
-import mod.crystals.client.particle.ParticleTestIGuess;
 import mod.crystals.client.particle.ParticleType;
 import mod.crystals.client.particle.ParticleType.ParticleParams;
 import mod.crystals.client.render.FloatingCrystalRenderer;
@@ -61,7 +60,6 @@ public class ClientProxy extends CommonProxy {
         mc = Minecraft.getMinecraft();
         OBJLoader.INSTANCE.addDomain(CrystalsMod.MODID);
 
-        registerParticle(ParticleType.TEST, (world, p) -> new ParticleTestIGuess(world, p.position.x, p.position.y, p.position.z, 0, 0, 0, p.color.x, p.color.y, p.color.z));
         registerParticle(ParticleType.RAIN, (world, p) -> new ParticleRain(world, p.position.x, p.position.y, p.position.z, p.velocity.x, p.velocity.y, p.velocity.z));
         registerParticle(ParticleType.CIRCLE, (world, p) -> new ParticleCircle(world, p.position.x, p.position.y, p.position.z, p.velocity.x, p.velocity.y, p.velocity.z, p.color.x, p.color.y, p.color.z));
     }
@@ -92,8 +90,8 @@ public class ClientProxy extends CommonProxy {
         float chance = (3 - Minecraft.getMinecraft().gameSettings.particleSetting) / 3F;
         if (world.rand.nextFloat() > chance) return;
         Optional.ofNullable(particleGenerators.get(type))
-                .map(it -> it.apply(world, params))
-                .ifPresent(mc.effectRenderer::addEffect);
+            .map(it -> it.apply(world, params))
+            .ifPresent(mc.effectRenderer::addEffect);
     }
 
     @SubscribeEvent
@@ -151,8 +149,8 @@ public class ClientProxy extends CommonProxy {
         Block block = state.getBlock();
         if (block instanceof IBlockAdvancedOutline) {
             ((IBlockAdvancedOutline) block).getOutlineBoxes(world, pos, state).stream()
-                    .map(it -> it.offset(pos))
-                    .forEach(it -> drawSelectionBox(world, e.getPlayer(), pos, it, e.getPartialTicks()));
+                .map(it -> it.offset(pos))
+                .forEach(it -> drawSelectionBox(world, e.getPlayer(), pos, it, e.getPartialTicks()));
             e.setCanceled(true);
         }
     }

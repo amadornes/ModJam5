@@ -4,10 +4,11 @@ import mod.crystals.init.CrystalsBlocks;
 import mod.crystals.tile.TileSeal;
 import mod.crystals.tile.TileSealExt;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -23,7 +24,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -52,6 +52,11 @@ public class BlockSealExt extends BlockBase implements ITileEntityProvider {
     @Override
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
         if (!checkIntegrity(world, pos)) {
+            world.setBlockToAir(pos);
+            return;
+        }
+        if (!checkForSupport(world, pos)) {
+            dropBlockAsItem(world, pos, state, 0);
             world.setBlockToAir(pos);
         }
     }
@@ -88,8 +93,11 @@ public class BlockSealExt extends BlockBase implements ITileEntityProvider {
         return sealState.getBoundingBox(world, pos).offset(pos.subtract(sealPos)).intersect(FULL_BLOCK_AABB);
     }
 
+    @Nullable
     @Override
-    public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {}
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess world, BlockPos pos) {
+        return null;
+    }
 
     // --------------------------------------------------------------------
 
@@ -121,9 +129,21 @@ public class BlockSealExt extends BlockBase implements ITileEntityProvider {
     public static boolean canPlaceAt(IBlockAccess world, BlockPos pos, EnumFacing face, int radius) {
         for (BlockPos cp : getSealBounds(radius, face, pos)) {
             IBlockState state = world.getBlockState(cp);
+            if (!checkForSupport(world, cp, face)) return false;
             if (!state.getBlock().isReplaceable(world, cp)) return false;
         }
         return true;
+    }
+
+    public static boolean checkForSupport(IBlockAccess world, BlockPos pos, EnumFacing face) {
+        BlockPos support = pos.offset(face.getOpposite());
+        return world.getBlockState(support).getBlockFaceShape(world, support, face) == BlockFaceShape.SOLID;
+    }
+
+    public static boolean checkForSupport(IBlockAccess world, BlockPos pos) {
+        @SuppressWarnings("ConstantConditions")
+        EnumFacing f = world.getBlockState(getSealPos(world, pos)).getValue(BlockDirectional.FACING);
+        return checkForSupport(world, pos, f);
     }
 
     public static void placeSealExt(World world, BlockPos pos) {

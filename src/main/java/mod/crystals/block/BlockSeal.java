@@ -12,7 +12,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -41,7 +40,7 @@ public class BlockSeal extends BlockBase implements ITileEntityProvider {
 
     @Nullable
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    public TileEntity createNewTileEntity(World world, int meta) {
         return new TileSeal();
     }
 
@@ -67,8 +66,10 @@ public class BlockSeal extends BlockBase implements ITileEntityProvider {
         return getDefaultState().withProperty(BlockDirectional.FACING, facing);
     }
 
+    @Nullable
     @Override
-    public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess world, BlockPos pos) {
+        return null;
     }
 
     @Override
@@ -122,16 +123,21 @@ public class BlockSeal extends BlockBase implements ITileEntityProvider {
     }
 
     @Override
-    public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side) {
-        return super.canPlaceBlockOnSide(worldIn, pos, side) && BlockSealExt.canPlaceAt(worldIn, pos, side, SEAL_RADIUS);
+    public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side) {
+        return super.canPlaceBlockOnSide(world, pos, side) && BlockSealExt.canPlaceAt(world, pos, side, SEAL_RADIUS);
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
-        super.neighborChanged(state, worldIn, pos, blockIn, fromPos);
-        if (!BlockSealExt.checkIntegrity(worldIn, pos)) {
-            dropBlockAsItem(worldIn, pos, state, 0);
-            worldIn.setBlockToAir(pos);
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
+        super.neighborChanged(state, world, pos, blockIn, fromPos);
+        if (!BlockSealExt.checkIntegrity(world, pos)) {
+            dropBlockAsItem(world, pos, state, 0);
+            world.setBlockToAir(pos);
+            return;
+        }
+        if (!BlockSealExt.checkForSupport(world, pos)) {
+            dropBlockAsItem(world, pos, state, 0);
+            world.setBlockToAir(pos);
         }
     }
 

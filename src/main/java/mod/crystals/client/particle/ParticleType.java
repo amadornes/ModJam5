@@ -10,8 +10,6 @@ public class ParticleType<T extends ParticleType.ParticleParams> {
 
     public final int type = counter++;
 
-    public static final ParticleType<PPosColor> TEST = new ParticleType<>();
-
     public static final ParticleType<PPosVelocity> RAIN = new ParticleType<>();
     public static final ParticleType<PPosVelocityColor> CIRCLE = new ParticleType<>();
 
