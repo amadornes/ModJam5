@@ -66,7 +66,6 @@ public class RayManager extends SimpleManager {
 
     protected void update(World world) {
         for (Ray ray : needsUpdate) {
-            System.out.println("Updating ray " + ray);
             ray.update(world);
         }
         needsUpdate.clear();
