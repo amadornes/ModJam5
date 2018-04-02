@@ -56,21 +56,22 @@ public abstract class AbstractSeal implements ISealInstance {
     //
     // }
 
-    protected AxisAlignedBB getAreaInFront(float radius){
+    public static AxisAlignedBB getAreaInFront(ISeal seal, float radius, boolean extend){
         EnumFacing face = seal.getFace().getOpposite();
         AxisAlignedBB bounds = new AxisAlignedBB(seal.getPos());
+        float depth = extend ? radius * 2 : radius;
         switch (face.getAxis()) {
             case X:
                 bounds = bounds.expand(0, -radius, -radius).expand(0, radius, radius)
-                        .expand(face.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ? radius : -radius, 0, 0);
+                        .expand(face.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ? depth : -depth, 0, 0);
                 break;
             case Y:
                 bounds = bounds.expand(-radius, 0, -radius).expand(radius, 0, radius)
-                        .expand(0, face.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ? radius : -radius, 0);
+                        .expand(0, face.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ? depth : -depth, 0);
                 break;
             case Z:
                 bounds = bounds.expand(-radius, -radius, 0).expand(radius, radius, 0)
-                        .expand(0, 0, face.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ? radius : -radius);
+                        .expand(0, 0, face.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ? depth : -depth);
                 break;
         }
         return bounds;

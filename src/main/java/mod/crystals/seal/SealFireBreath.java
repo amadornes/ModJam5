@@ -46,7 +46,7 @@ public class SealFireBreath extends SealType {
         @Override
         public void update() {
             EnumFacing face = seal.getFace().getOpposite();
-            AxisAlignedBB bounds = getAreaInFront(RADIUS);
+            AxisAlignedBB bounds = getAreaInFront(seal, RADIUS, false);
             Vec3d center = new Vec3d(seal.getPos())
                     .addVector(0.5, 0.5, 0.5)
                     .add(new Vec3d(face.getDirectionVec()).scale(0.5));
@@ -60,7 +60,7 @@ public class SealFireBreath extends SealType {
                     Vec3d dir = ePos.subtract(center).scale(0.05);
                     Vec3d up = new Vec3d(0, 1, 0);
                     Vec3d side = dir.normalize().crossProduct(up).normalize();
-                    
+
                     for (int x = -3; x <= 3; x++) {
                         for (int y = -3; y <= 3; y++) {
                             if (x * x + y * y > 3 * 3) continue;

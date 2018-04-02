@@ -54,21 +54,7 @@ public class SealPullRadial extends SealType {
         if (seal.getWorld().isBlockIndirectlyGettingPowered(seal.getPos()) > 0) return;
 
         EnumFacing face = seal.getFace().getOpposite();
-        AxisAlignedBB bounds = new AxisAlignedBB(seal.getPos());
-        switch (face.getAxis()) {
-            case X:
-                bounds = bounds.expand(0, -RADIUS / 2, -RADIUS / 2).expand(0, RADIUS / 2, RADIUS / 2)
-                        .expand(face.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ? RADIUS : -RADIUS, 0, 0);
-                break;
-            case Y:
-                bounds = bounds.expand(-RADIUS / 2, 0, -RADIUS / 2).expand(RADIUS / 2, 0, RADIUS / 2)
-                        .expand(0, face.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ? RADIUS : -RADIUS, 0);
-                break;
-            case Z:
-                bounds = bounds.expand(-RADIUS / 2, -RADIUS / 2, 0).expand(RADIUS / 2, RADIUS / 2, 0)
-                        .expand(0, 0, face.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ? RADIUS : -RADIUS);
-                break;
-        }
+        AxisAlignedBB bounds = AbstractSeal.getAreaInFront(seal, RADIUS, true);
         Vec3d center = new Vec3d(seal.getPos())
                 .addVector(0.5, 0.5, 0.5)
                 .add(new Vec3d(face.getDirectionVec()).scale(0.5));
