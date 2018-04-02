@@ -4,6 +4,7 @@ import gnu.trove.map.TObjectFloatMap;
 import mod.crystals.api.IResonant;
 import mod.crystals.api.NatureType;
 import mod.crystals.environment.EnvironmentHandler;
+import mod.crystals.tile.TileCrystal;
 import mod.crystals.util.ResonantUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,8 +13,6 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -21,6 +20,7 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Set;
 
 public class ItemTuningFork extends ItemBase {
 
@@ -58,13 +58,9 @@ public class ItemTuningFork extends ItemBase {
         TObjectFloatMap<NatureType> itemNatures = ResonantUtils.getNatureTypes(resonant, true);
         float itemRes = resonant.getResonance();
 
-        AxisAlignedBB extendedPlayerAABB = player.getEntityBoundingBox().grow(2);
-        BlockPos min = new BlockPos(extendedPlayerAABB.minX, extendedPlayerAABB.minY, extendedPlayerAABB.minZ);
-        BlockPos max = new BlockPos(extendedPlayerAABB.maxX, extendedPlayerAABB.maxY, extendedPlayerAABB.maxZ);
-
-        for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
-            IResonant crystal = ResonantUtils.getCrystal(world, p);
-            if (crystal == null) continue;
+        Set<TileCrystal> crystals = ResonantUtils.getCrystalsAround(world, player.getPosition(), 2, null);
+        for(TileCrystal te : crystals) {
+            IResonant crystal = te.getCapability(IResonant.CAPABILITY, null);
 
             TObjectFloatMap<NatureType> crystalNatures = ResonantUtils.getNatureTypes(crystal, true);
             float crystalRes = crystal.getResonance();
