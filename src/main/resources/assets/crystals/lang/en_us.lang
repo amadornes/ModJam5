@@ -15,6 +15,7 @@ tile.crystals:seal|crystals:pull_linear.name=Linear Pull Seal
 tile.crystals:seal|crystals:pull_radial.name=Radial Pull Seal
 tile.crystals:seal|crystals:fire_breath.name=Fire Breath Seal
 tile.crystals:seal|crystals:ice_breath.name=Ice Breath Seal
+tile.crystals:seal|crystals:praise_the_sun.name=Praise The Sun Seal
 
 item.crystals:tuning_fork.name=Tuning Fork
 
