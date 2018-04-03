@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "fff",
+    "fs ",
+    "f  "
+  ],
+  "key": {
+    "f": {
+      "item": "minecraft:fence",
+      "data": 0
+    },
+    "s": {
+      "item": "minecraft:stick",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "crystals:post",
+    "data": 0,
+    "count": 4
+  }
+}
