@@ -43,7 +43,7 @@ public abstract class AbstractSeal implements ISealInstance {
     public abstract void addRequirements(BiConsumer<NatureType, Float> capacity, BiConsumer<NatureType, Float> consumption);
 
     protected boolean consumeEnergy() {
-        if (!consumption.forEachEntry((k, v) -> energy.get(k) > v)) return false;
+        if (!consumption.forEachEntry((k, v) -> energy.get(k) >= v)) return false;
         if (!seal.getWorld().isRemote) {
             consumption.forEachEntry((k, v) -> {
                 energy.adjustValue(k, -v);
