@@ -29,19 +29,6 @@ public class SealPullLinear extends SealType {
     }
 
     @Override
-    public ResourceLocation getGlowyTextureLocation(TextureType type) {
-        switch (type) {
-            case GLOWY_BLACK:
-                return new ResourceLocation(CrystalsMod.MODID, "textures/seals/pull_linear/glowy_thing_black.png");
-            case GLOWY_TRANSPARENT:
-                return new ResourceLocation(CrystalsMod.MODID, "textures/seals/pull_linear/glowy_thing.png");
-            case GLOWY_SHIMMER:
-                //return new ResourceLocation(CrystalsMod.MODID, "textures/seals/pushpull/glowy_thing_shimmer.png");
-        }
-        return null;
-    }
-
-    @Override
     public int getGlowyColor() {
         return NatureType.AIR.getColor();
     }

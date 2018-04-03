@@ -15,15 +15,20 @@ public class SealThunder extends SealType {
         Ingredient rain = new Ingredient(NatureType.WATER, NatureType.AIR);
         Ingredient thunder = new Ingredient(NatureType.FIRE, NatureType.AIR, NatureType.DISTORTED);
         return new Ingredient[][]{
-            {cloud, cloud, cloud},
-            {rain, thunder, rain},
-            {rain, thunder, rain}
+                {cloud, cloud, cloud},
+                {rain, thunder, rain},
+                {rain, thunder, rain}
         };
     }
 
     @Override
     public ISealInstance instantiate(ISeal seal) {
         return new Instance(seal);
+    }
+
+    @Override
+    public int getGlowyColor() {
+        return NatureType.WATER.getColor();
     }
 
     private static class Instance extends AbstractSeal {
@@ -34,11 +39,19 @@ public class SealThunder extends SealType {
 
         @Override
         public void addRequirements(BiConsumer<NatureType, Float> capacity, BiConsumer<NatureType, Float> consumption) {
+            capacity.accept(NatureType.WATER, 5000F);
+            capacity.accept(NatureType.AIR, 5000F);
+            capacity.accept(NatureType.FIRE, 2500F);
+            capacity.accept(NatureType.DISTORTED, 2500F);
+            consumption.accept(NatureType.WATER, 5000F);
+            consumption.accept(NatureType.AIR, 5000F);
+            consumption.accept(NatureType.FIRE, 2500F);
+            consumption.accept(NatureType.DISTORTED, 2500F);
         }
 
         @Override
         public void update() {
-            SealRain.startRain(seal, true, 20 * 60 * 5);
+            SealRain.startRain(seal, true, 20 * 60 * 5, this::consumeEnergy);
         }
 
     }

@@ -84,13 +84,6 @@ public class SealRenderer extends TileEntitySpecialRenderer<TileSeal> {
             blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, DestFactor.ONE);
             renderSeal(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F, 1);
         }
-
-        path = type.getGlowyTextureLocation(SealType.TextureType.GLOWY_SHIMMER);
-        if (path != null) {
-            Minecraft.getMinecraft().renderEngine.bindTexture(path);
-            blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, DestFactor.ONE);
-            renderSeal(1, 1, 1, 1);
-        }
     }
 
     private void renderSeal(float r, float g, float b, float a) {
