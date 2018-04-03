@@ -1,6 +1,7 @@
 itemGroup.crystals=Crystals
 
 tile.crystals:crystal.name=Crystal
+tile.crystals:crystal_creative.name=Creative Crystal
 tile.crystals:post.name=Post
 tile.crystals:slate.name=Slate
 
@@ -12,6 +13,8 @@ tile.crystals:seal|crystals:push_linear.name=Linear Push Seal
 tile.crystals:seal|crystals:push_radial.name=Radial Push Seal
 tile.crystals:seal|crystals:pull_linear.name=Linear Pull Seal
 tile.crystals:seal|crystals:pull_radial.name=Radial Pull Seal
+tile.crystals:seal|crystals:fire_breath.name=Fire Breath Seal
+tile.crystals:seal|crystals:ice_breath.name=Ice Breath Seal
 
 item.crystals:tuning_fork.name=Tuning Fork
 

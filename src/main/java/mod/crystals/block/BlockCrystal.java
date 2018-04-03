@@ -14,6 +14,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -26,6 +28,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class BlockCrystal extends BlockCrystalBase {
 
@@ -63,6 +66,11 @@ public class BlockCrystal extends BlockCrystalBase {
     };
 
     public static final IProperty<Variant> VARIANT = PropertyEnum.create("variant", Variant.class);
+
+    public BlockCrystal() {
+        setHardness(1.5f);
+        setHarvestLevel("pickaxe", 2);
+    }
 
     @Nullable
     @Override
@@ -116,7 +124,12 @@ public class BlockCrystal extends BlockCrystalBase {
     }
 
     @Override
-    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+        return Items.AIR;
+    }
+
+    @Override
+    public void breakBlock(World world, BlockPos pos, IBlockState state) {
         float dropScale = 5;
         IResonant resonant = world.getTileEntity(pos).getCapability(IResonant.CAPABILITY, null);
         float resonance = resonant.getResonance();
@@ -126,7 +139,7 @@ public class BlockCrystal extends BlockCrystalBase {
             if (totalItems < 1) continue;
             ItemStack stack = ItemDust.getItemOfType(type);
             stack.setCount(totalItems);
-            drops.add(stack);
+            spawnAsEntity(world, pos, stack);
         }
     }
 
