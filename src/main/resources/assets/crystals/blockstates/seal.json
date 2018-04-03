@@ -1,0 +1,21 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "layer0": "crystals:seals/base/small"
+    },
+    "model": "forge:item-layer",
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "facing": {
+      "down":  {},
+      "up":    {},
+      "north": {},
+      "south": {},
+      "west":  {},
+      "east":  {}
+    },
+    "inventory": [{ }]
+  }
+}

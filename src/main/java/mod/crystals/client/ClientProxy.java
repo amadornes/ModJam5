@@ -113,6 +113,8 @@ public class ClientProxy extends CommonProxy {
         addModel(CrystalsBlocks.crystal, 0, "inventory");
         addModel(CrystalsBlocks.crystal_creative, 0, "inventory");
         addModel(CrystalsBlocks.slate, 0, "inventory");
+        addModel(CrystalsBlocks.post, 0, "inventory");
+        addModel(CrystalsBlocks.seal, 0, "inventory");
         addItemModel(CrystalsItems.tuning_fork, 0, "tuning_fork");
         addItemModel(CrystalsItems.tuning_fork, 1, "tuning_fork_vibrating");
         addModel(CrystalsItems.dust, 0, "inventory");
