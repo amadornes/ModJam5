@@ -26,13 +26,15 @@ public abstract class SealBreathInstance extends AbstractSeal {
         EnumFacing face = seal.getFace().getOpposite();
         AxisAlignedBB bounds = getAreaInFront(seal, radius, false);
         Vec3d center = new Vec3d(seal.getPos())
-                .addVector(0.5, 0.5, 0.5)
-                .add(new Vec3d(face.getDirectionVec()).scale(0.5));
+            .addVector(0.5, 0.5, 0.5)
+            .add(new Vec3d(face.getDirectionVec()).scale(0.5));
 
         for (Entity entity : seal.getWorld().getEntitiesWithinAABBExcludingEntity(null, bounds)) {
             if (!(entity instanceof EntityLivingBase)) continue;
             Vec3d ePos = entity.getPositionEyes(0);
             if (ePos.squareDistanceTo(center) > radius * radius) continue;
+
+            if (!consumeEnergy()) return;
 
             if (seal.getWorld().isRemote) {
                 Vec3d dir = ePos.subtract(center).scale(0.05);
@@ -44,7 +46,7 @@ public abstract class SealBreathInstance extends AbstractSeal {
                         if (x * x + y * y > 3 * 3) continue;
                         dir = ePos.add(side.scale(x / 6F).add(up.scale(y / 6F))).subtract(center).scale(0.1);
                         Vec3d pos = center.add(dir.scale(Math.random()))
-                                .addVector((Math.random() - 0.5) * 0.125, (Math.random() - 0.5) * 0.125, (Math.random() - 0.5) * 0.125);
+                            .addVector((Math.random() - 0.5) * 0.125, (Math.random() - 0.5) * 0.125, (Math.random() - 0.5) * 0.125);
                         spawnParticle(seal.getWorld(), pos.x, pos.y, pos.z, dir.x, dir.y, dir.z);
                     }
                 }

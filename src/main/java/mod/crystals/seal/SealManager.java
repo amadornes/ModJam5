@@ -81,12 +81,6 @@ public class SealManager extends SimpleManager {
 
         CrystalsMod.net.sendToAllAround(PacketSealFX.create(count, cPos, mot, color),
                 new NetworkRegistry.TargetPoint(world.provider.getDimension(), cPos.x, cPos.y, cPos.z, 32.0));
-
-        // for (int i = 0; i < count; i++) {
-        //     CrystalsMod.proxy.spawnParticle(world, ParticleType.CIRCLE,
-        //         posVelocityColor(cPos.x, cPos.y, cPos.z, mot.x, mot.y, mot.z,
-        //         color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F));
-        // }
     }
 
     private Iterable<TileCrystalBase> findCrystals(TileSeal seal) {

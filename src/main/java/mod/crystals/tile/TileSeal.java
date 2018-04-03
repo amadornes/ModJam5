@@ -7,9 +7,11 @@ import mod.crystals.api.seal.ISealInstance;
 import mod.crystals.api.seal.SealType;
 import mod.crystals.block.BlockSealExt;
 import mod.crystals.capability.CapabilitySealManager;
+import mod.crystals.init.CrystalsBlocks;
 import mod.crystals.init.CrystalsRegistries;
 import mod.crystals.network.PacketSealData;
 import net.minecraft.block.BlockDirectional;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -146,7 +148,9 @@ public class TileSeal extends TileEntity implements ITickable {
     }
 
     public EnumFacing getFace() {
-        return getWorld().getBlockState(getPos()).getValue(BlockDirectional.FACING);
+        IBlockState blockState = getWorld().getBlockState(getPos());
+        if (blockState.getBlock() != CrystalsBlocks.seal) return EnumFacing.DOWN;
+        return blockState.getValue(BlockDirectional.FACING);
     }
 
     private class Host implements ISeal {

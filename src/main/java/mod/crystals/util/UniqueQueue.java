@@ -1,12 +1,6 @@
 package mod.crystals.util;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UniqueQueue<E> implements Queue<E> {
@@ -112,7 +106,7 @@ public class UniqueQueue<E> implements Queue<E> {
     @Override
     public E poll() {
         E e = queue.poll();
-        set.remove(e);
+        if (e != null) set.remove(e);
         return e;
     }
 
