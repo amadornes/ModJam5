@@ -66,7 +66,7 @@ public class SealPullRadial extends SealType {
     }
 
     public static void moveEntities(ISeal seal, boolean pull, BooleanSupplier consume) {
-        if (seal.getWorld().isBlockIndirectlyGettingPowered(seal.getPos()) > 0) return;
+//        if (seal.getWorld().isBlockIndirectlyGettingPowered(seal.getPos()) > 0) return;
 
         EnumFacing face = seal.getFace().getOpposite();
         AxisAlignedBB bounds = AbstractSeal.getAreaInFront(seal, RADIUS, true);
