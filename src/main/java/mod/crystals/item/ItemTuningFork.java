@@ -8,6 +8,7 @@ import mod.crystals.tile.TileCrystalBase;
 import mod.crystals.util.ResonantUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,12 +31,21 @@ public class ItemTuningFork extends ItemBase {
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
         if (world.isRemote) return;
-        if (!(entity instanceof EntityPlayer)) return;
-        EntityPlayer player = (EntityPlayer) entity;
+        if (!(entity instanceof EntityPlayerMP)) return;
+        EntityPlayerMP player = (EntityPlayerMP) entity;
 
-        if (player.getHeldItem(EnumHand.MAIN_HAND) == stack || player.getHeldItem(EnumHand.OFF_HAND) == stack) {
+        int prevMeta = getMetadata(stack);
+        EnumHand hand = null;
+        if (player.getHeldItem(EnumHand.MAIN_HAND) == stack) hand = EnumHand.MAIN_HAND;
+        else if (player.getHeldItem(EnumHand.OFF_HAND) == stack) hand = EnumHand.OFF_HAND;
+
+        if (hand != null) {
             balanceFork(stack, world, player);
             balanceCrystals(stack, world, player);
+
+            if (prevMeta != getMetadata(stack)) {
+                player.sendContainerToPlayer(player.inventoryContainer);
+            }
         }
     }
 
@@ -59,7 +69,7 @@ public class ItemTuningFork extends ItemBase {
         float itemRes = resonant.getResonance();
 
         Set<TileCrystalBase> crystals = ResonantUtils.getCrystalsAround(world, player.getPosition(), 2, null);
-        for(TileCrystalBase te : crystals) {
+        for (TileCrystalBase te : crystals) {
             IResonant crystal = te.getCapability(IResonant.CAPABILITY, null);
 
             TObjectFloatMap<NatureType> crystalNatures = ResonantUtils.getNatureTypes(crystal, true);
