@@ -64,7 +64,7 @@ public class ClientProxy extends CommonProxy {
         OBJLoader.INSTANCE.addDomain(CrystalsMod.MODID);
 
         registerParticle(ParticleType.RAIN, (world, p) -> new ParticleRain(world, p.position.x, p.position.y, p.position.z, p.velocity.x, p.velocity.y, p.velocity.z));
-        registerParticle(ParticleType.CIRCLE, (world, p) -> new ParticleCircle(world, p.position.x, p.position.y, p.position.z, p.velocity.x, p.velocity.y, p.velocity.z, p.color.x, p.color.y, p.color.z));
+        registerParticle(ParticleType.CIRCLE, (world, p) -> new ParticleCircle(world, p.position.x, p.position.y, p.position.z, p.velocity.x, p.velocity.y, p.velocity.z, p.color.getRed() / 255f, p.color.getGreen() / 255f, p.color.getBlue() / 255f));
     }
 
     @Override
