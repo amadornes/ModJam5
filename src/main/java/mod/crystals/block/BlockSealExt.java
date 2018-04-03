@@ -31,6 +31,8 @@ public class BlockSealExt extends BlockBase implements ITileEntityProvider {
 
     public BlockSealExt() {
         super(Material.ROCK);
+        setHardness(5);
+        setResistance(10);
     }
 
     @Override

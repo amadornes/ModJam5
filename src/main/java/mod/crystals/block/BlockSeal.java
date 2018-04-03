@@ -36,6 +36,8 @@ public class BlockSeal extends BlockBase implements ITileEntityProvider {
 
     public BlockSeal() {
         super(Material.ROCK);
+        setHardness(5);
+        setResistance(10);
     }
 
     @Nullable

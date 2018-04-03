@@ -39,6 +39,8 @@ public class BlockSlate extends BlockBase implements ITileEntityProvider {
 
     public BlockSlate() {
         super(Material.ROCK);
+        setHardness(5);
+        setResistance(10);
     }
 
     @Nullable
