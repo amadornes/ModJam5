@@ -20,7 +20,8 @@ public class RayManager extends SimpleManager {
 
     private Table<ILaserSource, ILaserSource, Ray> rays = HashBasedTable.create();
 
-    private Set<Ray> needsUpdate = new HashSet<>();
+    private Set<Ray> updated = new HashSet<>();
+    private Set<Ray> nextUpdate = new HashSet<>();
 
     public RayManager(World world) {
         super(world);
@@ -40,7 +41,7 @@ public class RayManager extends SimpleManager {
         from.onConnect(to, ray);
         to.onConnect(from, ray.getOpposite());
 
-        needsUpdate.add(ray);
+        updated.add(ray);
 
         return ray;
     }
@@ -49,12 +50,12 @@ public class RayManager extends SimpleManager {
         rays.row(src).forEach((to, ray) -> {
             src.onDisconnect(to, ray);
             to.onDisconnect(src, ray.getOpposite());
-            needsUpdate.remove(ray);
+            updated.remove(ray);
         });
         rays.column(src).forEach((to, ray) -> {
             src.onDisconnect(to, ray);
             to.onDisconnect(src, ray.getOpposite());
-            needsUpdate.remove(ray);
+            updated.remove(ray);
         });
 
         rays.rowKeySet().remove(src);
@@ -66,10 +67,14 @@ public class RayManager extends SimpleManager {
     }
 
     protected void update(World world) {
-        for (Ray ray : needsUpdate) {
+        Set<Ray> tmp = updated;
+        updated = nextUpdate;
+        nextUpdate = tmp;
+
+        for (Ray ray : updated) {
             ray.update(world);
         }
-        needsUpdate.clear();
+        updated.clear();
     }
 
     public void updateRays(@Nullable BlockPos updatePos) {
@@ -81,7 +86,7 @@ public class RayManager extends SimpleManager {
                 AxisAlignedBB rayBox = new AxisAlignedBB(start.x, start.y, start.z,end.x, end.y, end.z);
                 if (!updatePosBB.intersects(rayBox)) continue;
             }
-            needsUpdate.add(ray);
+            updated.add(ray);
         }
     }
 
