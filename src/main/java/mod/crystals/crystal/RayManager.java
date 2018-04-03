@@ -19,6 +19,7 @@ import java.util.Set;
 public class RayManager extends SimpleManager {
 
     private Table<ILaserSource, ILaserSource, Ray> rays = HashBasedTable.create();
+    private Table<ILaserSource, ILaserSource, Ray> nextRays = rays;
 
     private Set<Ray> updated = new HashSet<>();
     private Set<Ray> otherUpdate = new HashSet<>();
@@ -28,15 +29,18 @@ public class RayManager extends SimpleManager {
     }
 
     public Ray addRay(ILaserSource from, ILaserSource to) {
-        Ray ray = rays.get(from, to);
+        Ray ray = nextRays.get(from, to);
         if (ray != null) return ray;
 
-        ray = rays.get(to, from);
+        ray = nextRays.get(to, from);
         if (ray != null) return ray.getOpposite();
 
         ray = new Ray(from, to);
 
-        rays.put(from, to, ray);
+        if (nextRays == rays) {
+            nextRays = HashBasedTable.create(rays);
+        }
+        nextRays.put(from, to, ray);
 
         from.onConnect(to, ray);
         to.onConnect(from, ray.getOpposite());
@@ -47,19 +51,22 @@ public class RayManager extends SimpleManager {
     }
 
     public void removeAll(ILaserSource src) {
-        rays.row(src).forEach((to, ray) -> {
+        nextRays.row(src).forEach((to, ray) -> {
             src.onDisconnect(to, ray);
             to.onDisconnect(src, ray.getOpposite());
             updated.remove(ray);
         });
-        rays.column(src).forEach((to, ray) -> {
+        nextRays.column(src).forEach((to, ray) -> {
             src.onDisconnect(to, ray);
             to.onDisconnect(src, ray.getOpposite());
             updated.remove(ray);
         });
 
-        rays.rowKeySet().remove(src);
-        rays.columnKeySet().remove(src);
+        if (nextRays == rays) {
+            nextRays = HashBasedTable.create(rays);
+        }
+        nextRays.rowKeySet().remove(src);
+        nextRays.columnKeySet().remove(src);
     }
 
     public Collection<Ray> getRays() {
@@ -75,6 +82,8 @@ public class RayManager extends SimpleManager {
             ray.update(world);
         }
         otherUpdate.clear();
+
+        rays = nextRays;
     }
 
     public void updateRays(@Nullable BlockPos updatePos) {
@@ -83,7 +92,7 @@ public class RayManager extends SimpleManager {
                 AxisAlignedBB updatePosBB = new AxisAlignedBB(updatePos);
                 Vec3d start = ray.getStart(0, false);
                 Vec3d end = ray.getEnd(0, false);
-                AxisAlignedBB rayBox = new AxisAlignedBB(start.x, start.y, start.z,end.x, end.y, end.z);
+                AxisAlignedBB rayBox = new AxisAlignedBB(start.x, start.y, start.z, end.x, end.y, end.z);
                 if (!updatePosBB.intersects(rayBox)) continue;
             }
             updated.add(ray);
