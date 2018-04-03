@@ -10,6 +10,16 @@ import java.util.function.BiConsumer;
 public class SealThunder extends SealType {
 
     @Override
+    public int getSize() {
+        return 3;
+    }
+
+    @Override
+    public int getTint() {
+        return NatureType.WATER.getColor();
+    }
+
+    @Override
     public Ingredient[][] createRecipe() {
         Ingredient cloud = new Ingredient(NatureType.WATER, NatureType.AIR, NatureType.DISTORTED);
         Ingredient rain = new Ingredient(NatureType.WATER, NatureType.AIR);
@@ -24,11 +34,6 @@ public class SealThunder extends SealType {
     @Override
     public ISealInstance instantiate(ISeal seal) {
         return new Instance(seal);
-    }
-
-    @Override
-    public int getGlowyColor() {
-        return NatureType.WATER.getColor();
     }
 
     private static class Instance extends AbstractSeal {

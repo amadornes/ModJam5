@@ -17,6 +17,11 @@ public class SealIceBreath extends SealType {
     private static final float RADIUS = 5;
 
     @Override
+    public int getSize() {
+        return 1;
+    }
+
+    @Override
     public Ingredient[][] createRecipe() {
         Ingredient ice = new Ingredient(NatureType.AIR, NatureType.WATER);
         Ingredient pushIce = new Ingredient(NatureType.AIR, NatureType.WATER, NatureType.DISTORTED);

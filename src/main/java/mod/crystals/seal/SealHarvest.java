@@ -28,6 +28,16 @@ public class SealHarvest extends SealType {
     private static final List<Pair<BlockMatcher, HarvestOp>> harvestLogic = new ArrayList<>();
 
     @Override
+    public int getSize() {
+        return 3;
+    }
+
+    @Override
+    public int getTint() {
+        return NatureType.EARTH.getColor();
+    }
+
+    @Override
     public Ingredient[][] createRecipe() {
         Ingredient i = new Ingredient(NatureType.DISTORTED, NatureType.EARTH); // TODO: sensible recipe
         return new Ingredient[][]{

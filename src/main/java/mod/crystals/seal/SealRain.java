@@ -17,6 +17,16 @@ import java.util.function.BooleanSupplier;
 public class SealRain extends SealType {
 
     @Override
+    public int getSize() {
+        return 3;
+    }
+
+    @Override
+    public int getTint() {
+        return NatureType.WATER.getColor();
+    }
+
+    @Override
     public Ingredient[][] createRecipe() {
         Ingredient cloud = new Ingredient(NatureType.WATER, NatureType.AIR, NatureType.DISTORTED);
         Ingredient rain = new Ingredient(NatureType.WATER, NatureType.AIR);
@@ -30,11 +40,6 @@ public class SealRain extends SealType {
     @Override
     public ISealInstance instantiate(ISeal seal) {
         return new Instance(seal);
-    }
-
-    @Override
-    public int getGlowyColor() {
-        return NatureType.WATER.getColor();
     }
 
     private class Instance extends AbstractSeal {

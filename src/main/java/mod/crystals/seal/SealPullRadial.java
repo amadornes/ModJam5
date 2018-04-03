@@ -18,6 +18,16 @@ public class SealPullRadial extends SealType {
     private static final float MAX_DIST = RADIUS * RADIUS * 3;
 
     @Override
+    public int getSize() {
+        return 3;
+    }
+
+    @Override
+    public int getTint() {
+        return NatureType.AIR.getColor();
+    }
+
+    @Override
     public Ingredient[][] createRecipe() {
         Ingredient wind = new Ingredient(NatureType.AIR);
         Ingredient pull = new Ingredient(NatureType.AIR, NatureType.VOID);
