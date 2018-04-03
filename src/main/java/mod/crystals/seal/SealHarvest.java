@@ -4,11 +4,7 @@ import mod.crystals.api.NatureType;
 import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
 import mod.crystals.api.seal.SealType;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockMelon;
-import net.minecraft.block.BlockPumpkin;
-import net.minecraft.block.BlockStem;
-import net.minecraft.block.IGrowable;
+import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,7 +25,7 @@ public class SealHarvest extends SealType {
 
     @Override
     public int getSize() {
-        return 3;
+        return 1;
     }
 
     @Override

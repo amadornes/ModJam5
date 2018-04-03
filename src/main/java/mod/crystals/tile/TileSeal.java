@@ -3,7 +3,6 @@ package mod.crystals.tile;
 import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
 import mod.crystals.api.seal.SealType;
-import mod.crystals.block.BlockSeal;
 import mod.crystals.block.BlockSealExt;
 import mod.crystals.capability.CapabilitySealManager;
 import mod.crystals.init.CrystalsRegistries;
@@ -85,7 +84,7 @@ public class TileSeal extends TileEntity implements ITickable {
 
     @SuppressWarnings("SuspiciousNameCombination")
     public Iterable<BlockPos> getSealBox() {
-        return BlockSealExt.getSealBounds(BlockSeal.SEAL_RADIUS, getFace(), getPos());
+        return BlockSealExt.getSealBounds(getSealType().getSize(), getFace(), getPos());
     }
 
     @Nullable
@@ -111,6 +110,7 @@ public class TileSeal extends TileEntity implements ITickable {
         handleUpdateTag(pkt.getNbtCompound());
     }
 
+    @Nullable
     public SealType getSealType() {
         return type;
     }

@@ -16,7 +16,7 @@ public class SealFireBreath extends SealType {
 
     @Override
     public int getSize() {
-        return 1;
+        return 0;
     }
 
     @Override

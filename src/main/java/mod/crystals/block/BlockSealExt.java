@@ -92,7 +92,7 @@ public class BlockSealExt extends BlockBase implements ITileEntityProvider {
         IBlockState sealState = world.getBlockState(sealPos);
         if (sealState.getBlock() != CrystalsBlocks.seal)
             return super.getBoundingBox(state, world, pos);
-        return sealState.getBoundingBox(world, pos).offset(pos.subtract(sealPos)).intersect(FULL_BLOCK_AABB);
+        return sealState.getBoundingBox(world, sealPos).offset(pos.subtract(sealPos)).intersect(FULL_BLOCK_AABB);
     }
 
     @Nullable

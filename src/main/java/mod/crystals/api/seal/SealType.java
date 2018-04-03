@@ -10,6 +10,9 @@ import java.util.Set;
 
 public abstract class SealType extends IForgeRegistryEntry.Impl<SealType> {
 
+    /**
+     * Seal size. 0 = 1 block volume, 1 = 9 blocks, 2 = 25 blocks, …
+     */
     public abstract int getSize();
 
     public ResourceLocation getTextureLocation(TextureType type) {
@@ -23,7 +26,7 @@ public abstract class SealType extends IForgeRegistryEntry.Impl<SealType> {
     }
 
     protected ResourceLocation getTextureName(TextureType type) {
-        if(type == TextureType.BASE){
+        if (type == TextureType.BASE) {
             return new ResourceLocation("crystals", "textures/seals/base/small.png");
         }
         ResourceLocation name = getRegistryName();

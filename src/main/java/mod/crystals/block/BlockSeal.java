@@ -3,6 +3,7 @@ package mod.crystals.block;
 import mod.crystals.api.seal.SealType;
 import mod.crystals.init.CrystalsBlocks;
 import mod.crystals.init.CrystalsRegistries;
+import mod.crystals.item.ItemSeal;
 import mod.crystals.tile.TileSeal;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
@@ -25,14 +26,13 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
 import static java.lang.Math.abs;
 
 public class BlockSeal extends BlockBase implements ITileEntityProvider {
-
-    public static final int SEAL_RADIUS = 1;
 
     public BlockSeal() {
         super(Material.ROCK);
@@ -106,13 +106,24 @@ public class BlockSeal extends BlockBase implements ITileEntityProvider {
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         Vec3d front = new Vec3d(state.getValue(BlockDirectional.FACING).getDirectionVec());
-        Vec3d off1 = new Vec3d(front.y, front.z, front.x).scale(SEAL_RADIUS);
-        Vec3d off2 = new Vec3d(front.z, front.x, front.y).scale(SEAL_RADIUS);
+        int size = getSize(source, pos);
+        Vec3d off1 = new Vec3d(front.y, front.z, front.x).scale(size);
+        Vec3d off2 = new Vec3d(front.z, front.x, front.y).scale(size);
         Vec3d off3 = off1.add(off2);
         Vec3d front1 = front.scale(15 / 16F);
         return FULL_BLOCK_AABB
             .grow(abs(off3.x), abs(off3.y), abs(off3.z))
             .contract(front1.x, front1.y, front1.z);
+    }
+
+    public static int getSize(IBlockAccess world, BlockPos pos) {
+        TileEntity te = world.getTileEntity(pos);
+        if (te == null) return 0;
+        if (!(te instanceof TileSeal)) return 0;
+        TileSeal tile = (TileSeal) te;
+        SealType sealType = tile.getSealType();
+        if (sealType == null) return 0;
+        return sealType.getSize();
     }
 
     @Override
@@ -126,7 +137,7 @@ public class BlockSeal extends BlockBase implements ITileEntityProvider {
 
     @Override
     public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side) {
-        return super.canPlaceBlockOnSide(world, pos, side) && BlockSealExt.canPlaceAt(world, pos, side, SEAL_RADIUS);
+        return super.canPlaceBlockOnSide(world, pos, side) && BlockSealExt.canPlaceAt(world, pos, side, ItemSeal.sealSize);
     }
 
     @Override
@@ -160,12 +171,21 @@ public class BlockSeal extends BlockBase implements ITileEntityProvider {
         return false;
     }
 
-    public static ItemStack createStack(SealType type) {
+    @Nonnull
+    public static ItemStack createStack(@Nonnull SealType type) {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setString("type", type.getRegistryName().toString());
         ItemStack stack = new ItemStack(CrystalsBlocks.seal);
         stack.setTagCompound(tag);
         return stack;
+    }
+
+    @Nullable
+    public static SealType getType(@Nonnull ItemStack stack) {
+        NBTTagCompound tag = stack.getTagCompound();
+        if (tag == null) return null;
+        if (!tag.hasKey("type")) return null;
+        return CrystalsRegistries.sealTypeRegistry.getValue(new ResourceLocation(tag.getString("type")));
     }
 
 }

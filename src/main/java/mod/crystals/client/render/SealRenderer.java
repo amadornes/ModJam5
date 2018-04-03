@@ -67,7 +67,7 @@ public class SealRenderer extends TileEntitySpecialRenderer<TileSeal> {
     private void renderAll(SealType type, ISealInstance seal, double worldTime) {
         ResourceLocation path;
         Color color = new Color(type.getTint());
-        int size = type.getSize();
+        int size = (type.getSize() * 2) + 1;
 
         blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 

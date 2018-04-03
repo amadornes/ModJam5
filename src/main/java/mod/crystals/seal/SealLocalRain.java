@@ -21,13 +21,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-import static mod.crystals.client.particle.ParticleType.*;
+import static mod.crystals.client.particle.ParticleType.posVelocity;
 
 public class SealLocalRain extends SealType {
 
     @Override
     public int getSize() {
-        return 3;
+        return 1;
     }
 
     @Override
