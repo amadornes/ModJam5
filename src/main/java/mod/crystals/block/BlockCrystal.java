@@ -113,11 +113,6 @@ public class BlockCrystal extends BlockCrystalBase {
     }
 
     @Override
-    protected boolean isFull(IBlockState state) {
-        return false;
-    }
-
-    @Override
     public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
         world.setTileEntity(pos, new TileCrystal(true)); // TODO: Probably change this
     }
@@ -163,7 +158,6 @@ public class BlockCrystal extends BlockCrystalBase {
 
     @Override
     public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items) {
-        super.getSubBlocks(itemIn, items);
         CrystalsRegistries.natureRegistry.getValuesCollection().stream()
             .map(this::getPureCrystal)
             .forEach(items::add);

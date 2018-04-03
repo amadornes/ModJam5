@@ -21,7 +21,7 @@ public class TileCrystalCreative extends TileCrystalBase {
 
     @Override
     public Vec3d getPosition(float partialTicks) {
-        return new Vec3d(pos).add(OFFSET);
+        return new Vec3d(pos).addVector(0.5, 1, 0.5);
     }
 
     @Override
@@ -32,9 +32,10 @@ public class TileCrystalCreative extends TileCrystalBase {
 
     @Override
     protected void addAvailableNatures(TObjectFloatMap<NatureType> cap, TObjectFloatMap<NatureType> total) {
-        for (NatureType type : cap.keySet()) {
-            total.adjustOrPutValue(type, 1000, 1000);
-        }
+        cap.forEachEntry((type, max) -> {
+            total.adjustOrPutValue(type, 1000 * max, 1000 * max);
+            return true;
+        });
     }
 
     public static class CreativeResonant implements IResonant.Default {

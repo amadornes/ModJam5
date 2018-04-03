@@ -1,0 +1,16 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "texture": "crystals:blocks/crystal",
+      "holder": "crystals:blocks/slate",
+      "particle": "crystals:blocks/crystal"
+    },
+    "model": "crystals:crystal_big.obj",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal":    [{ }],
+    "inventory": [{ "model": "crystals:crystal_big.obj" }]
+  }
+}

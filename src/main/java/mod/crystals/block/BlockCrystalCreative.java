@@ -4,14 +4,18 @@ import mod.crystals.tile.TileCrystalCreative;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
 public class BlockCrystalCreative extends BlockCrystalBase {
+
+    private static final AxisAlignedBB AABB = new AxisAlignedBB(6 / 16F, 0, 6 / 16F, 10 / 16F, 1, 10 / 16F);
 
     @Nullable
     @Override
@@ -22,8 +26,13 @@ public class BlockCrystalCreative extends BlockCrystalBase {
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer.Builder(this)
-            .add(COLOR)
-            .build();
+                .add(COLOR)
+                .build();
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return AABB;
     }
 
     @Override

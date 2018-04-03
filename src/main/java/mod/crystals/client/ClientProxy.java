@@ -2,6 +2,7 @@ package mod.crystals.client;
 
 import mod.crystals.CommonProxy;
 import mod.crystals.CrystalsMod;
+import mod.crystals.api.IResonant;
 import mod.crystals.block.BlockCrystalBase;
 import mod.crystals.block.BlockSlate;
 import mod.crystals.client.particle.ParticleCircle;
@@ -25,6 +26,7 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -67,19 +69,29 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init(FMLInitializationEvent e) {
         super.init(e);
+
         BlockColors blockColors = mc.getBlockColors();
         blockColors.registerBlockColorHandler((state, world, pos, index) -> {
             if (index == 1) return 0xFFFFFF;
             Integer color = ((IExtendedBlockState) state).getValue(BlockCrystalBase.COLOR);
             if (color == null) return 0x000000;
             return color;
-        }, CrystalsBlocks.crystal, CrystalsBlocks.crystal_creative);
+        }, CrystalsBlocks.crystal);
         blockColors.registerBlockColorHandler((state, world, pos, index) -> {
             if (index < 0 || index >= 4) return 0x000000;
             Integer color = (Integer) ((IExtendedBlockState) state).getValue(BlockSlate.COLORS[index]);
             if (color == null) return 0x000000;
             return color;
         }, CrystalsBlocks.slate);
+
+        ItemColors itemColors = mc.getItemColors();
+        IResonant.Default tintResonant = (IResonant.Default) IResonant.CAPABILITY.getDefaultInstance();
+        itemColors.registerItemColorHandler((stack, index) -> {
+            if (!stack.hasTagCompound()) return 0xFFFFFF;
+            IResonant.CAPABILITY.readNBT(tintResonant, null, stack.getSubCompound("BlockEntityTag").getCompoundTag("rd"));
+            return tintResonant.getColor();
+        }, CrystalsBlocks.crystal);
+
         ClientRegistry.bindTileEntitySpecialRenderer(TileCrystal.class, new FloatingCrystalRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileSeal.class, new SealRenderer());
     }
@@ -90,8 +102,8 @@ public class ClientProxy extends CommonProxy {
         float chance = (3 - Minecraft.getMinecraft().gameSettings.particleSetting) / 3F;
         if (world.rand.nextFloat() > chance) return;
         Optional.ofNullable(particleGenerators.get(type))
-            .map(it -> it.apply(world, params))
-            .ifPresent(mc.effectRenderer::addEffect);
+                .map(it -> it.apply(world, params))
+                .ifPresent(mc.effectRenderer::addEffect);
     }
 
     @SubscribeEvent
@@ -118,7 +130,7 @@ public class ClientProxy extends CommonProxy {
         wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "variant=south"), TintWrapper::new);
         wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "variant=west"), TintWrapper::new);
         wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "variant=east"), TintWrapper::new);
-        wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal_creative.getRegistryName(), ""), TintWrapper::new);
+        wrap(event, new ModelResourceLocation(CrystalsBlocks.crystal.getRegistryName(), "inventory"), TintWrapper::new);
     }
 
     private void wrap(ModelBakeEvent event, ModelResourceLocation name, Function<IBakedModel, ? extends IBakedModel> wrapper) {
@@ -149,8 +161,8 @@ public class ClientProxy extends CommonProxy {
         Block block = state.getBlock();
         if (block instanceof IBlockAdvancedOutline) {
             ((IBlockAdvancedOutline) block).getOutlineBoxes(world, pos, state).stream()
-                .map(it -> it.offset(pos))
-                .forEach(it -> drawSelectionBox(world, e.getPlayer(), pos, it, e.getPartialTicks()));
+                    .map(it -> it.offset(pos))
+                    .forEach(it -> drawSelectionBox(world, e.getPlayer(), pos, it, e.getPartialTicks()));
             e.setCanceled(true);
         }
     }
