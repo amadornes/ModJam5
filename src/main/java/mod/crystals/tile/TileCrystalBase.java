@@ -120,10 +120,7 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
         if (delayJoin) doJoin();
         if (!world.isRemote) return;
         if (rays.isEmpty()) return;
-
-        for (Ray ray : rays) {
-            if (!ray.hasLineOfSight()) return;
-        }
+        if (rays.stream().noneMatch(Ray::hasLineOfSight)) return;
 
         Vec3d pos = getPosition(0, true);
         Color color = new Color(resonant.getColor());

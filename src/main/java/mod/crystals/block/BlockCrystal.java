@@ -19,11 +19,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -36,37 +32,39 @@ import java.util.Random;
 
 public class BlockCrystal extends BlockCrystalBase {
 
+    public static boolean dontDropItems = false;
+
     private static final AxisAlignedBB[] AABBS_GROUND = {
-            new AxisAlignedBB(6 / 16F, 0, 6 / 16F, 10 / 16F, 8.5 / 16F, 10 / 16F),
-            new AxisAlignedBB(6 / 16F, 7.5 / 16F, 6 / 16F, 10 / 16F, 1, 10 / 16F),
-            new AxisAlignedBB(6 / 16F, 6 / 16F, 0, 10 / 16F, 10 / 16F, 8.5 / 16F),
-            new AxisAlignedBB(6 / 16F, 6 / 16F, 7.5 / 16F, 10 / 16F, 10 / 16F, 1),
-            new AxisAlignedBB(0, 6 / 16F, 6 / 16F, 8.5 / 16F, 10 / 16F, 10 / 16F),
-            new AxisAlignedBB(7.5 / 16F, 6 / 16F, 6 / 16F, 1, 10 / 16F, 10 / 16F)
+        new AxisAlignedBB(6 / 16F, 0, 6 / 16F, 10 / 16F, 8.5 / 16F, 10 / 16F),
+        new AxisAlignedBB(6 / 16F, 7.5 / 16F, 6 / 16F, 10 / 16F, 1, 10 / 16F),
+        new AxisAlignedBB(6 / 16F, 6 / 16F, 0, 10 / 16F, 10 / 16F, 8.5 / 16F),
+        new AxisAlignedBB(6 / 16F, 6 / 16F, 7.5 / 16F, 10 / 16F, 10 / 16F, 1),
+        new AxisAlignedBB(0, 6 / 16F, 6 / 16F, 8.5 / 16F, 10 / 16F, 10 / 16F),
+        new AxisAlignedBB(7.5 / 16F, 6 / 16F, 6 / 16F, 1, 10 / 16F, 10 / 16F)
     };
 
     private static final AxisAlignedBB AABB_FLOATING =
-            new AxisAlignedBB(6.5 / 16F, 3.75 / 16F, 6.5 / 16F, 9.5 / 16F, 12.25 / 16F, 9.5 / 16F);
+        new AxisAlignedBB(6.5 / 16F, 3.75 / 16F, 6.5 / 16F, 9.5 / 16F, 12.25 / 16F, 9.5 / 16F);
 
     private static final AxisAlignedBB[] RT_AABBS_GROUND = {
-            new AxisAlignedBB(7 / 16F, 2 / 16F, 7 / 16F, 9 / 16F, 6 / 16F, 9 / 16F),
-            new AxisAlignedBB(7 / 16F, 10 / 16F, 7 / 16F, 9 / 16F, 14 / 16F, 9 / 16F),
-            new AxisAlignedBB(7 / 16F, 7 / 16F, 2 / 16F, 9 / 16F, 9 / 16F, 6 / 16F),
-            new AxisAlignedBB(7 / 16F, 7 / 16F, 10 / 16F, 9 / 16F, 9 / 16F, 14 / 16F),
-            new AxisAlignedBB(2 / 16F, 7 / 16F, 7 / 16F, 6 / 16F, 9 / 16F, 9 / 16F),
-            new AxisAlignedBB(10 / 16F, 7 / 16F, 7 / 16F, 14 / 16F, 9 / 16F, 9 / 16F)
+        new AxisAlignedBB(7 / 16F, 2 / 16F, 7 / 16F, 9 / 16F, 6 / 16F, 9 / 16F),
+        new AxisAlignedBB(7 / 16F, 10 / 16F, 7 / 16F, 9 / 16F, 14 / 16F, 9 / 16F),
+        new AxisAlignedBB(7 / 16F, 7 / 16F, 2 / 16F, 9 / 16F, 9 / 16F, 6 / 16F),
+        new AxisAlignedBB(7 / 16F, 7 / 16F, 10 / 16F, 9 / 16F, 9 / 16F, 14 / 16F),
+        new AxisAlignedBB(2 / 16F, 7 / 16F, 7 / 16F, 6 / 16F, 9 / 16F, 9 / 16F),
+        new AxisAlignedBB(10 / 16F, 7 / 16F, 7 / 16F, 14 / 16F, 9 / 16F, 9 / 16F)
     };
 
     private static final AxisAlignedBB RT_AABB_FLOATING =
-            new AxisAlignedBB(7 / 16F, 6 / 16F, 7 / 16F, 9 / 16F, 10 / 16F, 9 / 16F);
+        new AxisAlignedBB(7 / 16F, 6 / 16F, 7 / 16F, 9 / 16F, 10 / 16F, 9 / 16F);
 
     private static final AxisAlignedBB[] RT_AABBS_BASE = {
-            new AxisAlignedBB(6 / 16F, 0, 6 / 16F, 10 / 16F, 4 / 16F, 10 / 16F),
-            new AxisAlignedBB(6 / 16F, 12 / 16F, 6 / 16F, 10 / 16F, 1, 10 / 16F),
-            new AxisAlignedBB(0, 6 / 16F, 6 / 16F, 4 / 16F, 10 / 16F, 10 / 16F),
-            new AxisAlignedBB(12 / 16F, 6 / 16F, 6 / 16F, 1, 10 / 16F, 10 / 16F),
-            new AxisAlignedBB(6 / 16F, 6 / 16F, 0, 10 / 16F, 10 / 16F, 4 / 16F),
-            new AxisAlignedBB(6 / 16F, 6 / 16F, 12 / 16F, 10 / 16F, 10 / 16F, 1)
+        new AxisAlignedBB(6 / 16F, 0, 6 / 16F, 10 / 16F, 4 / 16F, 10 / 16F),
+        new AxisAlignedBB(6 / 16F, 12 / 16F, 6 / 16F, 10 / 16F, 1, 10 / 16F),
+        new AxisAlignedBB(0, 6 / 16F, 6 / 16F, 4 / 16F, 10 / 16F, 10 / 16F),
+        new AxisAlignedBB(12 / 16F, 6 / 16F, 6 / 16F, 1, 10 / 16F, 10 / 16F),
+        new AxisAlignedBB(6 / 16F, 6 / 16F, 0, 10 / 16F, 10 / 16F, 4 / 16F),
+        new AxisAlignedBB(6 / 16F, 6 / 16F, 12 / 16F, 10 / 16F, 10 / 16F, 1)
     };
 
     public static final IProperty<Variant> VARIANT = PropertyEnum.create("variant", Variant.class);
@@ -85,9 +83,9 @@ public class BlockCrystal extends BlockCrystalBase {
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer.Builder(this)
-                .add(VARIANT)
-                .add(BlockCrystalBase.COLOR)
-                .build();
+            .add(VARIANT)
+            .add(BlockCrystalBase.COLOR)
+            .build();
     }
 
     @Override
@@ -134,6 +132,7 @@ public class BlockCrystal extends BlockCrystalBase {
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
+        if (dontDropItems) return;
         float dropScale = 5;
         IResonant resonant = world.getTileEntity(pos).getCapability(IResonant.CAPABILITY, null);
         float resonance = resonant.getResonance();
@@ -165,7 +164,7 @@ public class BlockCrystal extends BlockCrystalBase {
     @Override
     public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side) {
         return super.canPlaceBlockOnSide(world, pos, side) &&
-                canStayAt(getStateForPlacement(world, pos, side, 0, 0, 0, 0, null, null), world, pos);
+            canStayAt(getStateForPlacement(world, pos, side, 0, 0, 0, 0, null, null), world, pos);
     }
 
     @Override
@@ -204,8 +203,8 @@ public class BlockCrystal extends BlockCrystalBase {
     @Override
     public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items) {
         CrystalsRegistries.natureRegistry.getValuesCollection().stream()
-                .map(this::getPureCrystal)
-                .forEach(items::add);
+            .map(this::getPureCrystal)
+            .forEach(items::add);
     }
 
     private ItemStack getPureCrystal(NatureType type) {

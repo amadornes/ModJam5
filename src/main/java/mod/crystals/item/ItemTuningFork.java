@@ -3,17 +3,24 @@ package mod.crystals.item;
 import gnu.trove.map.TObjectFloatMap;
 import mod.crystals.api.IResonant;
 import mod.crystals.api.NatureType;
+import mod.crystals.block.BlockCrystal;
 import mod.crystals.environment.EnvironmentHandler;
+import mod.crystals.init.CrystalsBlocks;
+import mod.crystals.tile.TileCrystal;
 import mod.crystals.tile.TileCrystalBase;
 import mod.crystals.util.ResonantUtils;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -47,6 +54,32 @@ public class ItemTuningFork extends ItemBase {
                 player.sendContainerToPlayer(player.inventoryContainer);
             }
         }
+    }
+
+    @Override
+    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        TileEntity te = worldIn.getTileEntity(pos);
+        if (!(te instanceof TileCrystal)) return EnumActionResult.PASS;
+
+        ItemStack stack = player.getHeldItem(hand);
+        IResonant resonantItem = stack.getCapability(IResonant.CAPABILITY, null);
+        IResonant resonantCrystal = te.getCapability(IResonant.CAPABILITY, null);
+        if (resonantCrystal == null) return EnumActionResult.PASS;
+
+        float match = ResonantUtils.getMatch(resonantItem, resonantCrystal);
+        if (match < 0.8) return EnumActionResult.FAIL;
+
+        ItemStack block = new ItemStack(CrystalsBlocks.crystal);
+        NBTTagCompound tileData = new NBTTagCompound();
+        te.writeToNBT(tileData);
+        if (!block.hasTagCompound()) block.setTagCompound(new NBTTagCompound());
+        block.getTagCompound().setTag("BlockEntityTag", tileData);
+        Block.spawnAsEntity(worldIn, pos, block);
+        BlockCrystal.dontDropItems = true;
+        worldIn.setBlockToAir(pos);
+        BlockCrystal.dontDropItems = false;
+
+        return EnumActionResult.SUCCESS;
     }
 
     private void balanceFork(ItemStack stack, World world, EntityPlayer player) {
