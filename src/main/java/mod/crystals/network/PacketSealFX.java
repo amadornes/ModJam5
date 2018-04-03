@@ -56,11 +56,14 @@ public class PacketSealFX implements IMessage {
 
         @Override
         public IMessage onMessage(PacketSealFX message, MessageContext ctx) {
-            for (int i = 0; i < message.count; i++) {
-                CrystalsMod.proxy.spawnParticle(Minecraft.getMinecraft().world, ParticleType.CIRCLE,
-                    posVelocityColor(message.cPos.x, message.cPos.y, message.cPos.z, message.mot.x, message.mot.y, message.mot.z,
-                        message.color.getRed() / 255F, message.color.getGreen() / 255F, message.color.getBlue() / 255F));
-            }
+            Minecraft mc = Minecraft.getMinecraft();
+            mc.addScheduledTask(() -> {
+                for (int i = 0; i < message.count; i++) {
+                    CrystalsMod.proxy.spawnParticle(mc.world, ParticleType.CIRCLE,
+                            posVelocityColor(message.cPos.x, message.cPos.y, message.cPos.z, message.mot.x, message.mot.y, message.mot.z,
+                                    message.color.getRed() / 255F, message.color.getGreen() / 255F, message.color.getBlue() / 255F));
+                }
+            });
             return null;
         }
 

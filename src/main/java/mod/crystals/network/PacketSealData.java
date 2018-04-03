@@ -46,11 +46,13 @@ public class PacketSealData implements IMessage {
             if (ctx.side == Side.SERVER) throw new IllegalStateException("This packet is SERVER->CLIENT");
 
             Minecraft mc = Minecraft.getMinecraft();
-            World world = mc.world;
-            TileEntity te = world.getTileEntity(message.pos);
-            if (te instanceof TileSeal) {
-                ((TileSeal) te).getSeal().readClientData(new PacketBuffer(Unpooled.wrappedBuffer(message.data)));
-            }
+            mc.addScheduledTask(() -> {
+                World world = mc.world;
+                TileEntity te = world.getTileEntity(message.pos);
+                if (te instanceof TileSeal) {
+                    ((TileSeal) te).getSeal().readClientData(new PacketBuffer(Unpooled.wrappedBuffer(message.data)));
+                }
+            });
 
             return null;
         }
