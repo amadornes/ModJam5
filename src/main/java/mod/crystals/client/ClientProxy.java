@@ -2,6 +2,7 @@ package mod.crystals.client;
 
 import mod.crystals.CommonProxy;
 import mod.crystals.CrystalsMod;
+import mod.crystals.api.NatureType;
 import mod.crystals.block.BlockCrystalBase;
 import mod.crystals.block.BlockSlate;
 import mod.crystals.client.particle.ParticleCircle;
@@ -12,6 +13,7 @@ import mod.crystals.client.render.FloatingCrystalRenderer;
 import mod.crystals.client.render.SealRenderer;
 import mod.crystals.init.CrystalsBlocks;
 import mod.crystals.init.CrystalsItems;
+import mod.crystals.init.CrystalsRegistries;
 import mod.crystals.tile.TileCrystal;
 import mod.crystals.tile.TileSeal;
 import mod.crystals.util.IBlockAdvancedOutline;
@@ -96,17 +98,21 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     public void onModelRegister(ModelRegistryEvent event) {
+        dustMetaMap.clear();
+
         addModel(CrystalsBlocks.crystal, 0, "inventory");
         addModel(CrystalsBlocks.crystal_creative, 0, "inventory");
         addModel(CrystalsBlocks.slate, 0, "inventory");
         addItemModel(CrystalsItems.tuning_fork, 0, "tuning_fork");
         addItemModel(CrystalsItems.tuning_fork, 1, "tuning_fork_vibrating");
-        addModel(CrystalsItems.dust, 0, "air");
-        addModel(CrystalsItems.dust, 1, "water");
-        addModel(CrystalsItems.dust, 2, "earth");
-        addModel(CrystalsItems.dust, 3, "fire");
-        addModel(CrystalsItems.dust, 4, "distorted");
-        addModel(CrystalsItems.dust, 5, "void");
+
+        int i = 0;
+        for (NatureType type : CrystalsRegistries.natureRegistry.getValuesCollection()) {
+            dustMetaMap.put(type, i);
+            ResourceLocation registryName = type.getRegistryName();
+            addModel(CrystalsItems.dust, i, String.format("%s_%s", registryName.getResourceDomain(), registryName.getResourcePath()));
+            i++;
+        }
     }
 
     @SubscribeEvent

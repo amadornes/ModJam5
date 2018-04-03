@@ -27,7 +27,8 @@ public class TileSlate extends TileEntity {
 
     private final Set<NatureType> natures = new HashSet<>();
 
-    public boolean putDust(NatureType type) {
+    public boolean putDust(@Nullable NatureType type) {
+        if (type == null) return false;
         if (natures.size() == 4) return false;
         if (getWorld().isRemote) {
             return !natures.contains(type);

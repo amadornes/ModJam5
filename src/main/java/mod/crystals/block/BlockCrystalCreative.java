@@ -13,6 +13,10 @@ import javax.annotation.Nullable;
 
 public class BlockCrystalCreative extends BlockCrystalBase {
 
+    public BlockCrystalCreative() {
+        setBlockUnbreakable();
+    }
+
     @Nullable
     @Override
     public TileEntity createNewTileEntity(World world, int meta) {

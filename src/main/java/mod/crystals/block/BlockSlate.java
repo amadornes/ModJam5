@@ -2,6 +2,7 @@ package mod.crystals.block;
 
 import mod.crystals.api.NatureType;
 import mod.crystals.init.CrystalsItems;
+import mod.crystals.item.ItemDust;
 import mod.crystals.tile.TileSlate;
 import mod.crystals.util.UnlistedPropertyInt;
 import net.minecraft.block.ITileEntityProvider;
@@ -28,10 +29,10 @@ public class BlockSlate extends BlockBase implements ITileEntityProvider {
 
     public static final IProperty<Integer> DUST_COUNT = PropertyInteger.create("dusts", 0, 4);
     public static final IUnlistedProperty[] COLORS = {
-            new UnlistedPropertyInt("color0"),
-            new UnlistedPropertyInt("color1"),
-            new UnlistedPropertyInt("color2"),
-            new UnlistedPropertyInt("color3")
+        new UnlistedPropertyInt("color0"),
+        new UnlistedPropertyInt("color1"),
+        new UnlistedPropertyInt("color2"),
+        new UnlistedPropertyInt("color3")
     };
 
     private static final AxisAlignedBB AABB = new AxisAlignedBB(0, 0, 0, 1, 0.5, 1);
@@ -49,9 +50,9 @@ public class BlockSlate extends BlockBase implements ITileEntityProvider {
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer.Builder(this)
-                .add(DUST_COUNT)
-                .add(COLORS)
-                .build();
+            .add(DUST_COUNT)
+            .add(COLORS)
+            .build();
     }
 
     @Override
@@ -99,9 +100,10 @@ public class BlockSlate extends BlockBase implements ITileEntityProvider {
         if (stack.isEmpty()) return false;
 
         TileSlate te = (TileSlate) world.getTileEntity(pos);
+        if (te == null) return false;
 
         if (stack.getItem() == CrystalsItems.dust) {
-            boolean canPut = te.putDust(fromMeta(stack.getMetadata()));
+            boolean canPut = te.putDust(ItemDust.getType(stack));
             if (!world.isRemote && canPut && !player.capabilities.isCreativeMode) {
                 stack.shrink(1);
             }
@@ -111,24 +113,6 @@ public class BlockSlate extends BlockBase implements ITileEntityProvider {
         }
 
         return false;
-    }
-
-    private NatureType fromMeta(int metadata) {
-        switch (metadata) {
-            case 0:
-                return NatureType.AIR;
-            case 1:
-                return NatureType.WATER;
-            case 2:
-                return NatureType.EARTH;
-            case 3:
-                return NatureType.FIRE;
-            case 4:
-                return NatureType.DISTORTED;
-            case 5:
-                return NatureType.VOID;
-        }
-        return null;
     }
 
 }

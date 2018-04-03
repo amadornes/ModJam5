@@ -15,9 +15,9 @@ tile.crystals:seal|crystals:pull_radial.name=Radial Pull Seal
 
 item.crystals:tuning_fork.name=Tuning Fork
 
-item.crystals:dust|0.name=Air Dust
-item.crystals:dust|1.name=Water Dust
-item.crystals:dust|2.name=Earth Dust
-item.crystals:dust|3.name=Fire Dust
-item.crystals:dust|4.name=Distorted Dust
-item.crystals:dust|5.name=Void Dust
+item.crystals:dust|crystals:air.name=Air Dust
+item.crystals:dust|crystals:water.name=Water Dust
+item.crystals:dust|crystals:earth.name=Earth Dust
+item.crystals:dust|crystals:fire.name=Fire Dust
+item.crystals:dust|crystals:distorted.name=Distorted Dust
+item.crystals:dust|crystals:void.name=Void Dust

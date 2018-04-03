@@ -1,7 +1,9 @@
 package mod.crystals.block;
 
+import mod.crystals.api.IResonant;
 import mod.crystals.api.NatureType;
 import mod.crystals.init.CrystalsRegistries;
+import mod.crystals.item.ItemDust;
 import mod.crystals.tile.TileCrystal;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -11,6 +13,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -110,6 +113,26 @@ public class BlockCrystal extends BlockCrystalBase {
         }
 
         return hit;
+    }
+
+    @Override
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+        float dropScale = 5;
+        IResonant resonant = world.getTileEntity(pos).getCapability(IResonant.CAPABILITY, null);
+        float resonance = resonant.getResonance();
+        for (NatureType type : CrystalsRegistries.natureRegistry.getValuesCollection()) {
+            float amt = resonant.getNatureAmount(type);
+            int totalItems = Math.round(dropScale * resonance * amt); // TODO: Add random element to this?
+            if (totalItems < 1) continue;
+            ItemStack stack = ItemDust.getItemOfType(type);
+            stack.setCount(totalItems);
+            drops.add(stack);
+        }
+    }
+
+    @Override
+    public boolean canSilkHarvest(World world, BlockPos pos, IBlockState state, EntityPlayer player) {
+        return false;
     }
 
     @Override
