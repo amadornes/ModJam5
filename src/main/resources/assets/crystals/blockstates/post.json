@@ -37,6 +37,6 @@
       "true":  { "submodel": "crystals:post_extension", "y":   0 },
       "false": {}
     },
-    "inventory": [{ }]
+    "inventory": [{ "model": "crystals:post_bottom" }]
   }
 }

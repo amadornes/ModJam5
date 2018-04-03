@@ -1,6 +1,5 @@
 package mod.crystals.item;
 
-import mod.crystals.CrystalsMod;
 import mod.crystals.api.NatureType;
 import mod.crystals.init.CrystalsItems;
 import mod.crystals.init.CrystalsRegistries;
@@ -31,7 +30,7 @@ public class ItemDust extends ItemBase {
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         return this.getUnlocalizedName() + "|" +
-            Optional.ofNullable(getType(stack)).map(Impl::getRegistryName).orElse(null);
+                Optional.ofNullable(getType(stack)).map(Impl::getRegistryName).orElse(null);
     }
 
     @Nullable
@@ -50,8 +49,4 @@ public class ItemDust extends ItemBase {
         return stack;
     }
 
-    @Override
-    public int getMetadata(ItemStack stack) {
-        return CrystalsMod.proxy.dustMetaMap.getOrDefault(getType(stack), 0);
-    }
 }
