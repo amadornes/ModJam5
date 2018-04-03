@@ -10,8 +10,6 @@ import java.awt.*;
 
 public class TileCrystal extends TileCrystalBase {
 
-    public boolean isGenerated = false;
-
     public TileCrystal() {
         super((IResonant.Default) IResonant.CAPABILITY.getDefaultInstance());
         resonant.addChangeListener(this::onChanged);
@@ -35,8 +33,7 @@ public class TileCrystal extends TileCrystalBase {
 
     @Override
     public void doJoin() {
-        if (!isGenerated)
-            super.doJoin();
+        super.doJoin();
         needsJoin = false;
     }
 
@@ -51,7 +48,6 @@ public class TileCrystal extends TileCrystalBase {
         super.writeToNBT(compound);
         NBTBase tag = IResonant.CAPABILITY.writeNBT(resonant, null);
         compound.setTag("rd", tag);
-        compound.setBoolean("wg", isGenerated);
         return compound;
     }
 
@@ -59,7 +55,6 @@ public class TileCrystal extends TileCrystalBase {
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         NBTBase tag = compound.getTag("rd");
-        isGenerated = compound.getBoolean("wg");
         if (tag != null) IResonant.CAPABILITY.readNBT(resonant, null, tag);
     }
 
