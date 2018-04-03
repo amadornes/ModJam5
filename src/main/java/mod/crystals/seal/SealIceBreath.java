@@ -45,6 +45,11 @@ public class SealIceBreath extends SealType {
 
         @Override
         public void addRequirements(BiConsumer<NatureType, Float> capacity, BiConsumer<NatureType, Float> consumption) {
+            capacity.accept(NatureType.WATER, 100F);
+            capacity.accept(NatureType.AIR, 50F);
+
+            consumption.accept(NatureType.WATER, 25F);
+            consumption.accept(NatureType.AIR, 12.5F);
         }
 
         @Override
