@@ -12,4 +12,6 @@ public interface ISeal {
 
     EnumFacing getFace();
 
+    void sync();
+
 }

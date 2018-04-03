@@ -3,6 +3,7 @@ package mod.crystals.util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -45,6 +46,13 @@ public abstract class SimpleManager {
         if (Minecraft.getMinecraft().isGamePaused()) return;
 
         update(world.get());
+    }
+
+    @SubscribeEvent
+    public void onUnload(WorldEvent.Unload event) {
+        if (event.getWorld() == world.get()) {
+            MinecraftForge.EVENT_BUS.unregister(this);
+        }
     }
 
     protected abstract void update(World world);

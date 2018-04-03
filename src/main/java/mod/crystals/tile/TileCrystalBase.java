@@ -35,7 +35,7 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 
-import static mod.crystals.client.particle.ParticleType.*;
+import static mod.crystals.client.particle.ParticleType.posVelocityColor;
 
 public abstract class TileCrystalBase extends TileEntity implements ILaserSource, ITickable {
 
@@ -45,11 +45,11 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
     protected IResonant.Default resonant = (IResonant.Default) IResonant.CAPABILITY.getDefaultInstance();
     protected Set<Ray> rays = new HashSet<>();
 
-    private boolean ignoreJoin = false;
+    private boolean delayJoin = false;
 
-    public TileCrystalBase(IResonant.Default resonant, boolean ignoreJoin) {
+    public TileCrystalBase(IResonant.Default resonant, boolean delayJoin) {
         this(resonant);
-        this.ignoreJoin = ignoreJoin;
+        this.delayJoin = delayJoin;
     }
 
     public TileCrystalBase(IResonant.Default resonant) {
@@ -58,7 +58,7 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
     }
 
     public void doJoin() {
-        ignoreJoin = false;
+        delayJoin = false;
         join();
     }
 
@@ -69,8 +69,11 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
     }
 
     protected void join() {
-        if (ignoreJoin) return;
-        if (!CapabilityLoadedCache.isLoaded(getWorld(), getPos())) return;
+        if (delayJoin) return;
+        if (!CapabilityLoadedCache.isLoaded(getWorld(), getPos())) {
+            delayJoin = true;
+            return;
+        }
 
         Chunk chunk = getWorld().getChunkFromBlockCoords(getPos());
         chunk.getCapability(CapabilityCrystalCache.CAPABILITY, null).join(this);
@@ -114,6 +117,7 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
 
     @Override
     public void update() {
+        if (delayJoin) doJoin();
         if (!world.isRemote) return;
         if (rays.isEmpty()) return;
 
@@ -124,8 +128,8 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
         Vec3d pos = getPosition(0, true);
         Color color = new Color(resonant.getColor());
         CrystalsMod.proxy.spawnParticle(world, ParticleType.CIRCLE,
-                posVelocityColor(pos.x, pos.y, pos.z, 0, 0, 0,
-                        color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F));
+            posVelocityColor(pos.x, pos.y, pos.z, 0, 0, 0,
+                color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F));
     }
 
     public TObjectFloatMap<NatureType> visit() {

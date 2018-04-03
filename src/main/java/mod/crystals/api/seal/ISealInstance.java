@@ -2,6 +2,7 @@ package mod.crystals.api.seal;
 
 import mod.crystals.api.NatureType;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 
 public interface ISealInstance {
 
@@ -20,5 +21,9 @@ public interface ISealInstance {
 
     default void readFromNBT(NBTTagCompound tag) {
     }
+
+    default void writeClientData(PacketBuffer buf) {}
+
+    default void readClientData(PacketBuffer buf) {}
 
 }

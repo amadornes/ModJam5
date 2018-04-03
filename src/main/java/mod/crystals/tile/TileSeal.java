@@ -1,15 +1,17 @@
 package mod.crystals.tile;
 
+import io.netty.buffer.Unpooled;
+import mod.crystals.CrystalsMod;
 import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
 import mod.crystals.api.seal.SealType;
 import mod.crystals.block.BlockSealExt;
 import mod.crystals.capability.CapabilitySealManager;
 import mod.crystals.init.CrystalsRegistries;
+import mod.crystals.network.PacketSealData;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -27,15 +29,27 @@ public class TileSeal extends TileEntity implements ITickable {
     private SealType type;
     private ISealInstance seal;
 
+    private boolean needsSync = false;
+
     @Override
     public void update() {
         if (seal == null) return;
         seal.update();
+        if (needsSync && !world.isRemote) {
+            PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+            seal.writeClientData(buf);
+            PacketSealData packet = PacketSealData.create(getPos(), buf);
+            CrystalsMod.net.sendToDimension(packet, world.provider.getDimension()); // FIXME range check thingy?
+        }
+        needsSync = false;
+        markDirty(); // do we need this? idk
     }
 
     public void setSeal(SealType type) {
-        this.type = type;
-        this.seal = type.instantiate(host);
+        if (type != this.type || this.seal == null) {
+            this.type = type;
+            this.seal = type.instantiate(host);
+        }
     }
 
     @Override
@@ -87,28 +101,40 @@ public class TileSeal extends TileEntity implements ITickable {
         return BlockSealExt.getSealBounds(getSealType().getSize(), getFace(), getPos());
     }
 
-    @Nullable
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
-    }
+    // @Nullable
+    // @Override
+    // public SPacketUpdateTileEntity getUpdatePacket() {
+    //     return null;
+    // }
 
     @Override
     @Nonnull
     public NBTTagCompound getUpdateTag() {
-        return writeToNBT(new NBTTagCompound());
+        NBTTagCompound tag = super.getUpdateTag();
+        if (type != null) {
+            tag.setString("type", type.getRegistryName().toString());
+            PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+            seal.writeClientData(buf);
+            tag.setByteArray("data", PacketSealData.create(getPos(), buf).data);
+        }
+        return tag;
     }
 
     @Override
     public void handleUpdateTag(@Nonnull NBTTagCompound tag) {
-        readFromNBT(tag);
-        getWorld().markBlockRangeForRenderUpdate(getPos(), getPos());
+        if (tag.hasKey("type")) {
+            SealType type = CrystalsRegistries.sealTypeRegistry.getValue(new ResourceLocation(tag.getString("type")));
+            setSeal(type);
+            if (tag.hasKey("data"))
+                getSeal().readClientData(new PacketBuffer(Unpooled.wrappedBuffer(tag.getByteArray("data"))));
+        }
+        // getWorld().markBlockRangeForRenderUpdate(getPos(), getPos());
     }
 
-    @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-        handleUpdateTag(pkt.getNbtCompound());
-    }
+    // @Override
+    // public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+    //     handleUpdateTag(pkt.getNbtCompound());
+    // }
 
     @Nullable
     public SealType getSealType() {
@@ -138,6 +164,11 @@ public class TileSeal extends TileEntity implements ITickable {
         @Override
         public EnumFacing getFace() {
             return TileSeal.this.getFace();
+        }
+
+        @Override
+        public void sync() {
+            needsSync = true;
         }
 
     }

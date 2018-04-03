@@ -37,9 +37,9 @@ public class SealHarvest extends SealType {
     public Ingredient[][] createRecipe() {
         Ingredient i = new Ingredient(NatureType.DISTORTED, NatureType.EARTH); // TODO: sensible recipe
         return new Ingredient[][]{
-                {i, i, i},
-                {i, i, i},
-                {i, i, i}
+            {i, i, i},
+            {i, i, i},
+            {i, i, i}
         };
     }
 
@@ -95,12 +95,14 @@ public class SealHarvest extends SealType {
 
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+            super.writeToNBT(tag);
             tag.setByte("c", (byte) cooldown);
             return tag;
         }
 
         @Override
         public void readFromNBT(NBTTagCompound tag) {
+            super.readFromNBT(tag);
             cooldown = tag.getByte("c") & 0xFF;
         }
 
@@ -124,42 +126,42 @@ public class SealHarvest extends SealType {
     static {
         // generic harvest code
         addHarvestOverride(
-                (world, state, pos) -> {
-                    Block block = state.getBlock();
-                    return block instanceof IGrowable && !((IGrowable) block).canGrow(world, pos, state, world.isRemote);
-                },
-                (world, state, pos) -> {
-                    Block block = state.getBlock();
-                    ItemStack item = block.getPickBlock(state, null, world, pos, null);
-                    NonNullList<ItemStack> items = NonNullList.create();
-                    block.getDrops(items, world, pos, state, 0);
-                    Optional<ItemStack> seedItem = items.stream().filter(it1 -> ItemStack.areItemsEqual(it1, item)).findAny();
-                    world.setBlockState(pos, state.getBlock().getDefaultState());
-                    seedItem.ifPresent(it -> it.shrink(1));
-                    items.forEach(it -> Block.spawnAsEntity(world, pos, it));
-                    return true;
-                }
+            (world, state, pos) -> {
+                Block block = state.getBlock();
+                return block instanceof IGrowable && !((IGrowable) block).canGrow(world, pos, state, world.isRemote);
+            },
+            (world, state, pos) -> {
+                Block block = state.getBlock();
+                ItemStack item = block.getPickBlock(state, null, world, pos, null);
+                NonNullList<ItemStack> items = NonNullList.create();
+                block.getDrops(items, world, pos, state, 0);
+                Optional<ItemStack> seedItem = items.stream().filter(it1 -> ItemStack.areItemsEqual(it1, item)).findAny();
+                world.setBlockState(pos, state.getBlock().getDefaultState());
+                seedItem.ifPresent(it -> it.shrink(1));
+                items.forEach(it -> Block.spawnAsEntity(world, pos, it));
+                return true;
+            }
         );
 
         // pumpkins & melons
         addHarvestOverride(
-                (world, state, pos) -> {
-                    Block block = state.getBlock();
-                    return block instanceof IGrowable && block instanceof BlockStem;
-                },
-                (world, state, pos) -> false
+            (world, state, pos) -> {
+                Block block = state.getBlock();
+                return block instanceof IGrowable && block instanceof BlockStem;
+            },
+            (world, state, pos) -> false
         );
 
         addHarvestOverride(
-                (world, state, pos) -> {
-                    Block block = state.getBlock();
-                    return block instanceof BlockMelon || block instanceof BlockPumpkin;
-                },
-                (world, state, pos) -> {
-                    state.getBlock().dropBlockAsItem(world, pos, state, 0);
-                    world.setBlockToAir(pos);
-                    return true;
-                }
+            (world, state, pos) -> {
+                Block block = state.getBlock();
+                return block instanceof BlockMelon || block instanceof BlockPumpkin;
+            },
+            (world, state, pos) -> {
+                state.getBlock().dropBlockAsItem(world, pos, state, 0);
+                world.setBlockToAir(pos);
+                return true;
+            }
         );
     }
 

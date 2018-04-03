@@ -1,17 +1,27 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
+    "ccc",
+    "lll",
     "SSS"
   ],
   "key": {
+    "c": {
+      "item": "minecraft:coal",
+      "data": 0
+    },
+    "l": {
+      "item": "minecraft:clay_ball",
+      "data": 0
+    },
     "S": {
-      "item": "minecraft:stone_slab",
+      "item": "minecraft:stone",
       "data": 0
     }
   },
   "result": {
     "item": "crystals:slate",
     "data": 0,
-    "count": 2
+    "count": 6
   }
 }

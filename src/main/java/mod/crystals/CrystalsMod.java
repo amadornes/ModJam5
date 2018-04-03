@@ -8,6 +8,8 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = CrystalsMod.MODID)
@@ -20,6 +22,8 @@ public class CrystalsMod {
 
     @SidedProxy(serverSide = "mod.crystals.CommonProxy", clientSide = "mod.crystals.client.ClientProxy")
     public static CommonProxy proxy;
+
+    public static SimpleNetworkWrapper net = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
     public Logger logger;
 

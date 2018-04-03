@@ -4,21 +4,20 @@ import gnu.trove.map.TObjectFloatMap;
 import mod.crystals.CrystalsMod;
 import mod.crystals.api.NatureType;
 import mod.crystals.api.seal.ISealInstance;
-import mod.crystals.client.particle.ParticleType;
+import mod.crystals.network.PacketSealFX;
 import mod.crystals.tile.TileCrystalBase;
 import mod.crystals.tile.TileSeal;
 import mod.crystals.util.ResonantUtils;
 import mod.crystals.util.SimpleManager;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import java.awt.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import static mod.crystals.client.particle.ParticleType.*;
 
 public class SealManager extends SimpleManager {
 
@@ -38,6 +37,8 @@ public class SealManager extends SimpleManager {
 
     @Override
     protected void update(World world) {
+        if (world.isRemote) return;
+
         Map<TileCrystalBase, TObjectFloatMap<NatureType>> natures = new HashMap<>();
 
         for (TileSeal seal : seals) {
@@ -50,9 +51,7 @@ public class SealManager extends SimpleManager {
                     if (accepted == 0) return true;
                     float amt = Math.min(accepted, max);
                     instance.addNature(type, amt);
-                    if (world.isRemote) {
-                        spawnParticles(seal, crystal, type, amt);
-                    }
+                    spawnParticles(seal, crystal, type, amt);
                     return true;
                 });
             }
@@ -65,17 +64,20 @@ public class SealManager extends SimpleManager {
         int count = Math.min(1 + (int) Math.sqrt(amt), 5);
 
         Vec3d center = new Vec3d(seal.getPos())
-                .addVector(0.5, 0.5, 0.5)
-                .add(new Vec3d(seal.getFace().getOpposite().getDirectionVec()).scale(0.5));
+            .addVector(0.5, 0.5, 0.5)
+            .add(new Vec3d(seal.getFace().getOpposite().getDirectionVec()).scale(0.5));
         Vec3d cPos = crystal.getPosition(0, true);
         Vec3d vec = center.subtract(cPos);
         Vec3d mot = vec.normalize().scale(0.1);
 
-        for (int i = 0; i < count; i++) {
-            CrystalsMod.proxy.spawnParticle(world, ParticleType.CIRCLE,
-                    posVelocityColor(cPos.x, cPos.y, cPos.z, mot.x, mot.y, mot.z,
-                            color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F));
-        }
+        CrystalsMod.net.sendToAllAround(PacketSealFX.create(count, cPos, mot, color),
+            new NetworkRegistry.TargetPoint(world.provider.getDimension(), cPos.x, cPos.y, cPos.z, 32.0));
+
+        // for (int i = 0; i < count; i++) {
+        //     CrystalsMod.proxy.spawnParticle(world, ParticleType.CIRCLE,
+        //         posVelocityColor(cPos.x, cPos.y, cPos.z, mot.x, mot.y, mot.z,
+        //         color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F));
+        // }
     }
 
     private Iterable<TileCrystalBase> findCrystals(TileSeal seal) {
