@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import mod.crystals.util.CrystalsWorldEventListener;
 import mod.crystals.util.SimpleManager;
+import mod.crystals.util.UniqueQueue;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -13,16 +14,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 public class RayManager extends SimpleManager {
 
     private Table<ILaserSource, ILaserSource, Ray> rays = HashBasedTable.create();
     private Table<ILaserSource, ILaserSource, Ray> nextRays = rays;
 
-    private Set<Ray> updated = new HashSet<>();
-    private Set<Ray> otherUpdate = new HashSet<>();
+    private UniqueQueue<Ray> updated = UniqueQueue.concurrent();
 
     public RayManager(World world) {
         super(world);
@@ -74,15 +72,9 @@ public class RayManager extends SimpleManager {
     }
 
     protected void update(World world) {
-        Set<Ray> tmp = updated;
-        updated = otherUpdate;
-        otherUpdate = tmp;
-
-        for (Ray ray : otherUpdate) {
-            ray.update(world);
+        while (!updated.isEmpty()) {
+            updated.poll().update(world);
         }
-        otherUpdate.clear();
-
         rays = nextRays;
     }
 
