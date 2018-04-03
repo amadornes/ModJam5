@@ -10,9 +10,7 @@ import java.awt.*;
 
 public class TileCrystal extends TileCrystalBase {
 
-    public TileCrystal(boolean ignoreJoin) {
-        super((IResonant.Default) IResonant.CAPABILITY.getDefaultInstance(), ignoreJoin);
-    }
+    public boolean isGenerated = false;
 
     public TileCrystal() {
         super((IResonant.Default) IResonant.CAPABILITY.getDefaultInstance());
@@ -36,6 +34,13 @@ public class TileCrystal extends TileCrystalBase {
     }
 
     @Override
+    public void doJoin() {
+        if (!isGenerated)
+            super.doJoin();
+        needsJoin = false;
+    }
+
+    @Override
     public Vec3d getColor(float partialTicks) {
         Color color = new Color(resonant.getColor());
         return new Vec3d(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F);
@@ -46,6 +51,7 @@ public class TileCrystal extends TileCrystalBase {
         super.writeToNBT(compound);
         NBTBase tag = IResonant.CAPABILITY.writeNBT(resonant, null);
         compound.setTag("rd", tag);
+        compound.setBoolean("wg", isGenerated);
         return compound;
     }
 
@@ -53,6 +59,7 @@ public class TileCrystal extends TileCrystalBase {
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         NBTBase tag = compound.getTag("rd");
+        isGenerated = compound.getBoolean("wg");
         if (tag != null) IResonant.CAPABILITY.readNBT(resonant, null, tag);
     }
 

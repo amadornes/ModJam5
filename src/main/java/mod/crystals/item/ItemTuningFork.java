@@ -72,6 +72,7 @@ public class ItemTuningFork extends ItemBase {
         ItemStack block = new ItemStack(CrystalsBlocks.crystal);
         NBTTagCompound tileData = new NBTTagCompound();
         te.writeToNBT(tileData);
+        tileData.removeTag("wg");
         if (!block.hasTagCompound()) block.setTagCompound(new NBTTagCompound());
         block.getTagCompound().setTag("BlockEntityTag", tileData);
         Block.spawnAsEntity(worldIn, pos, block);

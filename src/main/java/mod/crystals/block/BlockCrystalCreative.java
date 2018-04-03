@@ -41,7 +41,7 @@ public class BlockCrystalCreative extends BlockCrystalBase {
 
     @Override
     public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
-        world.setTileEntity(pos, new TileCrystalCreative(true)); // TODO: Probably change this
+        world.setTileEntity(pos, new TileCrystalCreative()); // TODO: Probably change this
     }
 
     @Override

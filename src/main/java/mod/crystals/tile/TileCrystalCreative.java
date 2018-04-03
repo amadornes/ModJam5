@@ -11,10 +11,6 @@ import java.awt.*;
 
 public class TileCrystalCreative extends TileCrystalBase {
 
-    public TileCrystalCreative(boolean ignoreJoin) {
-        super(CreativeResonant.instance, ignoreJoin);
-    }
-
     public TileCrystalCreative() {
         super(CreativeResonant.instance);
     }

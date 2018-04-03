@@ -158,7 +158,7 @@ public class BlockCrystal extends BlockCrystalBase {
 
     @Override
     public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
-        world.setTileEntity(pos, new TileCrystal(true)); // TODO: Probably change this
+        world.setTileEntity(pos, new TileCrystal()); // TODO: Probably change this
     }
 
     @Override

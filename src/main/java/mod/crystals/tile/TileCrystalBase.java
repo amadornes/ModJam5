@@ -42,15 +42,10 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
     public static final float MAX_DISTANCE = 8;
     public static final Vec3d OFFSET = new Vec3d(0.5, 0.5, 0.5);
 
-    protected IResonant.Default resonant = (IResonant.Default) IResonant.CAPABILITY.getDefaultInstance();
+    protected IResonant.Default resonant;
     protected Set<Ray> rays = new HashSet<>();
 
-    private boolean delayJoin = false;
-
-    public TileCrystalBase(IResonant.Default resonant, boolean delayJoin) {
-        this(resonant);
-        this.delayJoin = delayJoin;
-    }
+    protected boolean needsJoin = false;
 
     public TileCrystalBase(IResonant.Default resonant) {
         resonant.addChangeListener(this::onChanged);
@@ -58,8 +53,15 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
     }
 
     public void doJoin() {
-        delayJoin = false;
-        join();
+        if (!CapabilityLoadedCache.isLoaded(getWorld(), getPos())) {
+            return;
+        }
+
+        Chunk chunk = getWorld().getChunkFromBlockCoords(getPos());
+        chunk.getCapability(CapabilityCrystalCache.CAPABILITY, null).join(this);
+
+        ResonantUtils.getCrystalsAround(getWorld(), getPos(), MAX_DISTANCE, this).forEach(this::connect);
+        needsJoin = false;
     }
 
     protected void onChanged() {
@@ -69,16 +71,7 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
     }
 
     protected void join() {
-        if (delayJoin) return;
-        if (!CapabilityLoadedCache.isLoaded(getWorld(), getPos())) {
-            delayJoin = true;
-            return;
-        }
-
-        Chunk chunk = getWorld().getChunkFromBlockCoords(getPos());
-        chunk.getCapability(CapabilityCrystalCache.CAPABILITY, null).join(this);
-
-        ResonantUtils.getCrystalsAround(getWorld(), getPos(), MAX_DISTANCE, this).forEach(this::connect);
+        needsJoin = true;
     }
 
     protected void leave() {
@@ -117,7 +110,7 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
 
     @Override
     public void update() {
-        if (delayJoin) doJoin();
+        if (needsJoin) doJoin();
         if (!world.isRemote) return;
         if (rays.isEmpty()) return;
         if (rays.stream().noneMatch(Ray::hasLineOfSight)) return;
@@ -216,7 +209,7 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
     @Override
     public void validate() {
         super.validate();
-        join();
+        needsJoin = true;
     }
 
     @Override
@@ -228,7 +221,7 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
     @Override
     public void onLoad() {
         super.onLoad();
-        join();
+        needsJoin = true;
     }
 
     @Override

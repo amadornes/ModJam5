@@ -4,6 +4,7 @@ import mod.crystals.api.NatureType;
 import mod.crystals.client.particle.ParticleType;
 import mod.crystals.client.particle.ParticleType.ParticleParams;
 import mod.crystals.creativetab.CreativeTabCrystals;
+import mod.crystals.environment.CrystalsWorldGenerator;
 import mod.crystals.network.PacketSealData;
 import mod.crystals.network.PacketSealFX;
 import net.minecraft.world.World;
@@ -11,6 +12,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nonnull;
@@ -27,6 +29,8 @@ public class CommonProxy {
 
         CrystalsMod.net.registerMessage(PacketSealData.Handler.class, PacketSealData.class, 0, Side.CLIENT);
         CrystalsMod.net.registerMessage(PacketSealFX.Handler.class, PacketSealFX.class, 1, Side.CLIENT);
+
+        GameRegistry.registerWorldGenerator(new CrystalsWorldGenerator(), 2);
     }
 
     public void init(FMLInitializationEvent e) {}
