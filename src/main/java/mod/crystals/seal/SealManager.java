@@ -22,17 +22,24 @@ import java.util.Set;
 public class SealManager extends SimpleManager {
 
     private Set<TileSeal> seals = new HashSet<>();
+    private Set<TileSeal> nextSeals = seals;
 
     public SealManager(World world) {
         super(world);
     }
 
     public void add(TileSeal seal) {
-        seals.add(seal);
+        if(nextSeals == seals){
+            nextSeals = new HashSet<>(seals);
+        }
+        nextSeals.add(seal);
     }
 
     public void remove(TileSeal seal) {
-        seals.remove(seal);
+        if(nextSeals == seals){
+            nextSeals = new HashSet<>(seals);
+        }
+        nextSeals.remove(seal);
     }
 
     @Override
@@ -56,6 +63,8 @@ public class SealManager extends SimpleManager {
                 });
             }
         }
+
+        seals = nextSeals;
     }
 
     private void spawnParticles(TileSeal seal, TileCrystalBase crystal, NatureType type, float amt) {
@@ -64,14 +73,14 @@ public class SealManager extends SimpleManager {
         int count = Math.min(1 + (int) Math.sqrt(amt), 5);
 
         Vec3d center = new Vec3d(seal.getPos())
-            .addVector(0.5, 0.5, 0.5)
-            .add(new Vec3d(seal.getFace().getOpposite().getDirectionVec()).scale(0.5));
+                .addVector(0.5, 0.5, 0.5)
+                .add(new Vec3d(seal.getFace().getOpposite().getDirectionVec()).scale(0.5));
         Vec3d cPos = crystal.getPosition(0, true);
         Vec3d vec = center.subtract(cPos);
         Vec3d mot = vec.normalize().scale(0.1);
 
         CrystalsMod.net.sendToAllAround(PacketSealFX.create(count, cPos, mot, color),
-            new NetworkRegistry.TargetPoint(world.provider.getDimension(), cPos.x, cPos.y, cPos.z, 32.0));
+                new NetworkRegistry.TargetPoint(world.provider.getDimension(), cPos.x, cPos.y, cPos.z, 32.0));
 
         // for (int i = 0; i < count; i++) {
         //     CrystalsMod.proxy.spawnParticle(world, ParticleType.CIRCLE,
