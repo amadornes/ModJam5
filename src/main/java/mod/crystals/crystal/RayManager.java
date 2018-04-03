@@ -21,7 +21,7 @@ public class RayManager extends SimpleManager {
     private Table<ILaserSource, ILaserSource, Ray> rays = HashBasedTable.create();
 
     private Set<Ray> updated = new HashSet<>();
-    private Set<Ray> nextUpdate = new HashSet<>();
+    private Set<Ray> otherUpdate = new HashSet<>();
 
     public RayManager(World world) {
         super(world);
@@ -68,13 +68,13 @@ public class RayManager extends SimpleManager {
 
     protected void update(World world) {
         Set<Ray> tmp = updated;
-        updated = nextUpdate;
-        nextUpdate = tmp;
+        updated = otherUpdate;
+        otherUpdate = tmp;
 
-        for (Ray ray : updated) {
+        for (Ray ray : otherUpdate) {
             ray.update(world);
         }
-        updated.clear();
+        otherUpdate.clear();
     }
 
     public void updateRays(@Nullable BlockPos updatePos) {
