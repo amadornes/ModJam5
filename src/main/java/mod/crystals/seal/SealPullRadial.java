@@ -12,6 +12,8 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.function.BiConsumer;
 
+import static java.lang.Math.max;
+
 public class SealPullRadial extends SealType {
 
     private static final float RADIUS = 5;
@@ -32,9 +34,9 @@ public class SealPullRadial extends SealType {
         Ingredient wind = new Ingredient(NatureType.AIR);
         Ingredient pull = new Ingredient(NatureType.AIR, NatureType.VOID);
         return new Ingredient[][]{
-                {wind, wind, wind},
-                {wind, pull, wind},
-                {wind, wind, wind}
+            {wind, wind, wind},
+            {wind, pull, wind},
+            {wind, wind, wind}
         };
     }
 
@@ -66,17 +68,17 @@ public class SealPullRadial extends SealType {
         EnumFacing face = seal.getFace().getOpposite();
         AxisAlignedBB bounds = AbstractSeal.getAreaInFront(seal, RADIUS, true);
         Vec3d center = new Vec3d(seal.getPos())
-                .addVector(0.5, 0.5, 0.5)
-                .add(new Vec3d(face.getDirectionVec()).scale(0.5));
+            .addVector(0.5, 0.5, 0.5)
+            .add(new Vec3d(face.getDirectionVec()).scale(0.5));
 
         for (Entity entity : seal.getWorld().getEntitiesWithinAABBExcludingEntity(null, bounds)) {
             Vec3d direction = entity.getPositionVector().subtract(center);
-            direction = direction.normalize().scale(0.15 * (MAX_DIST - direction.lengthSquared()) / MAX_DIST).scale(pull ? -1 : 1);
+            direction = direction.normalize().scale(0.15 * max(0, MAX_DIST - direction.lengthSquared()) / MAX_DIST).scale(pull ? -1 : 1);
             entity.motionX += direction.x;
             entity.motionY += direction.y;
             entity.motionZ += direction.z;
 
-            if (seal.getWorld().isRemote) {
+            if (seal.getWorld().isRemote && direction.lengthSquared() > 0) {
                 if (pull) {
                     seal.getWorld().spawnParticle(EnumParticleTypes.CLOUD, entity.posX, entity.posY, entity.posZ, direction.x * 5, direction.y * 5, direction.z * 5);
                 } else {
