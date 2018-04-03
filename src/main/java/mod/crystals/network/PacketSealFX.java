@@ -65,4 +65,11 @@ public class PacketSealFX implements IMessage {
         }
 
     }
+
+    public static class HandlerServer implements IMessageHandler<PacketSealFX, IMessage> {
+        @Override
+        public IMessage onMessage(PacketSealFX message, MessageContext ctx) {
+            return null;
+        }
+    }
 }

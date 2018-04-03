@@ -56,4 +56,11 @@ public class PacketSealData implements IMessage {
         }
     }
 
+    public static class HandlerServer implements IMessageHandler<PacketSealData, IMessage> {
+        @Override
+        public IMessage onMessage(PacketSealData message, MessageContext ctx) {
+            return null;
+        }
+    }
+
 }

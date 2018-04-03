@@ -27,8 +27,13 @@ public class CommonProxy {
         MinecraftForge.EVENT_BUS.register(this);
         CreativeTabCrystals.init();
 
-        CrystalsMod.net.registerMessage(PacketSealData.Handler.class, PacketSealData.class, 0, Side.CLIENT);
-        CrystalsMod.net.registerMessage(PacketSealFX.Handler.class, PacketSealFX.class, 1, Side.CLIENT);
+        if (e.getSide() == Side.CLIENT) {
+            CrystalsMod.net.registerMessage(PacketSealData.Handler.class, PacketSealData.class, 0, Side.CLIENT);
+            CrystalsMod.net.registerMessage(PacketSealFX.Handler.class, PacketSealFX.class, 1, Side.CLIENT);
+        } else {
+            CrystalsMod.net.registerMessage(PacketSealData.HandlerServer.class, PacketSealData.class, 0, Side.CLIENT);
+            CrystalsMod.net.registerMessage(PacketSealFX.HandlerServer.class, PacketSealFX.class, 1, Side.CLIENT);
+        }
 
         GameRegistry.registerWorldGenerator(new CrystalsWorldGenerator(), 2);
     }
