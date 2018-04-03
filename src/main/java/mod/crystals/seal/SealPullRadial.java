@@ -11,8 +11,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 
-import static java.lang.Math.max;
+import static java.lang.Math.*;
 
 public class SealPullRadial extends SealType {
 
@@ -34,9 +35,9 @@ public class SealPullRadial extends SealType {
         Ingredient wind = new Ingredient(NatureType.AIR);
         Ingredient pull = new Ingredient(NatureType.AIR, NatureType.VOID);
         return new Ingredient[][]{
-            {wind, wind, wind},
-            {wind, pull, wind},
-            {wind, wind, wind}
+                {wind, wind, wind},
+                {wind, pull, wind},
+                {wind, wind, wind}
         };
     }
 
@@ -53,25 +54,28 @@ public class SealPullRadial extends SealType {
 
         @Override
         public void addRequirements(BiConsumer<NatureType, Float> capacity, BiConsumer<NatureType, Float> consumption) {
+            capacity.accept(NatureType.AIR, 500F);
+            consumption.accept(NatureType.AIR, 100F);
         }
 
         @Override
         public void update() {
-            moveEntities(seal, true);
+            moveEntities(seal, true, this::consumeEnergy);
         }
 
     }
 
-    public static void moveEntities(ISeal seal, boolean pull) {
+    public static void moveEntities(ISeal seal, boolean pull, BooleanSupplier consume) {
         if (seal.getWorld().isBlockIndirectlyGettingPowered(seal.getPos()) > 0) return;
 
         EnumFacing face = seal.getFace().getOpposite();
         AxisAlignedBB bounds = AbstractSeal.getAreaInFront(seal, RADIUS, true);
         Vec3d center = new Vec3d(seal.getPos())
-            .addVector(0.5, 0.5, 0.5)
-            .add(new Vec3d(face.getDirectionVec()).scale(0.5));
+                .addVector(0.5, 0.5, 0.5)
+                .add(new Vec3d(face.getDirectionVec()).scale(0.5));
 
         for (Entity entity : seal.getWorld().getEntitiesWithinAABBExcludingEntity(null, bounds)) {
+            if (!consume.getAsBoolean()) return;
             Vec3d direction = entity.getPositionVector().subtract(center);
             direction = direction.normalize().scale(0.15 * max(0, MAX_DIST - direction.lengthSquared()) / MAX_DIST).scale(pull ? -1 : 1);
             entity.motionX += direction.x;

@@ -43,11 +43,13 @@ public class SealPushRadial extends SealType {
 
         @Override
         public void addRequirements(BiConsumer<NatureType, Float> capacity, BiConsumer<NatureType, Float> consumption) {
+            capacity.accept(NatureType.AIR, 500F);
+            consumption.accept(NatureType.AIR, 100F);
         }
 
         @Override
         public void update() {
-            SealPullRadial.moveEntities(seal, false);
+            SealPullRadial.moveEntities(seal, false, this::consumeEnergy);
         }
 
     }

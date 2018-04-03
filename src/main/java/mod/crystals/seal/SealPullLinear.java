@@ -49,6 +49,8 @@ public class SealPullLinear extends SealType {
 
         @Override
         public void addRequirements(BiConsumer<NatureType, Float> capacity, BiConsumer<NatureType, Float> consumption) {
+            capacity.accept(NatureType.AIR, 200F);
+            consumption.accept(NatureType.AIR, 50F);
         }
 
         @Override
