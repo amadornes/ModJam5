@@ -20,12 +20,16 @@ public class TileCrystal extends TileCrystalBase {
     }
 
     @Override
-    public Vec3d getPosition(float partialTicks) {
+    public Vec3d getPosition(float partialTicks, boolean render) {
         if (getBlockMetadata() == 0) {
-            BlockPos pos = getPos();
-            double time = getWorld().getTotalWorldTime() + partialTicks + (pos.getX() ^ pos.getY() ^ pos.getZ());
-            float off = (int) (time % 80) / 80F;
-            return OFFSET.add(new Vec3d(getPos())).addVector(0, 0.25 + 0.03125 * Math.sin(Math.PI * off * 2), 0);
+            if (render) {
+                BlockPos pos = getPos();
+                double time = getWorld().getTotalWorldTime() + partialTicks + (pos.getX() ^ pos.getY() ^ pos.getZ());
+                float off = (int) (time % 80) / 80F;
+                return OFFSET.add(new Vec3d(getPos())).addVector(0, 0.25 + 0.03125 * Math.sin(Math.PI * off * 2), 0);
+            } else {
+                return OFFSET.add(new Vec3d(getPos())).addVector(0, 0.25, 0);
+            }
         } else {
             return OFFSET.add(new Vec3d(getPos()));
         }

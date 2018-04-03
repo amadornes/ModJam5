@@ -6,6 +6,7 @@ import mod.crystals.util.CrystalsWorldEventListener;
 import mod.crystals.util.SimpleManager;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -75,10 +76,9 @@ public class RayManager extends SimpleManager {
         for (Ray ray : getRays()) {
             if (updatePos != null) {
                 AxisAlignedBB updatePosBB = new AxisAlignedBB(updatePos);
-                AxisAlignedBB rayBox = new AxisAlignedBB(
-                    ray.getStart(0).x, ray.getStart(0).y, ray.getStart(0).z,
-                    ray.getEnd(0).x, ray.getEnd(0).y, ray.getEnd(0).z
-                );
+                Vec3d start = ray.getStart(0, false);
+                Vec3d end = ray.getEnd(0, false);
+                AxisAlignedBB rayBox = new AxisAlignedBB(start.x, start.y, start.z,end.x, end.y, end.z);
                 if (!updatePosBB.intersects(rayBox)) continue;
             }
             needsUpdate.add(ray);

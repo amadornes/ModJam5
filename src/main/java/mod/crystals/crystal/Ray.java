@@ -18,7 +18,7 @@ public class Ray {
     }
 
     public void update(World world) {
-        RayTraceResult hit = RayTracer.rayTraceLaser(world, getStart(0), getEnd(0));
+        RayTraceResult hit = RayTracer.rayTraceLaser(world, getStart(0, false), getEnd(0, false));
         hasLOS = hit == null;
     }
 
@@ -34,12 +34,12 @@ public class Ray {
         return end;
     }
 
-    public Vec3d getStart(float partialTicks) {
-        return start.getPosition(partialTicks);
+    public Vec3d getStart(float partialTicks, boolean render) {
+        return start.getPosition(partialTicks, render);
     }
 
-    public Vec3d getEnd(float partialTicks) {
-        return end.getPosition(partialTicks);
+    public Vec3d getEnd(float partialTicks, boolean render) {
+        return end.getPosition(partialTicks, render);
     }
 
     public Vec3d getStartColor(float partialTicks) {

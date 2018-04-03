@@ -67,7 +67,7 @@ public class SealManager extends SimpleManager {
         Vec3d center = new Vec3d(seal.getPos())
                 .addVector(0.5, 0.5, 0.5)
                 .add(new Vec3d(seal.getFace().getOpposite().getDirectionVec()).scale(0.5));
-        Vec3d cPos = crystal.getPosition(0);
+        Vec3d cPos = crystal.getPosition(0, true);
         Vec3d vec = center.subtract(cPos);
         Vec3d mot = vec.normalize().scale(0.1);
 

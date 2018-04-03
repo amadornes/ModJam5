@@ -57,8 +57,8 @@ public class LaserRenderer {
         for (Ray ray : manager.getRays()) {
             if (!ray.hasLineOfSight()) continue;
 
-            Vec3d start = ray.getStart(event.getPartialTicks());
-            Vec3d end = ray.getEnd(event.getPartialTicks());
+            Vec3d start = ray.getStart(event.getPartialTicks(), true);
+            Vec3d end = ray.getEnd(event.getPartialTicks(), true);
             Vec3d startColor = ray.getStartColor(event.getPartialTicks());
             Vec3d endColor = ray.getEndColor(event.getPartialTicks());
 

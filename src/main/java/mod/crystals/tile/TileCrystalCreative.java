@@ -20,7 +20,7 @@ public class TileCrystalCreative extends TileCrystalBase {
     }
 
     @Override
-    public Vec3d getPosition(float partialTicks) {
+    public Vec3d getPosition(float partialTicks, boolean render) {
         return new Vec3d(pos).addVector(0.5, 1, 0.5);
     }
 

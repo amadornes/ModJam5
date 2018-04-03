@@ -121,7 +121,7 @@ public abstract class TileCrystalBase extends TileEntity implements ILaserSource
             if (!ray.hasLineOfSight()) return;
         }
 
-        Vec3d pos = getPosition(0);
+        Vec3d pos = getPosition(0, true);
         Color color = new Color(resonant.getColor());
         CrystalsMod.proxy.spawnParticle(world, ParticleType.CIRCLE,
                 posVelocityColor(pos.x, pos.y, pos.z, 0, 0, 0,
