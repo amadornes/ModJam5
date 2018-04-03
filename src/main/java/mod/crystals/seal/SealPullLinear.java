@@ -1,13 +1,11 @@
 package mod.crystals.seal;
 
-import mod.crystals.CrystalsMod;
 import mod.crystals.api.NatureType;
 import mod.crystals.api.seal.ISeal;
 import mod.crystals.api.seal.ISealInstance;
 import mod.crystals.api.seal.SealType;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
@@ -18,6 +16,16 @@ import java.util.function.BooleanSupplier;
 public class SealPullLinear extends SealType {
 
     @Override
+    public int getSize() {
+        return 3;
+    }
+
+    @Override
+    public int getTint() {
+        return NatureType.AIR.getColor();
+    }
+
+    @Override
     public Ingredient[][] createRecipe() {
         Ingredient wind = new Ingredient(NatureType.AIR);
         Ingredient pull = new Ingredient(NatureType.AIR, NatureType.VOID);
@@ -26,11 +34,6 @@ public class SealPullLinear extends SealType {
                 {wind, pull, wind},
                 {null, wind, null}
         };
-    }
-
-    @Override
-    public int getGlowyColor() {
-        return NatureType.AIR.getColor();
     }
 
     @Override

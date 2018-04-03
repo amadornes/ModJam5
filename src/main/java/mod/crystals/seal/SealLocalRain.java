@@ -21,9 +21,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-import static mod.crystals.client.particle.ParticleType.posVelocity;
+import static mod.crystals.client.particle.ParticleType.*;
 
 public class SealLocalRain extends SealType {
+
+    @Override
+    public int getSize() {
+        return 3;
+    }
+
+    @Override
+    public int getTint() {
+        return NatureType.WATER.getColor();
+    }
 
     @Override
     public Ingredient[][] createRecipe() {
@@ -33,24 +43,6 @@ public class SealLocalRain extends SealType {
                 {rain, rain, rain},
                 {rain, rain, rain}
         };
-    }
-
-//    @Override
-//    public ResourceLocation getGlowyTextureLocation(TextureType type) {
-//        switch (type) {
-//            case GLOWY_BLACK:
-//                return new ResourceLocation(CrystalsMod.MODID, "textures/seals/base/glowy_thing_black.png");
-//            case GLOWY_TRANSPARENT:
-//                return new ResourceLocation(CrystalsMod.MODID, "textures/seals/base/glowy_thing.png");
-//            case GLOWY_SHIMMER:
-//                //return new ResourceLocation(CrystalsMod.MODID, "textures/seals/pushpull/glowy_thing_shimmer.png");
-//        }
-//        return null;
-//    }
-
-    @Override
-    public int getGlowyColor() {
-        return NatureType.WATER.getColor();
     }
 
     @Override

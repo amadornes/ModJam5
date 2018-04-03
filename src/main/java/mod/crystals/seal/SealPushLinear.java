@@ -10,6 +10,16 @@ import java.util.function.BiConsumer;
 public class SealPushLinear extends SealType {
 
     @Override
+    public int getSize() {
+        return 3;
+    }
+
+    @Override
+    public int getTint() {
+        return NatureType.AIR.getColor();
+    }
+
+    @Override
     public Ingredient[][] createRecipe() {
         Ingredient wind = new Ingredient(NatureType.AIR);
         Ingredient push = new Ingredient(NatureType.AIR, NatureType.DISTORTED);
@@ -18,11 +28,6 @@ public class SealPushLinear extends SealType {
                 {wind, push, wind},
                 {null, wind, null}
         };
-    }
-
-    @Override
-    public int getGlowyColor() {
-        return NatureType.AIR.getColor();
     }
 
     @Override

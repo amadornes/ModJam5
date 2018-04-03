@@ -45,4 +45,9 @@ public abstract class BlockCrystalBase extends BlockBase implements ITileEntityP
         crystal.doJoin(); // TODO: Probably change this
     }
 
+    @Override
+    protected boolean isFull(IBlockState state) {
+        return false;
+    }
+
 }

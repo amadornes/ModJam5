@@ -186,7 +186,6 @@ public class BlockCrystal extends BlockCrystalBase {
 
     @Override
     public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items) {
-        super.getSubBlocks(itemIn, items);
         CrystalsRegistries.natureRegistry.getValuesCollection().stream()
             .map(this::getPureCrystal)
             .forEach(items::add);

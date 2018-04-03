@@ -15,6 +15,11 @@ public class SealFireBreath extends SealType {
     private static final float RADIUS = 5;
 
     @Override
+    public int getSize() {
+        return 1;
+    }
+
+    @Override
     public Ingredient[][] createRecipe() {
         Ingredient fire = new Ingredient(NatureType.AIR, NatureType.FIRE);
         Ingredient pushFire = new Ingredient(NatureType.AIR, NatureType.FIRE, NatureType.DISTORTED);

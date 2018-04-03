@@ -10,28 +10,54 @@ import java.util.Set;
 
 public abstract class SealType extends IForgeRegistryEntry.Impl<SealType> {
 
-    public abstract Ingredient[][] createRecipe();
+    public abstract int getSize();
 
-    public abstract ISealInstance instantiate(ISeal seal);
-
-    public ResourceLocation getGlowyTextureLocation(TextureType type) {
-        ResourceLocation name = getRegistryName();
-        switch (type) {
-            case GLOWY_BLACK:
-                return new ResourceLocation(name.getResourceDomain(), "textures/seals/" + name.getResourcePath() + "/glowy_thing_black.png");
-            case GLOWY_TRANSPARENT:
-                return new ResourceLocation(name.getResourceDomain(), "textures/seals/" + name.getResourcePath() + "/glowy_thing.png");
+    public ResourceLocation getTextureLocation(TextureType type) {
+        int size = getSize();
+        if (size == 1 && (type == TextureType.BASE || type == TextureType.OVERLAY)) {
+            return getTextureName(type);
+        } else if (size == 3 && (type == TextureType.GLOW_BLACK || type == TextureType.GLOW_TRANSPARENT)) {
+            return getTextureName(type);
         }
         return null;
     }
 
-    public int getGlowyColor() {
+    protected ResourceLocation getTextureName(TextureType type) {
+        if(type == TextureType.BASE){
+            return new ResourceLocation("crystals", "textures/seals/base/small.png");
+        }
+        ResourceLocation name = getRegistryName();
+        return new ResourceLocation(name.getResourceDomain(), "textures/seals/" + name.getResourcePath() + "/" + type.getName() + ".png");
+    }
+
+    public float getRotationSpeed() {
+        return getSize() == 1 ? 0 : 1;
+    }
+
+    public int getTint() {
         return 0xFFFFFF;
     }
 
+    public abstract Ingredient[][] createRecipe();
+
+    public abstract ISealInstance instantiate(ISeal seal);
+
     public enum TextureType {
-        GLOWY_BLACK,
-        GLOWY_TRANSPARENT;
+        BASE("small"),
+        OVERLAY("overlay"),
+        GLOW_BLACK("glow_black"),
+        GLOW_TRANSPARENT("glow");
+
+        private final String name;
+
+        TextureType(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
     }
 
     public static final class Ingredient {
