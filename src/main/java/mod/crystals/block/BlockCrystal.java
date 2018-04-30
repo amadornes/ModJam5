@@ -134,7 +134,10 @@ public class BlockCrystal extends BlockCrystalBase {
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         if (dontDropItems) return;
         float dropScale = 5;
-        IResonant resonant = world.getTileEntity(pos).getCapability(IResonant.CAPABILITY, null);
+        TileEntity te = world.getTileEntity(pos);
+        if (te == null) return;
+        IResonant resonant = te.getCapability(IResonant.CAPABILITY, null);
+        if (resonant == null) return;
         float resonance = resonant.getResonance();
         for (NatureType type : CrystalsRegistries.natureRegistry.getValuesCollection()) {
             float amt = resonant.getNatureAmount(type);
