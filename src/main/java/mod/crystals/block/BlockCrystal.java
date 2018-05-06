@@ -1,10 +1,5 @@
 package mod.crystals.block;
 
-import mod.crystals.api.IResonant;
-import mod.crystals.api.NatureType;
-import mod.crystals.init.CrystalsRegistries;
-import mod.crystals.item.ItemDust;
-import mod.crystals.tile.TileCrystal;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
@@ -19,7 +14,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -27,8 +26,15 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
 import java.util.Random;
+
+import javax.annotation.Nullable;
+
+import mod.crystals.api.IResonant;
+import mod.crystals.api.NatureType;
+import mod.crystals.init.CrystalsRegistries;
+import mod.crystals.item.ItemDust;
+import mod.crystals.tile.TileCrystal;
 
 public class BlockCrystal extends BlockCrystalBase {
 
@@ -135,17 +141,17 @@ public class BlockCrystal extends BlockCrystalBase {
         if (dontDropItems) return;
         float dropScale = 5;
         TileEntity te = world.getTileEntity(pos);
-        if (te == null) return;
-        IResonant resonant = te.getCapability(IResonant.CAPABILITY, null);
-        if (resonant == null) return;
-        float resonance = resonant.getResonance();
-        for (NatureType type : CrystalsRegistries.natureRegistry.getValuesCollection()) {
-            float amt = resonant.getNatureAmount(type);
-            int totalItems = Math.round(dropScale * resonance * amt); // TODO: Add random element to this?
-            if (totalItems < 1) continue;
-            ItemStack stack = ItemDust.getItemOfType(type);
-            stack.setCount(totalItems);
-            spawnAsEntity(world, pos, stack);
+        if (te instanceof TileCrystal) {
+            IResonant resonant = te.getCapability(IResonant.CAPABILITY, null);
+            float resonance = resonant.getResonance();
+            for (NatureType type : CrystalsRegistries.natureRegistry.getValuesCollection()) {
+                float amt = resonant.getNatureAmount(type);
+                int totalItems = Math.round(dropScale * resonance * amt); // TODO: Add random element to this?
+                if (totalItems < 1) continue;
+                ItemStack stack = ItemDust.getItemOfType(type);
+                stack.setCount(totalItems);
+                spawnAsEntity(world, pos, stack);
+            }
         }
     }
 

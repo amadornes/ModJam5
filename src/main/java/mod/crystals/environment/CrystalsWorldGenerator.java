@@ -1,13 +1,7 @@
 package mod.crystals.environment;
 
-import gnu.trove.map.TObjectFloatMap;
-import gnu.trove.map.hash.TObjectFloatHashMap;
-import mod.crystals.api.IResonant;
-import mod.crystals.api.NatureType;
-import mod.crystals.block.BlockCrystal;
-import mod.crystals.init.CrystalsBlocks;
-import mod.crystals.tile.TileCrystal;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -18,6 +12,14 @@ import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraftforge.fml.common.IWorldGenerator;
 
 import java.util.Random;
+
+import gnu.trove.map.TObjectFloatMap;
+import gnu.trove.map.hash.TObjectFloatHashMap;
+import mod.crystals.api.IResonant;
+import mod.crystals.api.NatureType;
+import mod.crystals.block.BlockCrystal;
+import mod.crystals.init.CrystalsBlocks;
+import mod.crystals.tile.TileCrystal;
 
 public class CrystalsWorldGenerator implements IWorldGenerator {
     @Override
@@ -71,13 +73,16 @@ public class CrystalsWorldGenerator implements IWorldGenerator {
 
             if (!worldIn.canBlockSeeSky(blockpos)) {
                 worldIn.setBlockState(blockpos, CrystalsBlocks.crystal.getDefaultState().withProperty(BlockCrystal.VARIANT, BlockCrystal.Variant.valueOf(attachSide.name())), 2);
-                TileCrystal te = (TileCrystal) worldIn.getTileEntity(blockpos);
-                BiomeEnvironmentScanner bes = new BiomeEnvironmentScanner();
-                IResonant resonant = te.getCapability(IResonant.CAPABILITY, null);
-                TObjectFloatMap<NatureType> map = new TObjectFloatHashMap<>();
-                bes.compute(worldIn, blockpos, map::put);
-                resonant.setNatureAmounts(map);
-                resonant.setResonance(1.0f);
+                TileEntity tile = worldIn.getTileEntity(blockpos);
+                if (tile instanceof TileCrystal) {
+                    TileCrystal te = (TileCrystal) tile;
+                    IResonant resonant = te.getCapability(IResonant.CAPABILITY, null);
+                    BiomeEnvironmentScanner bes = new BiomeEnvironmentScanner();
+                    TObjectFloatMap<NatureType> map = new TObjectFloatHashMap<>();
+                    bes.compute(worldIn, blockpos, map::put);
+                    resonant.setNatureAmounts(map);
+                    resonant.setResonance(1.0f);
+                }
                 return true;
             } else {
                 return false;
