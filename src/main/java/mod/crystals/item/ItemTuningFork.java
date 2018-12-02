@@ -1,14 +1,5 @@
 package mod.crystals.item;
 
-import gnu.trove.map.TObjectFloatMap;
-import mod.crystals.api.IResonant;
-import mod.crystals.api.NatureType;
-import mod.crystals.block.BlockCrystal;
-import mod.crystals.environment.EnvironmentHandler;
-import mod.crystals.init.CrystalsBlocks;
-import mod.crystals.tile.TileCrystal;
-import mod.crystals.tile.TileCrystalBase;
-import mod.crystals.util.ResonantUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,9 +17,20 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Set;
+
+import gnu.trove.map.TObjectFloatMap;
+import mod.crystals.api.IResonant;
+import mod.crystals.api.NatureType;
+import mod.crystals.block.BlockCrystal;
+import mod.crystals.environment.EnvironmentHandler;
+import mod.crystals.init.CrystalsBlocks;
+import mod.crystals.tile.TileCrystal;
+import mod.crystals.tile.TileCrystalBase;
+import mod.crystals.util.ResonantUtils;
 
 public class ItemTuningFork extends ItemBase {
 
@@ -128,7 +130,8 @@ public class ItemTuningFork extends ItemBase {
 
     @Override
     public int getMetadata(ItemStack stack) {
-        return stack.getCapability(IResonant.CAPABILITY, null).getResonance() > 0.2 ? 1 : 0;
+        final IResonant capability = stack.getCapability(IResonant.CAPABILITY, null);
+        return capability == null ? 0 : capability.getResonance() > 0.2 ? 1 : 0;
     }
 
     @Nullable
